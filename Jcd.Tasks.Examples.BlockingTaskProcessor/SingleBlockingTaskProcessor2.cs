@@ -1,45 +1,22 @@
-﻿using Nito.AsyncEx;
+﻿namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
-namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
-public static class SingleBlockingTaskProcessor
+public static class SingleBlockingTaskProcessor2
 {
     /// <summary>
     /// Runs the same simulation as in <see cref="SimulateDeadlocks"/> using a single <see cref="BlockingTaskProcessor"/>
-    /// to queue up the calls and execute in sequence.
+    /// to queue up only the non-ping calls, executing pings as they come in.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A possible solution a developer might consider is just queuing ALL request without thought as to the
-    /// intention behind the request. This simulates that attempt with a <see cref="BlockingTaskProcessor"/>
-    /// We see that the <see cref="AsyncLock"/> high lockcounts are certainly gone. Also we're no longer abusing
-    /// the thread pool (which is also a problem in <see cref="SimulateDeadlocks"/>). And both of those facts
-    /// very good!
-    ///</para>
-    /// <para>
-    /// When we look at the number of pending request in the command processor's queue. For similar run parameters
-    /// we see similar backlogs. So we've alleviated the client side excessive lock creation. That's good.
-    /// However when we look at the stats emitted for how long pings are taking to complete, they're far longer.
-    /// That's bad. In fact they become orders of magnitude worse than in <see cref="SimulateDeadlocks"/>
-    /// </para>
-    /// <para>
-    /// So, that means this doesn't solve the ping problem. We do pings because we want to know if there's a
-    /// potential problem.  This is either communicated in a returned status, or our attempt at communication
-    /// timing out. And in this solution they're still significantly delayed for processing. For a system that
-    /// has to make decisions such as "do I restart the server? it's not replied to a ping yet." this is a
-    /// huge problem because we don't know why we've not yet gotten the response. Is **the server** laggy?
-    /// Is the server down? Have **we** swamped the command queue? We don't know without monitoring our task
-    /// processor, and even then there's not much we can do about it without taking other measures.
-    ///</para>
-    /// <para>
-    /// So, while this is better, and possibly suitable for some circumstances, it won't work for the
-    /// *"near real time"* communications and monitoring just described.
+    /// Another possible solution a developer might consider is queuing only non-ping calls.
+    /// This has the advantage of making pings happen faster.
     ///</para>
     /// </remarks>
     public static async Task Run(int lifespanInSeconds=60)
     {
         Console.WriteLine("-----------------------------------------------");
-        Console.WriteLine("One queue. No deadlocking. Pings severely delayed.");
+        Console.WriteLine("One queue. No deadlocking. Pings sent nearly immediately.");
         Console.WriteLine("-----------------------------------------------");
         await Console.Out.FlushAsync();
         
@@ -112,7 +89,7 @@ public static class SingleBlockingTaskProcessor
                 // block the ping scheduler. This is to simulate a ping whose
                 // returned data is received and handled in another thread.
                 // this is just the scheduler.
-                CommandProcessor.EnqueueAsyncAction(async () =>
+                Task.Run(async () =>
                 {
                     Console.WriteLine($"Waiting to ping... concurrent ping backlog {pingCount.Value}");
                     await Console.Out.FlushAsync();
@@ -125,8 +102,8 @@ public static class SingleBlockingTaskProcessor
                     // yes our two calls introduce unwanted locking... but some programmers actually do this.
                     await Task.WhenAll(new[]
                     {
-                       Server.SendRequest(314159, buff),
-                       Server.SendRequest(314160, buff2)
+                        Server.SendRequest(314159, buff),
+                        Server.SendRequest(314160, buff2)
                     });
                     await pingCount.ChangeValueAsync((v) => v - 1); // decrement the value
                     var backlog = pingCount.Value;

@@ -22,10 +22,10 @@ public class FakeServerProxy
         _log = log;
     }
 
-    private bool _log;
-    public async Task MakeRequest(int bufferType, byte[] buffer)
+    private readonly bool _log;
+    public async Task SendRequest(int bufferType, byte[] buffer)
     {
-        if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(MakeRequest)} started. {BacklogCounter.Value} calls from other tasks are already waiting.");
+        if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} started. {BacklogCounter.Value} calls from other tasks are already waiting.");
         await BacklogCounter.ChangeValueAsync(x => x+1);
         
         // The former developers decided to alleviate server load with client side locking.
@@ -35,11 +35,13 @@ public class FakeServerProxy
         using (await _lock.LockAsync())
         {
             var backlog=await BacklogCounter.ChangeValueAsync(x => x-1);
-            if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(MakeRequest)} lock acquired with {backlog} other tasks waiting for this call to complete.");
+            if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} lock acquired with {backlog} other tasks waiting for this call to complete.");
             
             // pretend to do something useful with this buffer.
             var reversed = buffer.Reverse().ToArray();
             
+            // the response is processed... somehow... and returned to the rest of the app
+            // via some other channel. That's not represented here as this is a minimal example.
             await SendBufferAndWaitForAck(reversed);
         }
     }
