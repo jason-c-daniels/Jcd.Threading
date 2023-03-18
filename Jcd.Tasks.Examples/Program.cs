@@ -4,11 +4,16 @@ using System.Diagnostics;
 using Jcd.Tasks;
 using Jcd.Tasks.Examples;
 
-Console.WriteLine("Hello, World!");
+await SynchronizedValueExample.Run();
+await BlockingTaskProcessorExample.Run();
+return await ColdTaskExample.Run(); // this won't actually finish. You'll need to press CTRL-C.
+
+
+
 Debug.WriteLine($"Main Thread {Environment.CurrentManagedThreadId}");
-var q = new AsyncSerialCommandProcessor();
-var q2 = new AsyncSerialCommandProcessor();
-var d = new FakeDevice();
+var q = new BlockingTaskProcessor();
+var q2 = new BlockingTaskProcessor();
+var d = new FakeServerProxy();
 var ctsDB = DeviceBlasterTask();
 var ctsDP = DevicePingTask();
 
@@ -27,108 +32,7 @@ while (//!ctsPauser1.IsCancellationRequested ||
        !ctsDB.IsCancellationRequested
     ) await Task.Yield();
 
-CancellationTokenSource StartQueuerTask(double busyWorkDelayInSeconds=Math.PI/100.0,double enqueueDelayInSeconds=0.2, double lifeSpanInSeconds=120)
-{
-    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
-    Task.Run(async () =>
-        {
-            void Enqueue(long item, long thId)
-            {
-                Debug.WriteLine($"{thId}:{item} enqueuing : q.Length= {q.QueueLength}");
-                Debug.Flush();
-                q.Enqueue(async () =>
-                {
-                    Console.WriteLine($"{thId}:{item} began");
-                    Console.Out.Flush();
-                    await Task.Delay(TimeSpan.FromSeconds(busyWorkDelayInSeconds));
-                    Console.WriteLine($"{thId}:{item} finished");
-                    Console.Out.Flush();
-                });
-                Debug.WriteLine($"{thId}:{item} enqueued");
-                Debug.Flush();
-            }
 
-            long i = 0;
-            while (!cts.IsCancellationRequested)
-            {
-                Enqueue(i++, Environment.CurrentManagedThreadId);
-                await Task.Delay(TimeSpan.FromSeconds(enqueueDelayInSeconds));
-            }
-        })
-        ;//.Start();
-    return cts;
-}
-
-CancellationTokenSource StartPauserTask(double delayInSeconds=Math.PI-0.1,double lifeSpanInSeconds=120)
-{
-    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
-    Task.Run(async () =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                if (!q.IsPaused)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
-                    Console.WriteLine($"Pausing from {nameof(StartPauserTask)} {Environment.CurrentManagedThreadId}");
-                    Console.Out.Flush();
-                    await q.PauseAsync();
-                    Console.WriteLine($"Paused from {nameof(StartPauserTask)} {Environment.CurrentManagedThreadId}");
-                    Console.Out.Flush();
-                }
-            }
-        })
-        ;//.Start();
-    return cts;
-}
-
-CancellationTokenSource StartResumerTask(double delayInSeconds=Math.PI,double lifeSpanInSeconds=120)
-{
-    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
-    Task.Run(async () =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                if (q.IsPaused)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
-                    Console.WriteLine($"Resuming from {nameof(StartResumerTask)} {Environment.CurrentManagedThreadId}");
-                    Console.Out.Flush();
-                    await q.ResumeAsync();
-                    Console.WriteLine($"Resume from {nameof(StartResumerTask)} {Environment.CurrentManagedThreadId}");
-                    Console.Out.Flush();
-                }
-            }
-        })
-        ;//.Start();
-    return cts;
-}
-
-CancellationTokenSource SpasticPauserTask(double delayInSeconds=Math.PI*3,double lifeSpanInSeconds=120,int numberOfThreads=100)
-{
-    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
-    Task.Run(async () =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
-                await Task.WhenAll(
-                    Enumerable.Range(0,numberOfThreads).Select(x=>
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds/2));
-                            Console.WriteLine($"Pausing [{x}] from {nameof(SpasticPauserTask)} {Environment.CurrentManagedThreadId}");
-                            Console.Out.Flush();
-                            await q.PauseAsync();
-                            Console.WriteLine($"Paused [{x}] from {nameof(SpasticPauserTask)} {Environment.CurrentManagedThreadId}");
-                            Console.Out.Flush();
-                        })
-                    ));
-                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds));
-            }
-        })
-        ;//.Start();
-    return cts;
-}
 
 CancellationTokenSource DeviceBlasterTask(double delayInMs=Math.PI*3,double lifeSpanInSeconds=120,int numberOfThreads=300)
 {
@@ -144,13 +48,13 @@ CancellationTokenSource DeviceBlasterTask(double delayInMs=Math.PI*3,double life
                 await Task.Delay(TimeSpan.FromMilliseconds(delayInMs*5));
                 await Task.WhenAll(
                     Enumerable.Range(0,numberOfThreads).Select(x=>
-                        q.EnqueueAsync(async () =>
+                        q.EnqueueAsyncActionAsync(async () =>
                         {
                             //Console.WriteLine($"Sending bytes for instance: {x}");
                             //await Console.Out.FlushAsync();
                             var buff = new byte[20];
                             rnd.NextBytes(buff);
-                            await d.SendMessage(x, buff);
+                            await d.SendBuffer(x, buff);
                         })
                     ));
             }
@@ -178,13 +82,13 @@ CancellationTokenSource DevicePingTask(double delayInMs=1000,double lifeSpanInSe
                 rnd.NextBytes(buff);
                 var buff2 = new byte[20];
                 rnd.NextBytes(buff2);
-                q2.Enqueue(async () =>
+                q2.EnqueueAsyncAction(async () =>
                 {
                     Console.WriteLine($"Waiting to ping... ping backlog {pingCount.Value}");
                     pingCount.ChangeValue((v)=> v+1); // increment the value
                     await Console.Out.FlushAsync();
-                    await d.SendMessage(314159, buff);
-                    await d.SendMessage(314160, buff2);
+                    await d.SendBuffer(314159, buff);
+                    await d.SendBuffer(314160, buff2);
                     pingCount.ChangeValue((v)=> v-1); // decrement the value
                     Console.WriteLine($"Pinged! ping backlog {pingCount.Value}");
                     await Console.Out.FlushAsync();
@@ -200,10 +104,10 @@ CancellationTokenSource DevicePingTask(double delayInMs=1000,double lifeSpanInSe
 async Task SomeTests()
 {
 // cannot await these tasks until the queue processor has started!
-    q.Enqueue(() => Foo2(-1));
-    q.Enqueue(() => Foo2(-2));
-    q.Enqueue(() => Foo2(-3));
-    q.Enqueue(Foo);
+    q.EnqueueAsyncFunc(() => Foo2(-1));
+    q.EnqueueAsyncFunc(() => Foo2(-2));
+    q.EnqueueAsyncFunc(() => Foo2(-3));
+    q.EnqueueAsyncFunc(Foo);
     var foo = new SynchronizedValue<int>(1);
 
     q.StartProcessing();
@@ -212,7 +116,7 @@ async Task SomeTests()
     for (var i = 0; i < countToAdd; i++)
     {
         var x = i;
-        q.Enqueue(() => Foo2(x));
+        q.EnqueueAsyncFunc(() => Foo2(x));
     }
 
     sw.Stop();
@@ -227,14 +131,14 @@ async Task SomeTests()
             Console.WriteLine("Pausing");
         }
 
-        if (waitCount is > 10 and <= 12) q.Enqueue(() => Console.WriteLine("I was injected during the pause."));
+        if (waitCount is > 10 and <= 12) q.EnqueueAction(() => Console.WriteLine("I was injected during the pause."));
         if (waitCount == 12)
         {
             q.Resume();
             Console.WriteLine("Resuming");
         }
 
-        if (waitCount > 15) q.Enqueue(() => Console.WriteLine("I was injected after the first resume."));
+        if (waitCount > 15) q.EnqueueAction(() => Console.WriteLine("I was injected after the first resume."));
         if (waitCount == 20)
         {
             // restart everything after the purge.
@@ -245,17 +149,17 @@ async Task SomeTests()
             Console.WriteLine("Restarting processing thread (paused though).");
             q.StartProcessing();
             Console.WriteLine($"Queue status: N={q.QueueLength}; Started:{q.IsStarted}; Paused:{q.IsPaused} ");
-            q.Enqueue(() => Console.WriteLine("I was injected after the second pause."));
+            q.EnqueueAction(() => Console.WriteLine("I was injected after the second pause."));
         }
 
-        if (waitCount > 20) q.Enqueue(() => Console.WriteLine("I was injected after the second pause."));
+        if (waitCount > 20) q.EnqueueAction(() => Console.WriteLine("I was injected after the second pause."));
         if (waitCount == 25)
         {
             Console.WriteLine($"Resuming with {q.QueueLength} items in the queue.");
             Console.WriteLine($"Queue status: N={q.QueueLength}; Started:{q.IsStarted}; Paused:{q.IsPaused} ");
             Console.Out.Flush();
             q.Resume();
-            q.Enqueue(() => Console.WriteLine("I was injected after the second resume."));
+            q.EnqueueAction(() => Console.WriteLine("I was injected after the second resume."));
 
             Console.WriteLine($"Queue status: N={q.QueueLength}; Started:{q.IsStarted}; Paused:{q.IsPaused} ");
             Console.WriteLine($"Waiting for the thread to startup.");
@@ -268,7 +172,7 @@ async Task SomeTests()
             for (var z = 0; z < 10; z++)
             {
                 var title = $"{waitCount}+{z} injected.";
-                q.Enqueue(() => Console.WriteLine(title));
+                q.EnqueueAction(() => Console.WriteLine(title));
             }
         }
 

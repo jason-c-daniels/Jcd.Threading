@@ -15,9 +15,9 @@ public static class ColdTask
     /// </summary>
     /// <param name="action"></param>
     /// <param name="cancellationToken">The optional cancellation token for the task. The default is null/not provided.</param>
-    /// <param name="options">Task <see cref="TaskCreationOptions"/> for the task. The default is <see cref="TaskCreationOptions.None"/></param>
+    /// <param name="options">Task <see cref="TaskCreationOptions"/> for the task. The default is <see cref="TaskCreationOptions.RunContinuationsAsynchronously"/></param>
     /// <returns>The created task.</returns>
-    public static Task From(Action action, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.None)
+    public static Task FromAction(Action action, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
     {
         var task = cancellationToken.HasValue
             ? new Task(action, cancellationToken.Value, options)
@@ -33,7 +33,7 @@ public static class ColdTask
     /// <param name="options">Task <see cref="TaskCreationOptions"/> for the task. The default is <see cref="TaskCreationOptions.RunContinuationsAsynchronously"/></param>
     /// <returns>The created task.</returns>
     /// <typeparam name="TResult">The type of the data returned.</typeparam>
-    public static Task<TResult> From<TResult>(Func<TResult> function, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
+    public static Task<TResult> FromFunc<TResult>(Func<TResult> function, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
     {
         var task = cancellationToken.HasValue
             ? new Task<TResult>(function, cancellationToken.Value, options)
@@ -48,7 +48,7 @@ public static class ColdTask
     /// <param name="cancellationToken">The optional cancellation token for the task. The default is null/not provided.</param>
     /// <param name="options">Task <see cref="TaskCreationOptions"/> for the task. The default is <see cref="TaskCreationOptions.RunContinuationsAsynchronously"/></param>
     /// <returns>The created task.</returns>
-    public static Task FromAsync(Func<Task> action, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
+    public static Task FromAsyncAction(Func<Task> action, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
     {
         var task = cancellationToken.HasValue
             ? new Task(()=>action().Wait(), cancellationToken.Value, options)
@@ -64,7 +64,7 @@ public static class ColdTask
     /// <param name="options">Task <see cref="TaskCreationOptions"/> for the task. The default is <see cref="TaskCreationOptions.RunContinuationsAsynchronously"/></param>
     /// <returns>The created task.</returns>
     /// <typeparam name="TResult">The type of the data returned.</typeparam>
-    public static Task<TResult> FromAsync<TResult>(Func<Task<TResult>> function, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
+    public static Task<TResult> FromAsyncFunc<TResult>(Func<Task<TResult>> function, CancellationToken? cancellationToken=null, TaskCreationOptions options=TaskCreationOptions.RunContinuationsAsynchronously)
     {
         var task = cancellationToken.HasValue
             ? new Task<TResult>(()=>function().Result, cancellationToken.Value, options)
@@ -80,70 +80,42 @@ public static class ColdTask
     /// <returns>True if unstarted. False otherwise.</returns>
     public static bool IsCold(this Task task) =>
         task.Status == TaskStatus.Created;
-        
+    
     /// <summary>
-    /// Starts an unstarted (cold) task and waits for its completion. This does nothing if the task was already started.
+    /// Starts an unstarted task then returns the task. If the task isn't cold it isn't started, it's still returned.
     /// </summary>
-    /// <param name="task">the task.</param>
-    /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> to use.</param>
-    /// <remarks>WARNING: This method potentially calls Task.Wait(). Be sure you understand the risks before using it.</remarks>
-    public static void StartThenWait(this Task task, CancellationToken? cancellationToken=null)
+    /// <param name="task">the task</param>
+    /// <returns>the task</returns>
+    public static Task StartEx(this Task task) 
     {
-        if (!task.IsCold())
-        {
-            return;
-        }
-        task.Start();
-        if (cancellationToken.HasValue && !task.IsCompleted)
-        {
-            task.Wait(cancellationToken.Value);
-        }
-        else if (!task.IsCompleted)
-        {
-            task.Wait();
-        }
+        if (!task.IsCold()) return task;
+        try { task.Start(); } catch {/* Clearly it was started by another thread right after we checked the value. just carry on.*/}
+        return task;
     }
 
-    /// <summary>
-    /// Starts an unstarted (cold) task and waits for its completion. This does nothing if the task was already started.
-    /// </summary>
-    /// <param name="task">the task.</param>
-    /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> to use.</param>
-    /// <remarks>WARNING: This method potentially calls Task.Wait(). Be sure you understand the risks before using it.</remarks>
-    public static TResult StartThenWaitForResult<TResult>(this Task<TResult> task, CancellationToken? cancellationToken=null)
+    public static async Task<bool> TryWaitAsync(this Task task)
     {
-        if (!task.IsCold()) return task.Result;
-        task.Start();
-        if (!cancellationToken.HasValue || task.IsCompleted) return task.Result;
-        task.Wait(cancellationToken.Value);
-        return task.Result;
-    }
-
-    /// <summary>
-    /// Starts an unstarted (cold) task and waits for its completion. It does nothing if the task was already started.
-    /// </summary>
-    /// <param name="task">the task.</param>
-    /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> to use.</param>
-    /// <remarks>WARNING: This method potentially calls Task.Wait(). Be sure you understand the risks before using it.</remarks>
-    public static async Task StartThenWaitAsync(this Task task, CancellationToken? cancellationToken=null)
-    {
-        if (!task.IsCold())
-        {
-            return;
-        }
-
-        task.Start();
-        if (cancellationToken.HasValue && !task.IsCompleted)
-        {
-            await Task.Run<Task>(()=>
-            {
-                task.Wait(cancellationToken.Value);
-                return Task.CompletedTask;
-            });
-        }
-        else if (!task.IsCompleted)
+        try
         {
             await task;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static bool TryWait(this Task task)
+    {
+        try
+        {
+            task.Wait();
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }
