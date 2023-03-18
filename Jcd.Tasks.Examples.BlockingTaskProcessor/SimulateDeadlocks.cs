@@ -12,15 +12,16 @@ public static class SimulateDeadlocks
     /// solutions involving <see cref="BlockingTaskProcessor"/> may be based. This is by no means the only way to
     /// solve this problem. It's merely a use case which *might* be useful under some circumstances.
     /// </remarks>
-    public static async Task Run(int lifespanInSeconds=60)
+    public static async Task Run(int lifespanInSeconds=60, int pingFrequencyInMs=1000, int maxTasks=50, int taskSchedulingFrequencyInMs=100, int minLatencyInMs=10,int maxAdditionalLatencyInMs=15,bool logRequestScheduling = true)
     {
+        Server.SetLatency(minLatencyInMs,maxAdditionalLatencyInMs);
         Console.WriteLine("-----------------------------------------------");
         Console.WriteLine("No queues. Massive deadlocking.");
         Console.WriteLine("-----------------------------------------------");
         await Console.Out.FlushAsync();
         
-        var makeCallsTask = CreateMakeLotsOfCallsTask(lifeSpanInSeconds: lifespanInSeconds);
-        var pingTask = CreatePingTask(lifeSpanInSeconds: lifespanInSeconds);
+        var makeCallsTask = CreateMakeLotsOfCallsTask(taskSchedulingFrequencyInMs,lifespanInSeconds,maxTasks,logRequestScheduling);
+        var pingTask = CreatePingTask(pingFrequencyInMs,lifespanInSeconds);
 
         // wait for the tasks to finish regardless if their completion status.
         await Task.WhenAll(makeCallsTask.TryWaitAsync(),
@@ -31,7 +32,7 @@ public static class SimulateDeadlocks
     private static readonly FakeServerProxy Server = new();
     
     private static Task CreateMakeLotsOfCallsTask(double scheduleDelayInMs = 100, double lifeSpanInSeconds = 120,
-                                                  int numberOfMakeRequestTasks = 50)
+                                                  int numberOfMakeRequestTasks = 50, bool log=true)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         return Task.Run(async () =>
@@ -45,7 +46,7 @@ public static class SimulateDeadlocks
                 await Task.Delay(TimeSpan.FromMilliseconds(scheduleDelayInMs * 5), cts.Token);
                 if (cts.IsCancellationRequested) throw new OperationCanceledException();
                 
-                Console.WriteLine(
+                if (log) Console.WriteLine(
                     $"Scheduling {numberOfMakeRequestTasks} concurrent {nameof(FakeServerProxy.SendRequest)} calls. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value}");
                 Task.WhenAll(
                     Enumerable.Range(0, numberOfMakeRequestTasks).Select(x =>
@@ -65,6 +66,43 @@ public static class SimulateDeadlocks
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         var pingCount = new SynchronizedValue<int>(0);
+
+        async Task ExecutePing(SynchronizedValue<int> synchronizedValue, Random rnd, DateTime scheduledAt)
+        {
+            Console.WriteLine($"Waiting to ping... concurrent ping backlog {synchronizedValue.Value}");
+            await Console.Out.FlushAsync();
+            var buff = new byte[20];
+            rnd.NextBytes(buff);
+            var buff2 = new byte[20];
+            rnd.NextBytes(buff2);
+            await synchronizedValue.ChangeValueAsync((v) => v + 1); // increment the value
+            // let's read two values from the server but not care about the order they're returned in.
+            // yes our two calls introduce unwanted locking... but some programmers actually do this.
+            if (cts.IsCancellationRequested) throw new OperationCanceledException();
+            await Task.WhenAll(new[]
+            {
+                Server.SendRequest(314159, buff),
+                Server.SendRequest(314160, buff2)
+            });
+            if (cts.IsCancellationRequested) throw new OperationCanceledException();
+            await synchronizedValue.ChangeValueAsync((v) => v - 1); // decrement the value
+            var backlog = synchronizedValue.Value;
+            var finishedAt = DateTime.Now;
+            var elapsed = finishedAt - scheduledAt;
+            Console.WriteLine($"Pinged after {elapsed.TotalMilliseconds:n2}ms! concurrent ping backlog {backlog}");
+            await Console.Out.FlushAsync();
+        }
+
+        void SchedulePing(SynchronizedValue<int> synchronizedValue, Random rnd, DateTime scheduledAt,
+                          CancellationTokenSource cancellationTokenSource)
+        {
+            // run the ping in a background thread. This is to simulate a UI or other
+            // separate thread of a program periodically telling the communications
+            // layer to get a status update. Usually we want these to preempt other traffic.
+            // it will not for this example. In fact we'll see them start stacking up.
+            Task.Run(async () => { await ExecutePing(synchronizedValue, rnd, scheduledAt); }, cancellationTokenSource.Token);
+        }
+
         return Task.Run(async () =>
         {
             Console.WriteLine($"{nameof(CreatePingTask)} running, scheduling {nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
@@ -76,35 +114,11 @@ public static class SimulateDeadlocks
                 Console.WriteLine(
                     $"Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value}");
                 await Console.Out.FlushAsync();
+                if (cts.IsCancellationRequested) throw new OperationCanceledException();
                 await Task.Delay(TimeSpan.FromMilliseconds(scheduleDelayInMs),cts.Token);
                 var scheduledAt = DateTime.Now;
-                // run the ping in a background thread. This is to simulate a UI or other
-                // separate thread of a program periodically telling the communications
-                // layer to get a status update. Usually we want these to preempt other traffic.
-                // it will not for this example. In fact we'll see them start stacking up.
-                Task.Run(async () =>
-                {
-                    Console.WriteLine($"Waiting to ping... concurrent ping backlog {pingCount.Value}");
-                    await Console.Out.FlushAsync();
-                    var buff = new byte[20];
-                    rnd.NextBytes(buff);
-                    var buff2 = new byte[20];
-                    rnd.NextBytes(buff2);
-                    await pingCount.ChangeValueAsync((v) => v + 1); // increment the value
-                    // let's read two values from the server but not care about the order they're returned in.
-                    // yes our two calls introduce unwanted locking... but some programmers actually do this.
-                    await Task.WhenAll(new[]
-                    {
-                        Server.SendRequest(314159, buff),
-                        Server.SendRequest(314160, buff2)
-                    });
-                    await pingCount.ChangeValueAsync((v) => v - 1); // decrement the value
-                    var backlog = pingCount.Value;
-                    var finishedAt = DateTime.Now;
-                    var elapsed = finishedAt - scheduledAt;
-                    Console.WriteLine($"Pinged after {elapsed.TotalMilliseconds:n2}ms! concurrent ping backlog {backlog}");
-                    await Console.Out.FlushAsync();
-                }, cts.Token);
+                
+                SchedulePing(pingCount, rnd, scheduledAt, cts);
                 await Console.Out.FlushAsync();
             }
             if (cts.IsCancellationRequested) throw new OperationCanceledException();

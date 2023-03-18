@@ -1,14 +1,20 @@
 ﻿using Jcd.Tasks.Examples.BlockingTaskProcessor;
-
+int lifespanInSeconds=30, 
+    pingFrequencyInMs=1000, 
+    maxTasks=5, 
+    taskSchedulingFrequencyInMs=10, 
+    minLatencyInMs=10,
+    maxAdditionalLatencyInMs = 15;
+bool logRequestScheduling = false;
 // the baseline abuse of a server proxy and locks meant to eliminate concurrent calls.
 // it does that, but the behavior is ... undesirable.
-await SimulateDeadlocks.Run(30);
+await SimulateDeadlocks.Run(lifespanInSeconds,pingFrequencyInMs,maxTasks,taskSchedulingFrequencyInMs,minLatencyInMs,maxAdditionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
 
 // a subpar attempt at solving the problem which actually made pings worse.
-await SingleBlockingTaskProcessor.Run(30);
+await SingleBlockingTaskProcessor.Run(lifespanInSeconds,pingFrequencyInMs,maxTasks,taskSchedulingFrequencyInMs,minLatencyInMs,maxAdditionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
@@ -17,7 +23,7 @@ Console.WriteLine();
 // priority requests. You must intentionally limit the frequency and concurrency of high priority calls,
 // otherwise you're back at square one. If this isn't sufficient then having a communications throttled
 // server isn't going to work for your application. See if you can change *that.*
-await SingleBlockingTaskProcessor2.Run(30);
+await SingleBlockingTaskProcessor2.Run(lifespanInSeconds,pingFrequencyInMs,maxTasks,taskSchedulingFrequencyInMs,minLatencyInMs,maxAdditionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();

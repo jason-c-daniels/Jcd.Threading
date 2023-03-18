@@ -7,8 +7,8 @@ public class FakeServerProxy
     private readonly AsyncLock _lock = new ();
     public readonly SynchronizedValue<int> BacklogCounter = new();
     private readonly Random _random = new ();
-    private readonly int _minLatencyInMs;
-    private readonly int _maxAdditionalLatencyInMs;
+    private int _minLatencyInMs;
+    private int _maxAdditionalLatencyInMs;
 
     /// <summary>
     /// Creates a <see cref="FakeServerProxy"/> with configurable random latency injection. Set both to 0 if you want to simulate near-zero latency.
@@ -22,6 +22,12 @@ public class FakeServerProxy
         _log = log;
     }
 
+    public void SetLatency(int minLatencyInMs, int maxAdditionalLatencyInMs)
+    {
+        _minLatencyInMs = minLatencyInMs;
+        _maxAdditionalLatencyInMs = maxAdditionalLatencyInMs;
+    }
+    
     private readonly bool _log;
     public async Task SendRequest(int bufferType, byte[] buffer)
     {
