@@ -4,15 +4,329 @@
         <name>Jcd.Tasks</name>
     </assembly>
     <members>
-        <member name="T:Jcd.Tasks.Class1">
+        <member name="T:Jcd.Tasks.AsyncSerialCommandProcessor">
             <summary>
-            TODO: Add some documentation as you write your code.
+            In a background task, this class executes arbitrary tasks in the order they were enqueued,
+            waiting for each to complete before executing the next.
             </summary>
+            <remarks>
+            Ensure all shared resources for the enqueued actions/functions have their access synchronized
+            appropriately.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.#ctor(System.Boolean)">
+            <summary>
+            Constructs a <see cref="T:Jcd.Tasks.AsyncSerialCommandProcessor"/>
+            </summary>
+            <param name="autoStart"></param>
+        </member>
+        <member name="P:Jcd.Tasks.AsyncSerialCommandProcessor.QueueLength">
+            <summary>
+            The number of pending commands.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Enqueue(System.Action)">
+            <summary>
+            Enqueues a command for sequential execution. This is a "fire and forget" method.
+            Control is returned to the caller immediately.
+            </summary>
+            <param name="command">The command to execute.</param>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Enqueue(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Enqueues an async command for sequential execution. This is a "fire and forget" method.
+            Control is returned to the caller immediately.
+            </summary>
+            <param name="command">The asynchronous command to execute.</param>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.EnqueueAsync(System.Action)">
+            <summary>
+            Enqueues a command for sequential execution. Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/>
+            waits for the command to finish executing.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> that will execute the enqueued action.</returns>
+            <remarks>
+            Awaiting this task before <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called will cause the calling
+            thread of execution to block until <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called. Ensure that
+            either <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> has already been called, or that your program has
+            a mechanism in another thread to call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/>. You really need to
+            call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> for awaiting the result to work.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.EnqueueAsync(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously enqueues an async command for sequential execution. Awaiting the
+            returned <see cref="T:System.Threading.Tasks.Task"/> waits for the command to finish executing.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
+            <remarks>
+            Awaiting this task before <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called will cause the calling
+            thread of execution to block until <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called. Ensure that
+            either <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> has already been called, or that your program has
+            a mechanism in another thread to call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/>. You really need to
+            call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> for awaiting the result to work.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Enqueue``1(System.Func{``0})">
+            <summary>
+            Enqueues a command for sequential execution. This is a "fire and forget" method.
+            The command result will not be available and control is returned to the caller immediately.
+            </summary>
+            <param name="command">The command to execute.</param>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Enqueue``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Enqueues an async command for sequential execution. This is a "fire and forget" method.
+            The function call result will not be available and control is returned to the caller immediately.
+            </summary>
+            <param name="command">The async command to execute.</param>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.EnqueueAsync``1(System.Func{``0})">
+            <summary>
+            Asynchronously enqueues a command for sequential execution. The result of the function
+            execution is available by awaiting the returned <see cref="T:System.Threading.Tasks.Task`1"/>
+            </summary>
+            <param name="command">The command to execute.</param>
+            <typeparam name="TResult">The data type returned by the function</typeparam>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action, once dequeued.</returns>
+            <remarks>
+            Awaiting this task before <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called will cause the calling
+            thread of execution to block until <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called. Ensure that
+            either <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> has already been called, or that your program has
+            a mechanism in another thread to call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/>. You really need to
+            call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> for awaiting the result to work.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.EnqueueAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Asynchronously enqueues an async function for sequential execution. The result of the function execution
+            is available by awaiting the returned <see cref="T:System.Threading.Tasks.Task`1"/>
+            </summary>
+            <param name="asyncFunction">The async function to execute.</param>
+            <typeparam name="TResult">The data type returned by the function</typeparam>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
+            <remarks>
+            Awaiting this task before <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called will cause the calling
+            thread of execution to block until <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> is called. Ensure that
+            either <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> has already been called, or that your program has
+            a mechanism in another thread to call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/>. You really need to
+            call <see cref="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing"/> for awaiting the result to work.
+            </remarks>
+        </member>
+        <member name="P:Jcd.Tasks.AsyncSerialCommandProcessor.HasTasks">
+            <summary>
+            Gets a flag indicating if there are any pending tasks.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Cancel">
+            <summary>
+            Signals the task executor to halt all processing immediately. This also cancels all tasks created
+            by this task executor instance. This is mostly intended to be called during application shutdown.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.AsyncSerialCommandProcessor.IsStarted">
+            <summary>
+            Gets a flag indicating if the command processing has started. (it might be paused though).
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.AsyncSerialCommandProcessor.IsPaused">
+            <summary>
+            Gets a flag indicating if the command processing is currently paused.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Pause">
+            <summary>
+            Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started when this is
+            called it will still get started.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Resume">
+            <summary>
+            Resumes command processing.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.PauseAsync">
+            <summary>
+            Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started
+            when this is called it will still get started.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.ResumeAsync">
+            <summary>
+            Resumes command processing.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.StartProcessing">
+            <summary>
+            Starts the processing of queued commands.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.AsyncSerialCommandProcessor.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.ColdTask">
+            <summary>
+            A Task factory that wraps the constructor with a tiny bit of logic, simplifying the process
+            of directly creating unstarted <see cref="T:System.Threading.Tasks.Task"/>s.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.From(System.Action,System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+            Creates an unstarted <see cref="T:System.Threading.Tasks.Task"/> from an action. Once started the task will execute the action. 
+            </summary>
+            <param name="action"></param>
+            <param name="cancellationToken">The optional cancellation token for the task. The default is null/not provided.</param>
+            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.None"/></param>
+            <returns>The created task.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.From``1(System.Func{``0},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+            Creates an unstarted <see cref="T:System.Threading.Tasks.Task`1"/> from a function. Once started the task will execute the function.
+            </summary>
+            <param name="function">The function to execute.</param>
+            <param name="cancellationToken">The optional cancellation token for the task. The default is null/not provided.</param>
+            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
+            <returns>The created task.</returns>
+            <typeparam name="TResult">The type of the data returned.</typeparam>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.FromAsync(System.Func{System.Threading.Tasks.Task},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+            Creates an unstarted <see cref="T:System.Threading.Tasks.Task"/> from an async action. Once started the task will execute the action. 
+            </summary>
+            <param name="action"></param>
+            <param name="cancellationToken">The optional cancellation token for the task. The default is null/not provided.</param>
+            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
+            <returns>The created task.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.FromAsync``1(System.Func{System.Threading.Tasks.Task{``0}},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
+            <summary>
+            Creates an unstarted <see cref="T:System.Threading.Tasks.Task`1"/> from an asynchronous function. Once started the task will execute the function.
+            </summary>
+            <param name="function"></param>
+            <param name="cancellationToken">The optional cancellation token for the task. The default is null/not provided.</param>
+            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
+            <returns>The created task.</returns>
+            <typeparam name="TResult">The type of the data returned.</typeparam>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.IsCold(System.Threading.Tasks.Task)">
+            <summary>
+            Returns true if the task status indicates execution hasn't begun. (Status==Created)
+            </summary>
+            <param name="task">the task to inspect</param>
+            <returns>True if unstarted. False otherwise.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.StartThenWait(System.Threading.Tasks.Task,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Starts an unstarted (cold) task and waits for its completion. This does nothing if the task was already started.
+            </summary>
+            <param name="task">the task.</param>
+            <param name="cancellationToken">The optional <see cref="T:System.Threading.CancellationToken"/> to use.</param>
+            <remarks>WARNING: This method potentially calls Task.Wait(). Be sure you understand the risks before using it.</remarks>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.StartThenWaitForResult``1(System.Threading.Tasks.Task{``0},System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Starts an unstarted (cold) task and waits for its completion. This does nothing if the task was already started.
+            </summary>
+            <param name="task">the task.</param>
+            <param name="cancellationToken">The optional <see cref="T:System.Threading.CancellationToken"/> to use.</param>
+            <remarks>WARNING: This method potentially calls Task.Wait(). Be sure you understand the risks before using it.</remarks>
+        </member>
+        <member name="M:Jcd.Tasks.ColdTask.StartThenWaitAsync(System.Threading.Tasks.Task,System.Nullable{System.Threading.CancellationToken})">
+            <summary>
+            Starts an unstarted (cold) task and waits for its completion. It does nothing if the task was already started.
+            </summary>
+            <param name="task">the task.</param>
+            <param name="cancellationToken">The optional <see cref="T:System.Threading.CancellationToken"/> to use.</param>
+            <remarks>WARNING: This method potentially calls Task.Wait(). Be sure you understand the risks before using it.</remarks>
         </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
-            Provides TODO: A description of what this namespace provides.
+            Provides classes and extension methods to assist with the creation, execution, and
+            management of <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
+        </member>
+        <member name="T:Jcd.Tasks.SynchronizedValue`1">
+            <summary>
+            Provides a simple async-safe method of setting, getting, and altering values intended to be shared among tasks and threads.
+            </summary>
+            <remarks>
+            <para>
+            While this provides a method of easily ensuring any one shared value is appropriately
+            locked during setting or getting, you still need to thoroughly understand your
+            use case. For example, having two <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instances accessed
+            by two different threads, in rapid succession, in different orders can cause
+            potentially unexpected results.
+            </para>
+            <para>
+            In cases where the pair/tuple must be consistent at all times across all threads,
+            consider creating a struct containing the necessary fields/properties and wrapping that
+            in a SynchronizedValue instead of each individual field/property.
+            </para>
+            <para>
+            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be called.
+            Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate time.
+            </para>
+            </remarks>
+            <typeparam name="T">The data type to synchronize access to.</typeparam>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.#ctor(`0)">
+            <summary>
+            Constructs an <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instance.
+            </summary>
+            <param name="initialValue">The starting value.</param>
+        </member>
+        <member name="P:Jcd.Tasks.SynchronizedValue`1.Value">
+            <summary>
+            The synchronized value.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValueAsync">
+            <summary>
+            Gets the value in an async friendly manner.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValueAsync(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValue">
+            <summary>
+            Retrieves the current value. If another thread edits the value, moment later a subsequent
+            call will yield a different result. 
+            </summary>
+            <returns>The current value as of establishing the lock.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValue(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>The provided value.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})">
+            <summary>
+            Calls the provided function, passing in the current value, and assigns the result of the
+            function call, to the current value.
+            </summary>
+            <param name="func">The function to call.</param>
+            <returns>The result of calling the function.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,`0})">
+            <summary>
+            Calls the provided function, passing in the current value, and assigns the result of the
+            function call, to the current value.
+            </summary>
+            <param name="func">The function to call.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the result of calling the function.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.Dispose">
+            <inheritdoc />
         </member>
     </members>
 </doc>
