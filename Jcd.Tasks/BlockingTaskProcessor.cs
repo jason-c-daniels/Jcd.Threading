@@ -327,7 +327,7 @@ public class BlockingTaskProcessor : IDisposable
                     continue;
                 }
 
-                TryExecuteAndWait(task, cancellationSource);
+                TryRunAndWait(task, cancellationSource);
             }
         }
         finally
@@ -337,7 +337,7 @@ public class BlockingTaskProcessor : IDisposable
         }
     }
 
-    private static void TryExecuteAndWait(Task task, CancellationTokenSource cancellationSource)
+    private static void TryRunAndWait(Task task, CancellationTokenSource cancellationSource)
     {
         if (cancellationSource.IsCancellationRequested)
         {
@@ -347,12 +347,12 @@ public class BlockingTaskProcessor : IDisposable
         try
         {
             task
-                .StartEx()
+                .Run()
                 .Wait(cancellationSource.Token);
         }
         catch (OperationCanceledException)
         {
-            // do nothing. This is expected if lots of tasks are pending and Stop has been called.
+            // do nothing. This is expected if lots of tasks are pending and Cancel has been called.
         }
     }
 

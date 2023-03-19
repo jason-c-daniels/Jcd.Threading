@@ -25,6 +25,7 @@ public static class TaskExtensions
     /// </summary>
     /// <param name="task">The task to try awaiting.</param>
     /// <returns>true if awaited without exception. false otherwise.</returns>
+    /// <remarks>If successfully awaited, this method will block until the task completes.</remarks>
     public static async Task<bool> TryWaitAsync(this Task task)
     {
         try
@@ -57,13 +58,30 @@ public static class TaskExtensions
     }
 
     /// <summary>
-    /// Calls <see cref="TryStart"/> on a task then returns the task, discarding exceptions.
+    /// Calls <see cref="TryRun"/> on a task then returns the task, discarding exceptions.
     /// </summary>
     /// <param name="task">the task to start</param>
     /// <returns>the original task</returns>
-    public static Task StartEx(this Task task)
+    public static Task Run(this Task task)
     {
-        task.TryStart(out _);
+        task.TryRun(out _);
+        return task;
+    }
+
+    /// <summary>
+    /// Calls <see cref="TryRun"/> on a task then returns the task, discarding exceptions.
+    /// </summary>
+    /// <param name="task">the task to start</param>
+    /// <typeparam name="TResult">The type of data returned from the task.</typeparam>
+    /// <returns>the original task</returns>
+    /// <remarks>
+    /// While this returns the original task, it doesn't guarantee it's awaitable. Only call
+    /// this method if you've got 100% control over the lifecycle of the task. Otherwise call
+    /// <see cref="TryRun"/> instead and inspect the results before calling await.
+    /// </remarks>
+    public static Task<TResult> Run<TResult>(this Task<TResult> task)
+    {
+        task.TryRun(out _);
         return task;
     }
 
@@ -73,23 +91,23 @@ public static class TaskExtensions
     /// <param name="task">The </param>
     /// <param name="exception"></param>
     /// <returns>
-    /// <see cref="TryStartResult.SuccessfullyCalled"/> when the Start was called and no exception occurred.
-    /// <see cref="TryStartResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
-    /// <see cref="TryStartResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
+    /// <see cref="TryRunResult.SuccessfullyCalled"/> when the Start was called and no exception occurred.
+    /// <see cref="TryRunResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
+    /// <see cref="TryRunResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
     /// </returns>
-    public static TryStartResult TryStart(this Task task, out Exception exception)
+    public static TryRunResult TryRun(this Task task, out Exception exception)
     {
         exception = null;
-        if (!task.IsUnstarted()) return TryStartResult.AlreadyStarted;
+        if (!task.IsUnstarted()) return TryRunResult.AlreadyStarted;
         try
         {
             task.Start();
-            return TryStartResult.SuccessfullyCalled;
+            return TryRunResult.SuccessfullyCalled;
         }
         catch(Exception ex)
         {
             exception = ex;
-            return TryStartResult.ErrorDuringStart;
+            return TryRunResult.ErrorDuringStart;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿namespace Jcd.Tasks;
 
 /// <summary>
-/// The possible results of calling <see cref="TaskExtensions.TryStart"/>
+/// The possible results of calling <see cref="TaskExtensions.TryRun"/>
 /// </summary>
-public enum TryStartResult
+public enum TryRunResult
 {
     /// <summary>
     /// Start was called and no exception resulted.

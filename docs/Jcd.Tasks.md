@@ -12,4 +12,4 @@ management of [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dot
 
 | Enums | |
 | :--- | :--- |
-| [TryStartResult](Jcd.Tasks.TryStartResult.md 'Jcd.Tasks.TryStartResult') | The possible results of calling [TryStart(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryStart(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryStart(this System.Threading.Tasks.Task, System.Exception)') |
+| [TryRunResult](Jcd.Tasks.TryRunResult.md 'Jcd.Tasks.TryRunResult') | The possible results of calling [TryRun(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryRun(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryRun(this System.Threading.Tasks.Task, System.Exception)') |

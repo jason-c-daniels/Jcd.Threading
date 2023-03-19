@@ -312,6 +312,7 @@
             </summary>
             <param name="task">The task to try awaiting.</param>
             <returns>true if awaited without exception. false otherwise.</returns>
+            <remarks>If successfully awaited, this method will block until the task completes.</remarks>
         </member>
         <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task)">
             <summary>
@@ -320,41 +321,54 @@
             <param name="task">The task to try awaiting.</param>
             <returns>true if awaited without exception. false otherwise.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.StartEx(System.Threading.Tasks.Task)">
+        <member name="M:Jcd.Tasks.TaskExtensions.Run(System.Threading.Tasks.Task)">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/> on a task then returns the task, discarding exceptions.
+            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryRun(System.Threading.Tasks.Task,System.Exception@)"/> on a task then returns the task, discarding exceptions.
             </summary>
             <param name="task">the task to start</param>
             <returns>the original task</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)">
+        <member name="M:Jcd.Tasks.TaskExtensions.Run``1(System.Threading.Tasks.Task{``0})">
+            <summary>
+            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryRun(System.Threading.Tasks.Task,System.Exception@)"/> on a task then returns the task, discarding exceptions.
+            </summary>
+            <param name="task">the task to start</param>
+            <typeparam name="TResult">The type of data returned from the task.</typeparam>
+            <returns>the original task</returns>
+            <remarks>
+            While this returns the original task, it doesn't guarantee it's awaitable. Only call
+            this method if you've got 100% control over the lifecycle of the task. Otherwise call
+            <see cref="M:Jcd.Tasks.TaskExtensions.TryRun(System.Threading.Tasks.Task,System.Exception@)"/> instead and inspect the results before calling await.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.TaskExtensions.TryRun(System.Threading.Tasks.Task,System.Exception@)">
             <summary>
             Tries to successfully call start. 
             </summary>
             <param name="task">The </param>
             <param name="exception"></param>
             <returns>
-            <see cref="F:Jcd.Tasks.TryStartResult.SuccessfullyCalled"/> when the Start was called and no exception occurred.
-            <see cref="F:Jcd.Tasks.TryStartResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
-            <see cref="F:Jcd.Tasks.TryStartResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
+            <see cref="F:Jcd.Tasks.TryRunResult.SuccessfullyCalled"/> when the Start was called and no exception occurred.
+            <see cref="F:Jcd.Tasks.TryRunResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
+            <see cref="F:Jcd.Tasks.TryRunResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
             </returns>
         </member>
-        <member name="T:Jcd.Tasks.TryStartResult">
+        <member name="T:Jcd.Tasks.TryRunResult">
             <summary>
-            The possible results of calling <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/>
+            The possible results of calling <see cref="M:Jcd.Tasks.TaskExtensions.TryRun(System.Threading.Tasks.Task,System.Exception@)"/>
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.TryStartResult.SuccessfullyCalled">
+        <member name="F:Jcd.Tasks.TryRunResult.SuccessfullyCalled">
             <summary>
             Start was called and no exception resulted.
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.TryStartResult.AlreadyStarted">
+        <member name="F:Jcd.Tasks.TryRunResult.AlreadyStarted">
             <summary>
             The task was already in a started state. Start was not called.
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.TryStartResult.ErrorDuringStart">
+        <member name="F:Jcd.Tasks.TryRunResult.ErrorDuringStart">
             <summary>
             An exception occurred during the call to start. 
             </summary>
