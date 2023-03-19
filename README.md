@@ -5,20 +5,13 @@ Read the API docs carefully.
 
 ## Main Classes
 * There are three main classes provided. 
-  * `ColdTask` a static factory class for creating unstarted tasks.
+  * `UnstartedTask` a static factory class for creating unstarted tasks.
   * `SynchronizedValue` a more flexible and CLS compliant re-imagination of `Interlocked`.
   * `AsyncSerialCommandProcessor` a Task-consumer in a Producer-Consumer model that starts tasks one at a time and waits 
     for their completion before executing the next task.
 
 ## Examples
-
-```csharp
-// Create an unstarted task from an action.
-var actionTask=Cold
-
-
-
-```
+See [EXAMPLES.md](./EXAMPLES.md) for detailed examples. 
 
 ## Badges
 [![GitHub](https://img.shields.io/github/license/jason-c-daniels/Jcd.Tasks)](https://github.com/jason-c-daniels/Jcd.Tasks/blob/main/LICENSE)
