@@ -1,20 +1,33 @@
-﻿using Jcd.Tasks.Examples.BlockingTaskProcessor;
-int lifespanInSeconds=30, 
-    pingFrequencyInMs=1000, 
-    maxTasks=5, 
-    taskSchedulingFrequencyInMs=10, 
-    minLatencyInMs=10,
-    maxAdditionalLatencyInMs = 15;
-bool logRequestScheduling = false;
-// the baseline abuse of a server proxy and locks meant to eliminate concurrent calls.
-// it does that, but the behavior is ... undesirable.
-await SimulateDeadlocks.Run(lifespanInSeconds,pingFrequencyInMs,maxTasks,taskSchedulingFrequencyInMs,minLatencyInMs,maxAdditionalLatencyInMs,logRequestScheduling);
+﻿using System.Diagnostics;
+using Jcd.Tasks.Examples.BlockingTaskProcessor;
+// system/test parameters
+int runTimeInSeconds = 60,
+    pingFrequencyInMs = 1000,
+    tasksScheduledAtTheSameTime = 12, // the number of calls to schedule each time calls are scheduled.
+    taskSchedulingFrequencyInMs = 60,
+    minServerLatencyInMs = 10,
+    additionalLatencyInMs = 15;
+//double cpuLoadPercentage = 30; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
+bool logRequestScheduling = false; // set to true for detailed logging. Things will get noisy.
+
+var pretendUICts = new CancellationTokenSource();
+//var pretendUITask = LoadAllCores(cpuLoadPercentage);
+
+// The baseline use of AsyncLocks meant to eliminate concurrent calls to a limited capacity server.
+// It certainly limits the calls to one at a time. However, it doesn't perform well under stress.
+await AsyncLockOnly.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+Console.WriteLine($"{AsyncLockOnly.PingCount.Value} scheduled pings remain. Waiting for completion.");
+while (AsyncLockOnly.PingCount.Value > 0)
+{
+    await Task.Delay(100*AsyncLockOnly.PingCount.Value/10);
+}
+
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
 
 // a subpar attempt at solving the problem which actually made pings worse.
-await SingleBlockingTaskProcessor.Run(lifespanInSeconds,pingFrequencyInMs,maxTasks,taskSchedulingFrequencyInMs,minLatencyInMs,maxAdditionalLatencyInMs,logRequestScheduling);
+await SingleBlockingTaskProcessor.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
@@ -23,10 +36,42 @@ Console.WriteLine();
 // priority requests. You must intentionally limit the frequency and concurrency of high priority calls,
 // otherwise you're back at square one. If this isn't sufficient then having a communications throttled
 // server isn't going to work for your application. See if you can change *that.*
-await SingleBlockingTaskProcessor2.Run(lifespanInSeconds,pingFrequencyInMs,maxTasks,taskSchedulingFrequencyInMs,minLatencyInMs,maxAdditionalLatencyInMs,logRequestScheduling);
+await SingleBlockingTaskProcessor2.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
+
+pretendUICts.Cancel();
+
+Console.WriteLine("Done executing.");
+
+
+async Task LoadAllCores(double percentage)
+{
+    for (var i = 0; i < Environment.ProcessorCount;i++)
+    {
+        Task.Run(async () => await ConsumeCpu(percentage));
+    }
+}
+
+async Task ConsumeCpu(double percentage)
+{
+    if (percentage is < 0 or > 100)
+        throw new ArgumentNullException( nameof(percentage));
+    var watch = new Stopwatch();
+    watch.Start();
+    while (pretendUICts is { IsCancellationRequested: false })
+    {
+        // Make the loop go on for "percentage" milliseconds then sleep the 
+        // remaining percentage milliseconds. So 40% utilization means work 40ms and sleep 60ms
+        if (watch.ElapsedMilliseconds <= percentage) continue;
+        
+        var delay = TimeSpan.FromMilliseconds(100 - percentage);
+        await Task.Delay(delay);
+        watch.Reset();
+        watch.Start();
+    }
+}
 
 // Q: Can I use two queues/task processors, one for high, but not critical priority, one for normal
 // priority, and doing critical communications outside of queued communications?
@@ -74,4 +119,3 @@ Console.WriteLine();
 // To be clear: **I** would rather rewrite the guts of a program to make it easier to maintain and to
 // establish correct execution priority with implicit or explicit queues, such as with BlockingTaskProcessor
 // than implement something seemingly fragile and easily misunderstood.
-Console.WriteLine("Done executing.");

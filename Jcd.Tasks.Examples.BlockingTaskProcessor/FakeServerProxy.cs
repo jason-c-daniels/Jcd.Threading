@@ -27,6 +27,10 @@ public class FakeServerProxy
         _minLatencyInMs = minLatencyInMs;
         _maxAdditionalLatencyInMs = maxAdditionalLatencyInMs;
     }
+
+    private readonly CancellationTokenSource _cts = new();
+
+    public void CancelAllRequests() => _cts.Cancel();
     
     private readonly bool _log;
     public async Task SendRequest(int bufferType, byte[] buffer)
@@ -38,7 +42,7 @@ public class FakeServerProxy
         // it works for the server side and Nito.AsyncEx is a great choice for this, in fact.
         // But as you'll see when running it, given the rate of requests, we've only moved the
         // deadlock/excessive load to the client side and not eliminated it.
-        using (await _lock.LockAsync())
+        using (await _lock.LockAsync(_cts.Token))
         {
             var backlog=await BacklogCounter.ChangeValueAsync(x => x-1);
             if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} lock acquired with {backlog} other tasks waiting for this call to complete.");
@@ -54,8 +58,9 @@ public class FakeServerProxy
     
     private async Task SendBufferAndWaitForAck(byte[] buffer)
     {
-        // randomly generate the latency for the ack. By default this is 10 to 25 ms.
+        // randomly generate the simulated latency for the ack/response.
         var delay = _random.Next(_maxAdditionalLatencyInMs) + _minLatencyInMs;
-        await Task.Delay(delay); // simulated communications/processing delay.
+        await Task.Delay(delay);
+        // simulating the proper return of a response is unnecessary and not performed.
     }
 }

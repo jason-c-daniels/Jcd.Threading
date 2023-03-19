@@ -1,28 +1,33 @@
-﻿namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
+﻿using Nito.AsyncEx;
+
+namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
 
 public static class SingleBlockingTaskProcessor2
 {
+    private static readonly Type MyType = typeof(SingleBlockingTaskProcessor2);
+
     /// <summary>
-    /// Runs the same simulation as in <see cref="SimulateDeadlocks"/> using a single <see cref="BlockingTaskProcessor"/>
-    /// to queue up only the non-ping calls, executing pings as they come in.
+    /// Runs the same simulation as in <see cref="AsyncLockOnly"/> using a single <see cref="BlockingTaskProcessor"/>
+    /// to queue up only the non-ping calls. <see cref="BlockingTaskProcessor"/> executes them sequentially blocking until
+    /// completion. The pings are executed as soon as the <see cref="AsyncLock"/> is released.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Another possible solution a developer might consider is queuing only non-ping calls.
-    /// This has the advantage of making pings happen faster.
+    /// For systems with servers that must handle only one call at a time, and for which the client (this app)
+    /// needs certain information in an expedient manner, this is one approach that will work.
     ///</para>
     /// </remarks>
     public static async Task Run(int lifespanInSeconds=60, int pingFrequencyInMs=1000, int maxTasks=50, int taskSchedulingFrequencyInMs=100, int minLatencyInMs=10,int maxAdditionalLatencyInMs=15,bool logRequestScheduling = true)
     {
         Server.SetLatency(minLatencyInMs,maxAdditionalLatencyInMs);
         Console.WriteLine("-----------------------------------------------");
-        Console.WriteLine("One queue. No deadlocking. Pings sent nearly immediately.");
+        Console.WriteLine("One queue. No excessive locking. Pings sent nearly immediately.");
         Console.WriteLine("-----------------------------------------------");
         await Console.Out.FlushAsync();
         
         var makeCallsTask = CreateMakeLotsOfCallsTask(taskSchedulingFrequencyInMs,lifespanInSeconds,maxTasks,logRequestScheduling);
-        var pingTask = CreatePingTask(pingFrequencyInMs,lifespanInSeconds);
+        var pingTask = CreatePingTask(pingFrequencyInMs,lifespanInSeconds,logRequestScheduling);
 
         // wait for the tasks to finish regardless if their completion status.
         await Task.WhenAll(makeCallsTask.TryWaitAsync(),
@@ -31,6 +36,7 @@ public static class SingleBlockingTaskProcessor2
         
         // cancellation token expired. Cancel pending tasks.
         CommandProcessor.Cancel();
+        Server.CancelAllRequests();
     }
 
     private static readonly Tasks.BlockingTaskProcessor CommandProcessor = new();
@@ -61,50 +67,73 @@ public static class SingleBlockingTaskProcessor2
                             rnd.NextBytes(buff);
                             if (cts.IsCancellationRequested) throw new OperationCanceledException();
                             await Server.SendRequest(x, buff);
+                            await Task.Yield();
                         })
                     ));
+                await Task.Yield();
             }
             if (cts.IsCancellationRequested) throw new OperationCanceledException();
         });
     }
-    private static Task CreatePingTask(double scheduleDelayInMs = 1000, double lifeSpanInSeconds = 120)
+    private static Task CreatePingTask(double scheduleDelayInMs = 1000, double lifeSpanInSeconds = 120, bool logRequestScheduling=true)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         var pingCount = new SynchronizedValue<int>(0);
 
-        async Task ExecutePing(SynchronizedValue<int> synchronizedValue, Random rnd, DateTime scheduledAt)
+        async Task ExecutePing(SynchronizedValue<int> pingBacklog, Random rnd, DateTime scheduledAt)
         {
-            Console.WriteLine($"Waiting to ping... concurrent ping backlog {synchronizedValue.Value}");
-            await Console.Out.FlushAsync();
-            var buff = new byte[20];
-            rnd.NextBytes(buff);
-            var buff2 = new byte[20];
-            rnd.NextBytes(buff2);
-            await synchronizedValue.ChangeValueAsync((v) => v + 1); // increment the value
-            // let's read two values from the server but not care about the order they're returned in.
-            // yes our two calls introduce unwanted locking... but some programmers actually do this.
-            if (cts.IsCancellationRequested) throw new OperationCanceledException();
-            await Task.WhenAll(new[]
+            try
             {
-                Server.SendRequest(314159, buff),
-                Server.SendRequest(314160, buff2)
-            });
-            if (cts.IsCancellationRequested) throw new OperationCanceledException();
-            await synchronizedValue.ChangeValueAsync((v) => v - 1); // decrement the value
-            var backlog = synchronizedValue.Value;
-            var finishedAt = DateTime.Now;
-            var elapsed = finishedAt - scheduledAt;
-            Console.WriteLine($"Pinged after {elapsed.TotalMilliseconds:n2}ms! concurrent ping backlog {backlog}");
-            await Console.Out.FlushAsync();
+                if (logRequestScheduling)
+                    Console.WriteLine(
+                        $"{DateTime.Now:O} - {MyType.Name}: Starting to ping... concurrent ping backlog {pingBacklog.Value}");
+                await Console.Out.FlushAsync();
+                var myPosition = await pingBacklog.ChangeValueAsync((v) => v + 1); // increment the value
+                var startedAt = DateTime.Now;
+                var buff = new byte[20];
+                rnd.NextBytes(buff);
+                var buff2 = new byte[20];
+                rnd.NextBytes(buff2);
+                // let's read two values from the server but don't care about the order they're returned in.
+                // yes our two calls introduce unwanted locking... but some programmers actually do this.
+                if (cts.IsCancellationRequested) throw new OperationCanceledException();
+                await Task.WhenAll(new[]
+                {
+                    Server.SendRequest(314159, buff),
+                    Server.SendRequest(314160, buff2)
+                });
+                if (cts.IsCancellationRequested) throw new OperationCanceledException();
+                var finishedAt = DateTime.Now;
+                var sinceStarted = finishedAt - startedAt;
+                var sinceScheduled = finishedAt - scheduledAt;
+                await pingBacklog.ChangeValueAsync((v) => v - 1); // decrement the value
+                var backlog = pingBacklog.Value;
+                Console.WriteLine(
+                    $"{DateTime.Now:O} - {MyType.Name}: Ping completed {sinceScheduled.TotalMilliseconds:n2}ms after scheduling, and {sinceStarted.TotalMilliseconds:n2}ms after starting. Concurrent ping backlog {backlog}");
+                await Console.Out.FlushAsync();
+                await Task.Yield();
+            }
+            catch (OperationCanceledException)
+            {
+                // Decrement the count so its accurate.
+                await pingBacklog.ChangeValueAsync((v) => v - 1); // decrement the value
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{MyType.Name}: Error during {nameof(ExecutePing)} : {ex.Message}");
+                await pingBacklog.ChangeValueAsync((v) => v - 1); // decrement the value
+            }
         }
 
         void SchedulePing(SynchronizedValue<int> synchronizedValue, Random rnd, DateTime scheduledAt)
         {
+            if (logRequestScheduling) Console.WriteLine($"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value} and Command Queue Length of {CommandProcessor.QueueLength}");
+            if (logRequestScheduling) Console.Out.Flush();
             // Schedule a ping. We won't await the result here as that'll
             // block the ping scheduler. This is to simulate a ping whose
             // returned data is received and handled in another thread.
             // this is just the scheduler.
-            Task.Run(async () => { await ExecutePing(synchronizedValue, rnd, scheduledAt); });
+            Task.Run(async () => { await ExecutePing(synchronizedValue, rnd, scheduledAt); }, cts.Token);
         }
 
         return Task.Run(async () =>
@@ -115,13 +144,10 @@ public static class SingleBlockingTaskProcessor2
 
             while (!cts.IsCancellationRequested)
             {
-                Console.WriteLine(
-                    $"Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value} and Command Queue Length of {CommandProcessor.QueueLength}");
-                await Console.Out.FlushAsync();
                 await Task.Delay(TimeSpan.FromMilliseconds(scheduleDelayInMs),cts.Token);
                 if (cts.IsCancellationRequested) throw new OperationCanceledException();
                 SchedulePing(pingCount, rnd, DateTime.Now);
-                await Console.Out.FlushAsync();
+                await Task.Yield();
             }
             if (cts.IsCancellationRequested) throw new OperationCanceledException();
         });
