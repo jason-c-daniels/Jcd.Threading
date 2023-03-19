@@ -1,11 +1,15 @@
 ﻿using System.Diagnostics;
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace Jcd.Tasks.Examples;
 
 /// <summary>
 /// Demonstrates some of the uses of <see cref="Tasks.BlockingTaskProcessor"/>
 /// </summary>
-public class BlockingTaskProcessorExample
+public static class BlockingTaskProcessorExample
 {
     private static readonly BlockingTaskProcessor TaskProcessor = new(false); // don't start right away.
 
@@ -64,6 +68,7 @@ public class BlockingTaskProcessorExample
         // wait two seconds to give already executing tasks time to finish their work.
         // ideally tasks will directly check the status of the cancellation token in order
         // to exit expeditiously.
+        // ReSharper disable once MethodSupportsCancellation
         await Task.Delay(2000);
         return 0;
     }

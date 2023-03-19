@@ -1,4 +1,11 @@
-﻿namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
+﻿// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ObjectAllocation
+
+using Nito.AsyncEx;
+// ReSharper disable MemberCanBePrivate.Global
+
+namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
 /// <summary>
 /// Runs the same simulation as in <see cref="AsyncLockOnly"/> using a single <see cref="BlockingTaskProcessor"/>

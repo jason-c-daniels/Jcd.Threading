@@ -2,7 +2,7 @@
 
 ## BlockingTaskProcessor Class
 
-In a background task, this class executes arbitrary tasks in the order they were enqueued,  
+In a background task, this class starts enqueued tasks in the order they were enqueued,  
 waiting for each to complete before executing the next.
 
 ```csharp
@@ -40,10 +40,10 @@ appropriately.
 | [EnqueueAsyncFuncAsync&lt;TResult&gt;(Func&lt;Task&lt;TResult&gt;&gt;)](Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncFuncAsync_TResult_(System.Func_System.Threading.Tasks.Task_TResult__).md 'Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncFuncAsync<TResult>(System.Func<System.Threading.Tasks.Task<TResult>>)') | Asynchronously enqueues an async function for sequential execution. The result of the function execution<br/>is available by awaiting the returned [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1') |
 | [EnqueueFunc&lt;TResult&gt;(Func&lt;TResult&gt;)](Jcd.Tasks.BlockingTaskProcessor.EnqueueFunc_TResult_(System.Func_TResult_).md 'Jcd.Tasks.BlockingTaskProcessor.EnqueueFunc<TResult>(System.Func<TResult>)') | Enqueues a command for sequential execution. This is a "fire and forget" method.<br/>The command result will not be available and control is returned to the caller immediately. |
 | [EnqueueFuncAsync&lt;TResult&gt;(Func&lt;TResult&gt;)](Jcd.Tasks.BlockingTaskProcessor.EnqueueFuncAsync_TResult_(System.Func_TResult_).md 'Jcd.Tasks.BlockingTaskProcessor.EnqueueFuncAsync<TResult>(System.Func<TResult>)') | Asynchronously enqueues a command for sequential execution. The result of the function<br/>execution is available by awaiting the returned [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1') |
-| [EnqueueTask(Task)](Jcd.Tasks.BlockingTaskProcessor.EnqueueTask(System.Threading.Tasks.Task).md 'Jcd.Tasks.BlockingTaskProcessor.EnqueueTask(System.Threading.Tasks.Task)') | Enqueues a cold task for later execution. If the passed in task is not cold, it's not enqueued. |
-| [EnqueueTask&lt;T&gt;(Task&lt;T&gt;)](Jcd.Tasks.BlockingTaskProcessor.EnqueueTask_T_(System.Threading.Tasks.Task_T_).md 'Jcd.Tasks.BlockingTaskProcessor.EnqueueTask<T>(System.Threading.Tasks.Task<T>)') | Enqueues a cold task for later execution. If the passed in task is not cold, it's not enqueued. |
 | [Pause()](Jcd.Tasks.BlockingTaskProcessor.Pause().md 'Jcd.Tasks.BlockingTaskProcessor.Pause()') | Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started when this is<br/>called it will still get started. |
 | [PauseAsync()](Jcd.Tasks.BlockingTaskProcessor.PauseAsync().md 'Jcd.Tasks.BlockingTaskProcessor.PauseAsync()') | Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started<br/>when this is called it will still get started. |
 | [Resume()](Jcd.Tasks.BlockingTaskProcessor.Resume().md 'Jcd.Tasks.BlockingTaskProcessor.Resume()') | Resumes command processing. |
 | [ResumeAsync()](Jcd.Tasks.BlockingTaskProcessor.ResumeAsync().md 'Jcd.Tasks.BlockingTaskProcessor.ResumeAsync()') | Resumes command processing. |
 | [StartProcessing()](Jcd.Tasks.BlockingTaskProcessor.StartProcessing().md 'Jcd.Tasks.BlockingTaskProcessor.StartProcessing()') | Starts the processing of queued commands. |
+| [TryEnqueueTask(Task, bool)](Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task,bool).md 'Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task, bool)') | Tries to enqueues a task for later execution. If the passed in task is already started, it's not enqueued. |
+| [TryEnqueueTask&lt;T&gt;(Task&lt;T&gt;, bool)](Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask_T_(System.Threading.Tasks.Task_T_,bool).md 'Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask<T>(System.Threading.Tasks.Task<T>, bool)') | Tries to enqueues a task for later execution. If the passed in task is not unstarted, it's not enqueued. |

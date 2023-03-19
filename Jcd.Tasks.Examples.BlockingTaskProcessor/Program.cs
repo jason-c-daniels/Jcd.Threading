@@ -1,26 +1,36 @@
 ﻿using System.Diagnostics;
 using Jcd.Tasks.Examples.BlockingTaskProcessor;
 // system/test parameters
-int runTimeInSeconds = 60,
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable UnusedVariable
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable HeapView.DelegateAllocation
+#pragma warning disable CS8321
+#pragma warning disable CS0219
+const int runTimeInSeconds = 60,
     pingFrequencyInMs = 1000,
     tasksScheduledAtTheSameTime = 4, // the number of calls to schedule each time calls are scheduled.
     taskSchedulingFrequencyInMs = 20,
     minServerLatencyInMs = 10,
     additionalLatencyInMs = 15;
-double cpuLoadPercentage = 1; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
-bool logRequestScheduling = false; // set to true for detailed logging. Things will get noisy.
+const double cpuLoadPercentage = 1; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
+const bool logRequestScheduling = false; // set to true for detailed logging. Things will get noisy.
 
-var pretendUICts = new CancellationTokenSource();
+var pretendUiCts = new CancellationTokenSource();
 //LoadAllCores(cpuLoadPercentage);
 
 // The baseline use of AsyncLocks meant to eliminate concurrent calls to a limited capacity server.
 // It certainly limits the calls to one at a time. However, it doesn't perform well under stress.
 await AsyncLockOnly.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
-if (AsyncLockOnly.Instance.PingCount.Value > 1) Console.WriteLine($"{AsyncLockOnly.Instance.PingCount.Value} scheduled pings remain. Waiting for completion.");
+if (AsyncLockOnly.Instance.PingCount.Value > 1)
+{
+    Console.WriteLine($"{AsyncLockOnly.Instance.PingCount.Value} scheduled pings remain. Waiting for completion.");
+}
 while (AsyncLockOnly.Instance.PingCount.Value > 0)
 {
     await Task.Delay(100*AsyncLockOnly.Instance.PingCount.Value/10);
 }
+
 
 Console.WriteLine();
 Console.WriteLine();
@@ -41,7 +51,7 @@ Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
 
-pretendUICts.Cancel();
+pretendUiCts.Cancel();
 
 Console.WriteLine("Done executing.");
 
@@ -59,7 +69,7 @@ async Task ConsumeCpu(double percentage)
         throw new ArgumentNullException( nameof(percentage));
     var watch = new Stopwatch();
     watch.Start();
-    while (pretendUICts is { IsCancellationRequested: false })
+    while (pretendUiCts is { IsCancellationRequested: false })
     {
         // Make the loop go on for "percentage" milliseconds then sleep the 
         // remaining percentage milliseconds. So 40% utilization means work 40ms and sleep 60ms

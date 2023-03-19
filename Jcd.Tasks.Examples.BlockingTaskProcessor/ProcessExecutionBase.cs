@@ -1,8 +1,15 @@
-﻿using Nito.AsyncEx;
+﻿using System.Diagnostics.CodeAnalysis;
 using Nito.AsyncEx;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable VirtualMemberNeverOverridden.Global
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable MemberCanBeMadeStatic.Local
 
 namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
+[SuppressMessage("Performance", "CA1822:Mark members as static")]
 public abstract class ProcessExecutionBase<T>
 where T : ProcessExecutionBase<T>, new()
 {
@@ -64,7 +71,7 @@ where T : ProcessExecutionBase<T>, new()
             {
                 await WaitToScheduleLotsOfCalls(scheduleDelayInMs, numberOfMakeRequestTasks, logSchedulingRequests, cts);
                 ScheduleLotsOfCalls(numberOfMakeRequestTasks, rnd, cts);
-                await Task.Yield(); // be sortta CPU friendly.
+                await Task.Yield(); // be sort of CPU friendly.
             }
             if (cts.IsCancellationRequested) throw new OperationCanceledException();
         }, cts.Token);
@@ -87,8 +94,7 @@ where T : ProcessExecutionBase<T>, new()
         // deciding they need to make a bunch of calls.
         for (var i = 0; i < numberOfMakeRequestTasks; i++)
         {
-            var x = i;// prevent capture of "i" so that we get the wanted behavior.
-            ScheduleASingleCall(rnd, cts, x);
+            ScheduleASingleCall(rnd, cts, i);
         }
     }
     
@@ -120,15 +126,15 @@ where T : ProcessExecutionBase<T>, new()
         try
         {
             LogPingScheduled(logRequestScheduling, pingBacklog);
-            await pingBacklog.ChangeValueAsync((v) => v + 1); // increment the value
+            await pingBacklog.ChangeValueAsync(v => v + 1); // increment the value
             var (startedAt,finishedAt) = await SendPingWrapper(rnd,cts);
-            var backlog = await pingBacklog.ChangeValueAsync((v) => v - 1); // decrement the value
+            var backlog = await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
             await ReportPingResults(finishedAt, startedAt, scheduledAt, backlog);
         }
         catch (OperationCanceledException)
         {
             // Decrement the count so its accurate.
-            await pingBacklog.ChangeValueAsync((v) => v - 1); // decrement the value
+            await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
         }
         catch (Exception ex)
         {
@@ -140,7 +146,7 @@ where T : ProcessExecutionBase<T>, new()
     private async Task LogPingException(Exception ex, SynchronizedValue<int> pingBacklog)
     {
         Console.WriteLine($"{MyType.Name}: Error during {nameof(ExecutePing)} : {ex.Message}");
-        await pingBacklog.ChangeValueAsync((v) => v - 1); // decrement the value
+        await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
     }
 
     private async Task ReportPingResults(DateTime finishedAt, DateTime startedAt, DateTime scheduledAt, int backlog)
@@ -211,11 +217,7 @@ where T : ProcessExecutionBase<T>, new()
     }
     protected virtual async Task PerformPing(byte[] buff, byte[] buff2)
     {
-        await Task.WhenAll(new[]
-        {
-            Server.SendRequest(314159, buff),
-            Server.SendRequest(314160, buff2)
-        });
+        await Task.WhenAll(Server.SendRequest(314159, buff), Server.SendRequest(314160, buff2));
     }
 
     #endregion

@@ -1,4 +1,5 @@
 ﻿using Nito.AsyncEx;
+// ReSharper disable HeapView.ObjectAllocation
 
 namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
@@ -7,6 +8,8 @@ public class FakeServerProxy
     private readonly AsyncLock _lock = new ();
     public readonly SynchronizedValue<int> BacklogCounter = new();
     private readonly Random _random = new ();
+    private readonly CancellationTokenSource _cts = new();
+    private readonly bool _logDetailedCallInformation;
     private int _minLatencyInMs;
     private int _maxAdditionalLatencyInMs;
 
@@ -15,11 +18,12 @@ public class FakeServerProxy
     /// </summary>
     /// <param name="minLatencyInMs">the minimum amount of time before a message is considered sent and acknowledged, allowing the caller to resume.</param>
     /// <param name="maxAdditionalLatencyInMs">the minimum amount of time before a message is considered sent and acknowledged, allowing the caller to resume.</param>
-    public FakeServerProxy(int minLatencyInMs = 10,int maxAdditionalLatencyInMs = 15, bool log=false)
+    /// <param name="logDetailedCallInformation">Log detailed call information</param>
+    public FakeServerProxy(int minLatencyInMs = 10,int maxAdditionalLatencyInMs = 15, bool logDetailedCallInformation=false)
     {
         _minLatencyInMs = minLatencyInMs;
         _maxAdditionalLatencyInMs = maxAdditionalLatencyInMs;
-        _log = log;
+        _logDetailedCallInformation = logDetailedCallInformation;
     }
 
     public void SetLatency(int minLatencyInMs, int maxAdditionalLatencyInMs)
@@ -28,14 +32,11 @@ public class FakeServerProxy
         _maxAdditionalLatencyInMs = maxAdditionalLatencyInMs;
     }
 
-    private readonly CancellationTokenSource _cts = new();
-
     public void CancelAllRequests() => _cts.Cancel();
     
-    private readonly bool _log;
     public async Task SendRequest(int bufferType, byte[] buffer)
     {
-        if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} started. {BacklogCounter.Value} calls from other tasks are already waiting.");
+        if (_logDetailedCallInformation) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} started. {BacklogCounter.Value} calls from other tasks are already waiting.");
         await BacklogCounter.ChangeValueAsync(x => x+1);
         
         // The former developers decided to alleviate server load with client side locking.
@@ -45,17 +46,18 @@ public class FakeServerProxy
         using (await _lock.LockAsync(_cts.Token))
         {
             var backlog=await BacklogCounter.ChangeValueAsync(x => x-1);
-            if (_log) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} lock acquired with {backlog} other tasks waiting for this call to complete.");
+            if (_logDetailedCallInformation) Console.WriteLine($"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} lock acquired with {backlog} other tasks waiting for this call to complete.");
             
             // pretend to do something useful with this buffer.
-            var reversed = buffer.Reverse().ToArray();
+            var manipulatedByType = bufferType % 2 == 0 ? buffer.Reverse().ToArray() : buffer;
             
             // the response is processed... somehow... and returned to the rest of the app
             // via some other channel. That's not represented here as this is a minimal example.
-            await SendBufferAndWaitForAck(reversed);
+            await SendBufferAndWaitForAck(manipulatedByType);
         }
     }
     
+    // ReSharper disable once UnusedParameter.Local
     private async Task SendBufferAndWaitForAck(byte[] buffer)
     {
         // randomly generate the simulated latency for the ack/response.

@@ -3,11 +3,16 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable HeapView.BoxingAllocation
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace Jcd.Tasks;
 
 /// <summary>
-/// In a background task, this class executes arbitrary tasks in the order they were enqueued,
+/// In a background task, this class starts enqueued tasks in the order they were enqueued,
 /// waiting for each to complete before executing the next.
 /// </summary>
 /// <remarks>
@@ -37,7 +42,7 @@ public class BlockingTaskProcessor : IDisposable
     /// <param name="autoStart"></param>
     public BlockingTaskProcessor(bool autoStart=true)
     {
-        _commandProcessor = ColdTask.FromAction(TaskExecutionLoop);
+        _commandProcessor = UnstartedTask.Create(TaskExecutionLoop);
         if (autoStart) StartProcessing();
     }
     
@@ -49,7 +54,7 @@ public class BlockingTaskProcessor : IDisposable
     /// </summary>
     /// <param name="command">The command to execute.</param>
     public void EnqueueAction(Action command) =>
-        TryEnqueueTask(ColdTask.FromAction(command, _commandProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command, _commandProcessingCancellationSource.Token), out _);
     
     /// <summary>
     /// Enqueues an async command for sequential execution. This is a "fire and forget" method.
@@ -57,7 +62,7 @@ public class BlockingTaskProcessor : IDisposable
     /// </summary>
     /// <param name="command">The asynchronous command to execute.</param>
     public void EnqueueAsyncAction(Func<Task> command) =>
-        TryEnqueueTask(ColdTask.FromAsyncAction(command,_commandProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command,_commandProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Enqueues a command for sequential execution. Awaiting the returned <see cref="Task"/>
@@ -73,7 +78,7 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task EnqueueActionAsync(Action command) =>
-        TryEnqueueTask(ColdTask.FromAction(command,_commandProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command,_commandProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Asynchronously enqueues an async command for sequential execution. Awaiting the
@@ -89,7 +94,7 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task EnqueueAsyncActionAsync(Func<Task> command) =>
-        TryEnqueueTask(ColdTask.FromAsyncAction(command,_commandProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command,_commandProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Enqueues a command for sequential execution. This is a "fire and forget" method.
@@ -97,7 +102,7 @@ public class BlockingTaskProcessor : IDisposable
     /// </summary>
     /// <param name="command">The command to execute.</param>
     public void EnqueueFunc<TResult>(Func<TResult> command) =>
-        TryEnqueueTask(ColdTask.FromFunc(command,_commandProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command,_commandProcessingCancellationSource.Token), out _);
  
     /// <summary>
     /// Enqueues an async command for sequential execution. This is a "fire and forget" method.
@@ -105,7 +110,7 @@ public class BlockingTaskProcessor : IDisposable
     /// </summary>
     /// <param name="command">The async command to execute.</param>
     public void EnqueueAsyncFunc<TResult>(Func<Task<TResult>> command) =>
-        TryEnqueueTask(ColdTask.FromAsyncFunc(command,_commandProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command,_commandProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Asynchronously enqueues a command for sequential execution. The result of the function
@@ -122,7 +127,7 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task<TResult> EnqueueFuncAsync<TResult>(Func<TResult> command) =>
-        TryEnqueueTask(ColdTask.FromFunc(command,_commandProcessingCancellationSource.Token),out _);
+        TryEnqueueTask(UnstartedTask.Create(command,_commandProcessingCancellationSource.Token),out _);
     
     /// <summary>
     /// Asynchronously enqueues an async function for sequential execution. The result of the function execution
@@ -139,26 +144,25 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task<TResult> EnqueueAsyncFuncAsync<TResult>(Func<Task<TResult>> asyncFunction) =>
-        TryEnqueueTask(ColdTask.FromAsyncFunc(asyncFunction,_commandProcessingCancellationSource.Token),out _);
+        TryEnqueueTask(UnstartedTask.Create(asyncFunction,_commandProcessingCancellationSource.Token),out _);
 
     /// <summary>
-    /// Tries to enqueues a task for later execution. If the passed in task is not cold, it's not enqueued.
+    /// Tries to enqueues a task for later execution. If the passed in task is not unstarted, it's not enqueued.
     /// </summary>
-    /// <param name="task">the cold task</param>
+    /// <param name="task">the unstarted task</param>
     /// <param name="enqueued">a flag indicating if the task was actually enqueued</param>
     /// <typeparam name="T">The result type of the task.</typeparam>
     /// <returns>The passed in task, or a cancelled <see cref="Task{T}"/> if the passed in task is null.</returns>
-    /// <exception cref="ArgumentNullException">When the task is null</exception>
     /// <remarks>
     /// <para>
-    /// When passing in a non-cold task the task is returned so that you can still await the result
+    /// When passing in a previously started task the task is returned so that you can still await the result
     /// of the associated action. This is to support framework builders who may not control
-    /// if a task is hot or cold.
+    /// if a task is started or not.
     /// </para>
     /// <para>
     /// The reason for not enqueuing is to prevent such tasks, which can't be started, from
     /// occupying a position in the execution queue. This allows the processor to get to actual
-    /// cold tasks sooner.
+    /// unstarted tasks sooner.
     /// </para>
     /// </remarks>
     public Task<T> TryEnqueueTask<T>(Task<T> task, out bool enqueued)
@@ -170,21 +174,21 @@ public class BlockingTaskProcessor : IDisposable
     }
 
     /// <summary>
-    /// Tries to enqueues a task for later execution. If the passed in task is not cold, it's not enqueued.
+    /// Tries to enqueues a task for later execution. If the passed in task is already started, it's not enqueued.
     /// </summary>
-    /// <param name="task">the cold task</param>
+    /// <param name="task">the unstarted task</param>
     /// <param name="enqueued">a flag indicating if the task was actually enqueued.</param>
     /// <returns>The passed in task, or a cancelled <see cref="Task"/> if the passed in task is null.</returns>
     /// <remarks>
     /// <para>
-    /// When passing in a non-cold task the task is returned so that you can still await the result
+    /// When passing in a previously started task the task is still returned so that you can still await the result
     /// of the associated action. This is to support framework builders who may not control
-    /// if a task is hot or cold.
+    /// if a task is unstarted or not.
     /// </para>
     /// <para>
     /// The reason for not enqueuing is to prevent such tasks, which can't be started, from
     /// occupying a position in the execution queue. This allows the processor to get to actual
-    /// cold tasks sooner.
+    /// unstarted tasks sooner.
     /// </para>
     /// </remarks>
     public Task TryEnqueueTask(Task task, out bool enqueued)
@@ -193,7 +197,7 @@ public class BlockingTaskProcessor : IDisposable
         Debug.Flush();
         enqueued = false;
         if (task == null) return Task.FromCanceled(default);
-        if (!task.IsCold()) return task;
+        if (!task.IsUnstarted()) return task;
         try
         {
             _queueManagementSemaphore.Wait();
@@ -278,7 +282,7 @@ public class BlockingTaskProcessor : IDisposable
             return;
         }
 
-        _commandProcessor = ColdTask.FromAction(TaskExecutionLoop);
+        _commandProcessor = UnstartedTask.Create(TaskExecutionLoop);
         _commandProcessor.Start();
     }
     
@@ -312,11 +316,11 @@ public class BlockingTaskProcessor : IDisposable
                     continue;
                 }
 
-                if (!TryGetTask(cancellationSource, out var task) || !task.IsCold())
+                if (!TryGetTask(cancellationSource, out var task) || !task.IsUnstarted())
                 {
                     if (task != null)
                     {
-                        Debug.WriteLineIf(!task.IsCold(),
+                        Debug.WriteLineIf(!task.IsUnstarted(),
                             $"{nameof(TaskExecutionLoop)} : invalid task status {task.Status}.");
                     }
 

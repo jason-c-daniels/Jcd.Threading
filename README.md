@@ -13,7 +13,7 @@ Read the API docs carefully.
 ## Examples
 
 ```csharp
-// Create a cold task from an action.
+// Create an unstarted task from an action.
 var actionTask=Cold
 
 

@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMethodReturnValue.Global
 
 namespace Jcd.Tasks;
 

@@ -1,4 +1,8 @@
 ﻿using Nito.AsyncEx;
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 

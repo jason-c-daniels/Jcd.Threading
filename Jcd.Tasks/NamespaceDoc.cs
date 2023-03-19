@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+// ReSharper disable UnusedType.Global
 
 namespace Jcd.Tasks;
 
