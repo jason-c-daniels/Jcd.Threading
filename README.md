@@ -1,14 +1,16 @@
 # Jcd.Tasks
 
-A *netstandard2.0* library that provides a set of utility classes to help with some aspects of creating and managing `Task`s.
+A *netstandard2.0* library that provides utility classes to help with creating and managing unstarted `Task`s.
+
 Read the API docs carefully.
 
-## Main Classes
-* There are three main classes provided. 
-  * `UnstartedTask` a static factory class for creating unstarted tasks.
-  * `SynchronizedValue` a more flexible and CLS compliant re-imagination of `Interlocked`.
-  * `AsyncSerialCommandProcessor` a Task-consumer in a Producer-Consumer model that starts tasks one at a time and waits 
+## Types Provided.
+* The main types provided are: 
+  * `BlockingTaskProcessor` a Task-consumer in a Producer-Consumer model that starts tasks one at a time and waits
     for their completion before executing the next task.
+  * `SynchronizedValue` a more flexible and CLS compliant re-imagining of `Interlocked`.
+  * `TaskExtensions` some simple task extension methods for working with unstarted tasks.
+  * `UnstartedTask` a static factory class for creating unstarted tasks.
 
 ## Examples
 See [EXAMPLES.md](./EXAMPLES.md) for detailed examples. 
