@@ -3,23 +3,23 @@ using Jcd.Tasks.Examples.BlockingTaskProcessor;
 // system/test parameters
 int runTimeInSeconds = 60,
     pingFrequencyInMs = 1000,
-    tasksScheduledAtTheSameTime = 12, // the number of calls to schedule each time calls are scheduled.
-    taskSchedulingFrequencyInMs = 60,
+    tasksScheduledAtTheSameTime = 4, // the number of calls to schedule each time calls are scheduled.
+    taskSchedulingFrequencyInMs = 20,
     minServerLatencyInMs = 10,
     additionalLatencyInMs = 15;
-//double cpuLoadPercentage = 30; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
+double cpuLoadPercentage = 1; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
 bool logRequestScheduling = false; // set to true for detailed logging. Things will get noisy.
 
 var pretendUICts = new CancellationTokenSource();
-//var pretendUITask = LoadAllCores(cpuLoadPercentage);
+//LoadAllCores(cpuLoadPercentage);
 
 // The baseline use of AsyncLocks meant to eliminate concurrent calls to a limited capacity server.
 // It certainly limits the calls to one at a time. However, it doesn't perform well under stress.
-await AsyncLockOnly.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
-Console.WriteLine($"{AsyncLockOnly.PingCount.Value} scheduled pings remain. Waiting for completion.");
-while (AsyncLockOnly.PingCount.Value > 0)
+await AsyncLockOnly.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+if (AsyncLockOnly.Instance.PingCount.Value > 1) Console.WriteLine($"{AsyncLockOnly.Instance.PingCount.Value} scheduled pings remain. Waiting for completion.");
+while (AsyncLockOnly.Instance.PingCount.Value > 0)
 {
-    await Task.Delay(100*AsyncLockOnly.PingCount.Value/10);
+    await Task.Delay(100*AsyncLockOnly.Instance.PingCount.Value/10);
 }
 
 Console.WriteLine();
@@ -27,7 +27,7 @@ Console.WriteLine();
 Console.WriteLine();
 
 // a subpar attempt at solving the problem which actually made pings worse.
-await SingleBlockingTaskProcessor.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+await SingleBlockingTaskProcessor.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
@@ -36,7 +36,7 @@ Console.WriteLine();
 // priority requests. You must intentionally limit the frequency and concurrency of high priority calls,
 // otherwise you're back at square one. If this isn't sufficient then having a communications throttled
 // server isn't going to work for your application. See if you can change *that.*
-await SingleBlockingTaskProcessor2.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+await SingleBlockingTaskProcessor2.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
@@ -45,8 +45,7 @@ pretendUICts.Cancel();
 
 Console.WriteLine("Done executing.");
 
-
-async Task LoadAllCores(double percentage)
+void LoadAllCores(double percentage)
 {
     for (var i = 0; i < Environment.ProcessorCount;i++)
     {
