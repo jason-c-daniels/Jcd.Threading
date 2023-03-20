@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Jcd.Tasks;
 
 /// <summary>
-/// Represents a high level class that enqueues and executes actions, functions, and unstarted tasks,
+/// Represents a high level object that enqueues and executes actions, functions, and unstarted tasks,
 /// waiting for each to complete before executing the next.
 /// </summary>
 /// <remarks>
