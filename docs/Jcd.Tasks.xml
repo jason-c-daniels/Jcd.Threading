@@ -6,12 +6,18 @@
     <members>
         <member name="T:Jcd.Tasks.BlockingTaskProcessor">
             <summary>
-            In a background task, this class starts enqueued tasks in the order they were enqueued,
+            Represents a high level class that enqueues and executes actions, functions, and unstarted tasks,
             waiting for each to complete before executing the next.
             </summary>
             <remarks>
-            Ensure all shared resources for the enqueued actions/functions have their access synchronized
+            <para>
+            You must ensure all shared resources for the enqueued tasks have their access synchronized
             appropriately.
+            </para>
+            <para>
+            NOTE: This was really just a thought experiment. There are probably legitimately better ways of
+            doing this built in to .Net. I had trouble finding them. If you find them, please let me know!
+            </para>
             </remarks>
         </member>
         <member name="P:Jcd.Tasks.BlockingTaskProcessor.QueueLength">
@@ -25,26 +31,40 @@
             </summary>
             <param name="autoStart"></param>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAction(System.Action)">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue(System.Action)">
             <summary>
-            Enqueues a command for sequential execution. This is a "fire and forget" method.
+            Enqueues an action. This is a "fire and forget" method. Control is immediately
+            returned to the caller.
+            </summary>
+            <param name="command">The action to enqueue.</param>
+        </member>
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Enqueues an async action. This is a "fire and forget" method.
             Control is returned to the caller immediately.
             </summary>
-            <param name="command">The command to execute.</param>
+            <param name="command">The asynchronous action to enqueue.</param>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncAction(System.Func{System.Threading.Tasks.Task})">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue``1(System.Func{``0})">
             <summary>
-            Enqueues an async command for sequential execution. This is a "fire and forget" method.
-            Control is returned to the caller immediately.
+            Enqueues a function. This is a "fire and forget" method.
+            The function result will not be available and control is immediately returned to the caller.
             </summary>
-            <param name="command">The asynchronous command to execute.</param>
+            <param name="command">The command to enqueue.</param>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueActionAsync(System.Action)">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue``1(System.Func{System.Threading.Tasks.Task{``0}})">
             <summary>
-            Enqueues a command for sequential execution. Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/>
-            waits for the command to finish executing.
+            Enqueues an async function. This is a "fire and forget" method.
+            The function result will not be available and control is immediately returned to the caller.
             </summary>
-            <param name="command">The command to execute.</param>
+            <param name="command">The async function to enqueue.</param>
+        </member>
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Action)">
+            <summary>
+            Enqueues an action and returns a proxy task that will execute the action.
+            Awaiting the returned proxy <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued action to finish executing.
+            </summary>
+            <param name="command">The action to execute.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> that will execute the enqueued action.</returns>
             <remarks>
             Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
@@ -54,12 +74,12 @@
             call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncActionAsync(System.Func{System.Threading.Tasks.Task})">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Func{System.Threading.Tasks.Task})">
             <summary>
-            Asynchronously enqueues an async command for sequential execution. Awaiting the
-            returned <see cref="T:System.Threading.Tasks.Task"/> waits for the command to finish executing.
+            Enqueues an async action and returns a proxy task that will execute the action.
+            Awaiting the returned proxy <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued action to finish executing.
             </summary>
-            <param name="command">The command to execute.</param>
+            <param name="command">The async action to enqueue.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
             <remarks>
             Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
@@ -69,24 +89,11 @@
             call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueFunc``1(System.Func{``0})">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy``1(System.Func{``0})">
             <summary>
-            Enqueues a command for sequential execution. This is a "fire and forget" method.
-            The command result will not be available and control is returned to the caller immediately.
-            </summary>
-            <param name="command">The command to execute.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncFunc``1(System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Enqueues an async command for sequential execution. This is a "fire and forget" method.
-            The function call result will not be available and control is returned to the caller immediately.
-            </summary>
-            <param name="command">The async command to execute.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueFuncAsync``1(System.Func{``0})">
-            <summary>
-            Asynchronously enqueues a command for sequential execution. The result of the function
-            execution is available by awaiting the returned <see cref="T:System.Threading.Tasks.Task`1"/>
+            Enqueues a function and returns a proxy task that will execute the function.
+            Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued function to finish executing
+            and returns the result.
             </summary>
             <param name="command">The command to execute.</param>
             <typeparam name="TResult">The data type returned by the function</typeparam>
@@ -99,13 +106,14 @@
             call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncFuncAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy``1(System.Func{System.Threading.Tasks.Task{``0}})">
             <summary>
-            Asynchronously enqueues an async function for sequential execution. The result of the function execution
-            is available by awaiting the returned <see cref="T:System.Threading.Tasks.Task`1"/>
+            Enqueues an async function and returns a proxy task that will execute the function.
+            Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued function to finish executing
+            and returns the result.
             </summary>
-            <param name="asyncFunction">The async function to execute.</param>
-            <typeparam name="TResult">The data type returned by the function</typeparam>
+            <param name="command">The async function to enqueue.</param>
+            <typeparam name="TResult">The data type returned by the function.</typeparam>
             <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
             <remarks>
             Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
@@ -117,16 +125,18 @@
         </member>
         <member name="M:Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask``1(System.Threading.Tasks.Task{``0},System.Boolean@)">
             <summary>
-            Tries to enqueues a task for later execution. If the passed in task is not unstarted, it's not enqueued.
+            Tries to enqueues a task for later execution. If the passed in task is not unstarted,
+            it's not enqueued.
             </summary>
             <param name="task">the unstarted task</param>
             <param name="enqueued">a flag indicating if the task was actually enqueued</param>
-            <typeparam name="T">The result type of the task.</typeparam>
-            <returns>The passed in task, or a cancelled <see cref="T:System.Threading.Tasks.Task`1"/> if the passed in task is null.</returns>
+            <typeparam name="TResult">The result type of the task.</typeparam>
+            <returns>The passed in task.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="task"/> is <see langword="null"/> </exception>
             <remarks>
             <para>
-            When passing in a previously started task the task is returned so that you can still await the result
-            of the associated action. This is to support framework builders who may not control
+            When passing in a previously started task the task is returned so that you can still await
+            the result of the associated action. This is to support framework builders who may not control
             if a task is started or not.
             </para>
             <para>
@@ -138,11 +148,13 @@
         </member>
         <member name="M:Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task,System.Boolean@)">
             <summary>
-            Tries to enqueues a task for later execution. If the passed in task is already started, it's not enqueued.
+            Tries to enqueues a task for later execution. If the passed in task is already
+            started, it's not enqueued.
             </summary>
             <param name="task">the unstarted task</param>
             <param name="enqueued">a flag indicating if the task was actually enqueued.</param>
-            <returns>The passed in task, or a cancelled <see cref="T:System.Threading.Tasks.Task"/> if the passed in task is null.</returns>
+            <returns>The passed in task.</returns>
+            <exception cref="T:System.ArgumentNullException">When <paramref name="task"/> is <see langword="null"/> </exception>
             <remarks>
             <para>
             When passing in a previously started task the task is still returned so that you can still await the result
@@ -163,13 +175,14 @@
         </member>
         <member name="M:Jcd.Tasks.BlockingTaskProcessor.Cancel">
             <summary>
-            Signals the command processor to halt all processing immediately. This also cancels all tasks created
-            by this task command processor. This is mostly intended to be called during application shutdown.
+            Signals the task processor to halt all processing immediately. This also cancels all
+            tasks created by this task task processor. This is mostly intended to be called
+            during application shutdown.
             </summary>
         </member>
         <member name="P:Jcd.Tasks.BlockingTaskProcessor.IsStarted">
             <summary>
-            Gets a flag indicating if the command processing has started. (it might be paused though).
+            Gets a flag indicating if the task processing has started. (it might be paused though).
             </summary>
         </member>
         <member name="P:Jcd.Tasks.BlockingTaskProcessor.IsPaused">
@@ -196,12 +209,12 @@
         </member>
         <member name="M:Jcd.Tasks.BlockingTaskProcessor.ResumeAsync">
             <summary>
-            Resumes command processing.
+            Resumes task processing.
             </summary>
         </member>
         <member name="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing">
             <summary>
-            Starts the processing of queued commands.
+            Starts the processing of queued tasks.
             </summary>
         </member>
         <member name="M:Jcd.Tasks.BlockingTaskProcessor.Dispose">

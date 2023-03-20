@@ -2,7 +2,7 @@
 
 ## BlockingTaskProcessor.ResumeAsync() Method
 
-Resumes command processing.
+Resumes task processing.
 
 ```csharp
 public System.Threading.Tasks.Task ResumeAsync();

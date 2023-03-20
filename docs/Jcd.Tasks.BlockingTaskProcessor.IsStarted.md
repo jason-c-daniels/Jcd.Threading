@@ -2,7 +2,7 @@
 
 ## BlockingTaskProcessor.IsStarted Property
 
-Gets a flag indicating if the command processing has started. (it might be paused though).
+Gets a flag indicating if the task processing has started. (it might be paused though).
 
 ```csharp
 public bool IsStarted { get; }

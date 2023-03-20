@@ -35,7 +35,7 @@ public class SingleBlockingTaskProcessor2 : ProcessExecutionBase<SingleBlockingT
 
     protected override void ScheduleASingleCall(Random rnd, CancellationTokenSource cts, int fakeBufferType)
     {
-        CommandProcessor.EnqueueAsyncActionAsync(async () =>
+        CommandProcessor.EnqueueAndGetProxy(async () =>
         {
             var buff = new byte[20];
             rnd.NextBytes(buff);

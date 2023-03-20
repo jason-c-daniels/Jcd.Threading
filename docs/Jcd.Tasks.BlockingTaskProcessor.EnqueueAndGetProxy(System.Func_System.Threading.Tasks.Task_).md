@@ -1,20 +1,20 @@
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[BlockingTaskProcessor](Jcd.Tasks.BlockingTaskProcessor.md 'Jcd.Tasks.BlockingTaskProcessor')
 
-## BlockingTaskProcessor.EnqueueAsyncActionAsync(Func<Task>) Method
+## BlockingTaskProcessor.EnqueueAndGetProxy(Func<Task>) Method
 
-Asynchronously enqueues an async command for sequential execution. Awaiting the  
-returned [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task') waits for the command to finish executing.
+Enqueues an async action and returns a proxy task that will execute the action.  
+Awaiting the returned proxy [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task') waits for the enqueued action to finish executing.
 
 ```csharp
-public System.Threading.Tasks.Task EnqueueAsyncActionAsync(System.Func<System.Threading.Tasks.Task> command);
+public System.Threading.Tasks.Task EnqueueAndGetProxy(System.Func<System.Threading.Tasks.Task> command);
 ```
 #### Parameters
 
-<a name='Jcd.Tasks.BlockingTaskProcessor.EnqueueAsyncActionAsync(System.Func_System.Threading.Tasks.Task_).command'></a>
+<a name='Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Func_System.Threading.Tasks.Task_).command'></a>
 
 `command` [System.Func&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Func-1 'System.Func`1')[System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Func-1 'System.Func`1')
 
-The command to execute.
+The async action to enqueue.
 
 #### Returns
 [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task')  

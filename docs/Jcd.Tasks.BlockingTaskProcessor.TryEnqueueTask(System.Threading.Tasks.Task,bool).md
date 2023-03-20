@@ -2,7 +2,8 @@
 
 ## BlockingTaskProcessor.TryEnqueueTask(Task, bool) Method
 
-Tries to enqueues a task for later execution. If the passed in task is already started, it's not enqueued.
+Tries to enqueues a task for later execution. If the passed in task is already  
+started, it's not enqueued.
 
 ```csharp
 public System.Threading.Tasks.Task TryEnqueueTask(System.Threading.Tasks.Task task, out bool enqueued);
@@ -23,7 +24,12 @@ a flag indicating if the task was actually enqueued.
 
 #### Returns
 [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task')  
-The passed in task, or a cancelled [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task') if the passed in task is null.
+The passed in task.
+
+#### Exceptions
+
+[System.ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentNullException 'System.ArgumentNullException')  
+When [task](Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task,bool).md#Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task,bool).task 'Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task, bool).task') is [null](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null 'https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null')
 
 ### Remarks
   

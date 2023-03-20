@@ -2,7 +2,7 @@
 
 ## BlockingTaskProcessor.StartProcessing() Method
 
-Starts the processing of queued commands.
+Starts the processing of queued tasks.
 
 ```csharp
 public void StartProcessing();

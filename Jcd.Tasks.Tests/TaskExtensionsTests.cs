@@ -1,8 +1,6 @@
 ﻿// ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
 
-using Moq;
-
 namespace Jcd.Tasks.Tests;
 
 public class TaskExtensionsTests
@@ -43,7 +41,7 @@ public class TaskExtensionsTests
 
         var t1 = new Task(Action,cts.Token); 
         t1.TryRun(out _);
-        await Task.Delay(100, cts.Token);
+        await Task.Delay(2, cts.Token);
         Assert.False(t1.IsUnstarted());
         cts.Cancel();
     }
@@ -59,7 +57,7 @@ public class TaskExtensionsTests
     [Fact]
     public async Task IsUnstarted_Returns_False_For_A_Task_Created_By_Task_Run()
     {
-        var t1 = Task.Run(async () => await Task.Delay(250));
+        var t1 = Task.Run(async () => await Task.Delay(2));
         while (t1.Status == TaskStatus.Created)
         {
             // wait for the status to transition to one of the 
@@ -123,7 +121,7 @@ public class TaskExtensionsTests
     [Fact]
     public void TryWait_Waits_On_A_Running_Task_Until_It_Completes_And_Returns_True()
     {
-        var t = Task.Run(async () => await Task.Delay(20));
+        var t = Task.Run(async () => await Task.Delay(2));
         Assert.True(t.TryWait());
     }
 
@@ -138,7 +136,7 @@ public class TaskExtensionsTests
     [Fact]
     public async Task TryWaitAsync_Waits_On_A_Running_Task_Until_It_Completes_And_Returns_True()
     {
-        var t = Task.Run(async () => await Task.Delay(20));
+        var t = Task.Run(async () => await Task.Delay(2));
         Assert.True(await t.TryWaitAsync());
     }
 
@@ -157,7 +155,7 @@ public class TaskExtensionsTests
     {
         var t = Task.Run(async () =>
         {
-            await Task.Delay(20);
+            await Task.Delay(2);
             if (cancel) throw new OperationCanceledException();
             throw new Exception();
         });
@@ -171,7 +169,7 @@ public class TaskExtensionsTests
     {
         var t = Task.Run(async () =>
         {
-            await Task.Delay(20);
+            await Task.Delay(2);
             if (cancel) throw new OperationCanceledException();
             throw new Exception();
         });

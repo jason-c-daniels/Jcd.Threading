@@ -83,7 +83,7 @@ public static class BlockingTaskProcessorExample
             {
                 Debug.WriteLine($"{thId}:{item} enqueuing : q.Length= {TaskProcessor.QueueLength}");
                 Debug.Flush();
-                TaskProcessor.EnqueueAsyncAction(async () =>
+                TaskProcessor.Enqueue(async () =>
                 {
                     Console.WriteLine($"{thId}:{item} began");
                     await Console.Out.FlushAsync();

@@ -58,7 +58,7 @@ public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTa
 
     protected override void ScheduleASingleCall(Random rnd, CancellationTokenSource cts, int fakeBufferType)
     {
-        CommandProcessor.EnqueueAsyncActionAsync(async () =>
+        CommandProcessor.EnqueueAndGetProxy(async () =>
         {
             var buff = new byte[20];
             rnd.NextBytes(buff);
@@ -80,7 +80,7 @@ public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTa
         // separate thread of a program periodically telling the communications
         // layer to get a status update. Usually we want these to preempt other traffic.
         // it will not for this example. In fact we'll see them start stacking up.
-        CommandProcessor.EnqueueAsyncAction(() => ExecutePing(pingBacklog, rnd, scheduledAt, cts, logRequestScheduling));
+        CommandProcessor.Enqueue(() => ExecutePing(pingBacklog, rnd, scheduledAt, cts, logRequestScheduling));
     }
     
     protected override void ReportRunType()
