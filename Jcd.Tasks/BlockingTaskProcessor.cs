@@ -243,7 +243,8 @@ public class BlockingTaskProcessor : IDisposable
         Debug.WriteLine($"{nameof(Cancel)} called from Thread {Environment.CurrentManagedThreadId}");
         Debug.Flush();
         _taskProcessingCancellationSource.Cancel();
-        if (_taskProcessor.Status == TaskStatus.Running || _taskProcessor.Status == TaskStatus.WaitingForChildrenToComplete) 
+        if (_taskProcessor.Status == TaskStatus.Running ||
+            _taskProcessor.Status == TaskStatus.WaitingForChildrenToComplete)
             _taskProcessor.Wait();
         _queueManagementSemaphore.Wait();
         _taskProcessor = UnstartedTask.Create(TaskExecutionLoop, _taskProcessingCancellationSource.Token);
