@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -104,7 +105,7 @@ public static class TaskExtensions
             task.Start();
             return TryRunResult.SuccessfullyCalled;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             exception = ex;
             return TryRunResult.ErrorDuringStart;

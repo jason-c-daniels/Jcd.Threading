@@ -1,4 +1,5 @@
 ﻿// ReSharper disable HeapView.DelegateAllocation
+
 namespace Jcd.Tasks.Tests;
 
 public class SynchronizedValueTests
@@ -10,9 +11,9 @@ public class SynchronizedValueTests
     public void Constructor_Creates_With_The_Provided_Value(int expectedValue)
     {
         using var sv = new SynchronizedValue<int>(expectedValue);
-        Assert.Equal(expectedValue,sv.Value);
+        Assert.Equal(expectedValue, sv.Value);
     }
-    
+
     [Theory]
     [InlineData(1)]
     [InlineData(-1)]
@@ -20,9 +21,9 @@ public class SynchronizedValueTests
     public void SetValue_Sets_And_Returns_The_Provided_Value(int expectedValue)
     {
         using var sv = new SynchronizedValue<int>();
-        var result=sv.SetValue(expectedValue);
-        Assert.Equal(expectedValue,sv.Value);
-        Assert.Equal(expectedValue,result);
+        var result = sv.SetValue(expectedValue);
+        Assert.Equal(expectedValue, sv.Value);
+        Assert.Equal(expectedValue, result);
     }
 
     [Theory]
@@ -32,11 +33,11 @@ public class SynchronizedValueTests
     public async Task SetValueAsync_Sets_And_Returns_The_Provided_Value(int expectedValue)
     {
         using var sv = new SynchronizedValue<int>();
-        var result=await sv.SetValueAsync(expectedValue);
-        Assert.Equal(expectedValue,sv.Value);
-        Assert.Equal(expectedValue,result);
+        var result = await sv.SetValueAsync(expectedValue);
+        Assert.Equal(expectedValue, sv.Value);
+        Assert.Equal(expectedValue, result);
     }
-    
+
     [Theory]
     [InlineData(1)]
     [InlineData(-1)]
@@ -45,7 +46,7 @@ public class SynchronizedValueTests
     {
         using var sv = new SynchronizedValue<int>();
         sv.SetValue(expectedValue);
-        Assert.Equal(expectedValue,sv.GetValue());
+        Assert.Equal(expectedValue, sv.GetValue());
     }
 
     [Theory]
@@ -56,7 +57,7 @@ public class SynchronizedValueTests
     {
         using var sv = new SynchronizedValue<int>();
         await sv.SetValueAsync(expectedValue);
-        Assert.Equal(expectedValue,await sv.GetValueAsync());
+        Assert.Equal(expectedValue, await sv.GetValueAsync());
     }
 
     [Theory]
@@ -70,8 +71,8 @@ public class SynchronizedValueTests
         using var sv = new SynchronizedValue<int>();
         sv.SetValue(value);
         var result = sv.ChangeValue(TimesTen);
-        Assert.Equal(expectedValue,sv.Value);
-        Assert.Equal(expectedValue,result);
+        Assert.Equal(expectedValue, sv.Value);
+        Assert.Equal(expectedValue, result);
     }
 
     [Theory]
@@ -85,7 +86,7 @@ public class SynchronizedValueTests
         using var sv = new SynchronizedValue<int>();
         await sv.SetValueAsync(value);
         var result = await sv.ChangeValueAsync(TimesTen);
-        Assert.Equal(expectedValue,sv.Value);
-        Assert.Equal(expectedValue,result);
+        Assert.Equal(expectedValue, sv.Value);
+        Assert.Equal(expectedValue, result);
     }
 }

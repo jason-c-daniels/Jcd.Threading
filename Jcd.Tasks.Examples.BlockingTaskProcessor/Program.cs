@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Jcd.Tasks.Examples.BlockingTaskProcessor;
+
 // system/test parameters
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable UnusedVariable
@@ -13,7 +14,8 @@ const int runTimeInSeconds = 60,
     taskSchedulingFrequencyInMs = 20,
     minServerLatencyInMs = 10,
     additionalLatencyInMs = 15;
-const double cpuLoadPercentage = 1; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
+const double
+    cpuLoadPercentage = 1; // NOTE: this may actually load your machine more than expected. Try lower numbers first.
 const bool logRequestScheduling = false; // set to true for detailed logging. Things will get noisy.
 
 var pretendUiCts = new CancellationTokenSource();
@@ -21,14 +23,16 @@ var pretendUiCts = new CancellationTokenSource();
 
 // The baseline use of AsyncLocks meant to eliminate concurrent calls to a limited capacity server.
 // It certainly limits the calls to one at a time. However, it doesn't perform well under stress.
-await AsyncLockOnly.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+await AsyncLockOnly.Instance.Run(runTimeInSeconds, pingFrequencyInMs, tasksScheduledAtTheSameTime,
+    taskSchedulingFrequencyInMs, minServerLatencyInMs, additionalLatencyInMs, logRequestScheduling);
 if (AsyncLockOnly.Instance.PingCount.Value > 1)
 {
     Console.WriteLine($"{AsyncLockOnly.Instance.PingCount.Value} scheduled pings remain. Waiting for completion.");
 }
+
 while (AsyncLockOnly.Instance.PingCount.Value > 0)
 {
-    await Task.Delay(100*AsyncLockOnly.Instance.PingCount.Value/10);
+    await Task.Delay(100 * AsyncLockOnly.Instance.PingCount.Value / 10);
 }
 
 
@@ -37,7 +41,8 @@ Console.WriteLine();
 Console.WriteLine();
 
 // a subpar attempt at solving the problem which actually made pings worse.
-await SingleBlockingTaskProcessor.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+await SingleBlockingTaskProcessor.Instance.Run(runTimeInSeconds, pingFrequencyInMs, tasksScheduledAtTheSameTime,
+    taskSchedulingFrequencyInMs, minServerLatencyInMs, additionalLatencyInMs, logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
@@ -46,7 +51,8 @@ Console.WriteLine();
 // priority requests. You must intentionally limit the frequency and concurrency of high priority calls,
 // otherwise you're back at square one. If this isn't sufficient then having a communications throttled
 // server isn't going to work for your application. See if you can change *that.*
-await SingleBlockingTaskProcessor2.Instance.Run(runTimeInSeconds,pingFrequencyInMs,tasksScheduledAtTheSameTime,taskSchedulingFrequencyInMs,minServerLatencyInMs,additionalLatencyInMs,logRequestScheduling);
+await SingleBlockingTaskProcessor2.Instance.Run(runTimeInSeconds, pingFrequencyInMs, tasksScheduledAtTheSameTime,
+    taskSchedulingFrequencyInMs, minServerLatencyInMs, additionalLatencyInMs, logRequestScheduling);
 Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
@@ -57,7 +63,7 @@ Console.WriteLine("Done executing.");
 
 void LoadAllCores(double percentage)
 {
-    for (var i = 0; i < Environment.ProcessorCount;i++)
+    for (var i = 0; i < Environment.ProcessorCount; i++)
     {
         Task.Run(async () => await ConsumeCpu(percentage));
     }
@@ -66,7 +72,7 @@ void LoadAllCores(double percentage)
 async Task ConsumeCpu(double percentage)
 {
     if (percentage is < 0 or > 100)
-        throw new ArgumentNullException( nameof(percentage));
+        throw new ArgumentNullException(nameof(percentage));
     var watch = new Stopwatch();
     watch.Start();
     while (pretendUiCts is { IsCancellationRequested: false })
@@ -74,7 +80,7 @@ async Task ConsumeCpu(double percentage)
         // Make the loop go on for "percentage" milliseconds then sleep the 
         // remaining percentage milliseconds. So 40% utilization means work 40ms and sleep 60ms
         if (watch.ElapsedMilliseconds <= percentage) continue;
-        
+
         var delay = TimeSpan.FromMilliseconds(100 - percentage);
         await Task.Delay(delay);
         watch.Reset();

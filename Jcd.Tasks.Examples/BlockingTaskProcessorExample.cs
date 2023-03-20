@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
@@ -28,28 +29,28 @@ public static class BlockingTaskProcessorExample
 
         // This example starts up five tasks that manipulate the queue in various ways and which will last for 
         // differing amounts of time.
-        
+
         // create a task that enqueues work every 0.2 seconds with a lifespan of 120 seconds.. Each enqueued task delays for PI/100 seconds.
         var ctsQueuer1 = StartQueuerTask();
-        
+
         // create another task that enqueues work every 90ms with a lifespan of 120 seconds.. Each enqueued task delays for 100ms
-        var ctsQueuer2 = StartQueuerTask(10d/1000d,90d/1000d);
-        
+        var ctsQueuer2 = StartQueuerTask(10d / 1000d, 90d / 1000d);
+
         // create a task that periodically resumes the queue (every 6 seconds) with a lifespan of 120 seconds.
         var ctsResumer1 = StartResumerTask(6.0);
-        
+
         // create a task that periodically pauses the queue (every 3 seconds)  with a lifespan of 120 seconds.
         var ctsPauser1 = StartPauserTask(3.0);
-        
+
         // create a task that spams calls to TaskProcessor.Pause. This is done for... reasons.
-        var ctsSpastic = SpasticPauserTask(Math.PI*(1+1d/3d),60);
-        
+        var ctsSpastic = SpasticPauserTask(Math.PI * (1 + 1d / 3d), 60);
+
         // create a task that periodically calls TaskProcessor.Cancel every 10 seconds for one minute.
-        var ctsCanceler = StartCancellerTask(); 
-        
+        var ctsCanceler = StartCancellerTask();
+
         // create a task that periodically calls TaskProcessor.StartProcessing every 8 seconds for one minute.
         var ctsStarter = StartStarterTask();
-        
+
         // wait, yielding CPU time, until all tasks have been cancelled by their cancellation tokens
         while (!ctsPauser1.IsCancellationRequested ||
                !ctsQueuer1.IsCancellationRequested ||
@@ -58,13 +59,13 @@ public static class BlockingTaskProcessorExample
                !ctsSpastic.IsCancellationRequested ||
                !ctsCanceler.IsCancellationRequested ||
                !ctsStarter.IsCancellationRequested
-              ) await Task.Yield(); 
+              ) await Task.Yield();
 
         // cancel all pending tasks (there should be a lot of them)
         TaskProcessor.Cancel();
-        
+
         // NOTE: interpreting the output is a bit messy.
-        
+
         // wait two seconds to give already executing tasks time to finish their work.
         // ideally tasks will directly check the status of the cancellation token in order
         // to exit expeditiously.
@@ -73,7 +74,9 @@ public static class BlockingTaskProcessorExample
         return 0;
     }
 
-    private static CancellationTokenSource StartQueuerTask(double busyWorkDelayInSeconds=Math.PI/100.0,double enqueueDelayInSeconds=0.2, double lifeSpanInSeconds=120)
+    private static CancellationTokenSource StartQueuerTask(double busyWorkDelayInSeconds = Math.PI / 100.0,
+                                                           double enqueueDelayInSeconds = 0.2,
+                                                           double lifeSpanInSeconds = 120)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         Task.Run(async () =>
@@ -101,11 +104,12 @@ public static class BlockingTaskProcessorExample
                 Enqueue(i++, Environment.CurrentManagedThreadId);
                 await Task.Delay(TimeSpan.FromSeconds(enqueueDelayInSeconds), cts.Token);
             }
-        },cts.Token);
+        }, cts.Token);
         return cts;
     }
 
-    private static CancellationTokenSource StartPauserTask(double delayInSeconds=Math.PI-0.1,double lifeSpanInSeconds=120)
+    private static CancellationTokenSource StartPauserTask(double delayInSeconds = Math.PI - 0.1,
+                                                           double lifeSpanInSeconds = 120)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         Task.Run(async () =>
@@ -123,8 +127,8 @@ public static class BlockingTaskProcessorExample
         }, cts.Token);
         return cts;
     }
-    
-    private static CancellationTokenSource StartCancellerTask(double delayInSeconds=30,double lifeSpanInSeconds=60)
+
+    private static CancellationTokenSource StartCancellerTask(double delayInSeconds = 30, double lifeSpanInSeconds = 60)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         Task.Run(async () =>
@@ -152,17 +156,20 @@ public static class BlockingTaskProcessorExample
             {
                 if (TaskProcessor.IsPaused) continue;
                 await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
-                Console.WriteLine($"(re?)Starting from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
+                Console.WriteLine(
+                    $"(re?)Starting from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
                 TaskProcessor.StartProcessing();
-                Console.WriteLine($"(re?)Started from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
+                Console.WriteLine(
+                    $"(re?)Started from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
             }
         }, cts.Token);
         return cts;
     }
 
-    private static CancellationTokenSource StartResumerTask(double delayInSeconds=Math.PI,double lifeSpanInSeconds=120)
+    private static CancellationTokenSource StartResumerTask(double delayInSeconds = Math.PI,
+                                                            double lifeSpanInSeconds = 120)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         Task.Run(async () =>
@@ -181,30 +188,32 @@ public static class BlockingTaskProcessorExample
         return cts;
     }
 
-    private static CancellationTokenSource SpasticPauserTask(double delayInSeconds=Math.PI*3,double lifeSpanInSeconds=120,int numberOfThreads=100)
+    private static CancellationTokenSource SpasticPauserTask(double delayInSeconds = Math.PI * 3,
+                                                             double lifeSpanInSeconds = 120, int numberOfThreads = 100)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         Task.Run(async () =>
+        {
+            while (!cts.IsCancellationRequested)
             {
-                while (!cts.IsCancellationRequested)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
-                    await Task.WhenAll(
-                        Enumerable.Range(0,numberOfThreads).Select(x=>
-                            Task.Run(async () =>
-                            {
-                                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds/2), cts.Token);
-                                Console.WriteLine($"Pausing [{x}] from {nameof(SpasticPauserTask)} {Environment.CurrentManagedThreadId}");
-                                await Console.Out.FlushAsync();
-                                await TaskProcessor.PauseAsync();
-                                Console.WriteLine($"Paused [{x}] from {nameof(SpasticPauserTask)} {Environment.CurrentManagedThreadId}");
-                                await Console.Out.FlushAsync();
-                            }, cts.Token)
-                        ));
-                    await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
-                }
-            }, cts.Token);
+                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
+                await Task.WhenAll(
+                    Enumerable.Range(0, numberOfThreads).Select(x =>
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(delayInSeconds / 2), cts.Token);
+                            Console.WriteLine(
+                                $"Pausing [{x}] from {nameof(SpasticPauserTask)} {Environment.CurrentManagedThreadId}");
+                            await Console.Out.FlushAsync();
+                            await TaskProcessor.PauseAsync();
+                            Console.WriteLine(
+                                $"Paused [{x}] from {nameof(SpasticPauserTask)} {Environment.CurrentManagedThreadId}");
+                            await Console.Out.FlushAsync();
+                        }, cts.Token)
+                    ));
+                await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
+            }
+        }, cts.Token);
         return cts;
     }
-
 }

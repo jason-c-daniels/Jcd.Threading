@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.DelegateAllocation
@@ -27,16 +28,16 @@ namespace Jcd.Tasks;
 /// </remarks>
 public class BlockingTaskProcessor : IDisposable
 {
-    private CancellationTokenSource _taskProcessingCancellationSource = new ();
+    private CancellationTokenSource _taskProcessingCancellationSource = new();
 
-    private BlockingCollection<Task> _taskQueue = new ();
+    private BlockingCollection<Task> _taskQueue = new();
 
     private Task _taskProcessor;
 
-    private readonly SemaphoreSlim _queueManagementSemaphore = new (1,1);
-    
-    private readonly SynchronizedValue<bool> _paused= new ();
-    
+    private readonly SemaphoreSlim _queueManagementSemaphore = new(1, 1);
+
+    private readonly SynchronizedValue<bool> _paused = new();
+
     /// <summary>
     /// The number of pending commands.
     /// </summary>
@@ -46,14 +47,14 @@ public class BlockingTaskProcessor : IDisposable
     /// Constructs a <see cref="BlockingTaskProcessor"/>
     /// </summary>
     /// <param name="autoStart"></param>
-    public BlockingTaskProcessor(bool autoStart=true)
+    public BlockingTaskProcessor(bool autoStart = true)
     {
         _taskProcessor = UnstartedTask.Create(TaskExecutionLoop);
         if (autoStart) StartProcessing();
     }
-    
+
     #region Command and Task Queuing
-    
+
     /// <summary>
     /// Enqueues an action. This is a "fire and forget" method. Control is immediately
     /// returned to the caller.
@@ -61,14 +62,14 @@ public class BlockingTaskProcessor : IDisposable
     /// <param name="command">The action to enqueue.</param>
     public void Enqueue(Action command) =>
         TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
-    
+
     /// <summary>
     /// Enqueues an async action. This is a "fire and forget" method.
     /// Control is returned to the caller immediately.
     /// </summary>
     /// <param name="command">The asynchronous action to enqueue.</param>
     public void Enqueue(Func<Task> command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Enqueues a function. This is a "fire and forget" method.
@@ -76,16 +77,16 @@ public class BlockingTaskProcessor : IDisposable
     /// </summary>
     /// <param name="command">The command to enqueue.</param>
     public void Enqueue<TResult>(Func<TResult> command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token), out _);
- 
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
+
     /// <summary>
     /// Enqueues an async function. This is a "fire and forget" method.
     /// The function result will not be available and control is immediately returned to the caller.
     /// </summary>
     /// <param name="command">The async function to enqueue.</param>
     public void Enqueue<TResult>(Func<Task<TResult>> command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token), out _);
-    
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
+
     /// <summary>
     /// Enqueues an action and returns a proxy task that will execute the action.
     /// Awaiting the returned proxy <see cref="Task"/> waits for the enqueued action to finish executing.
@@ -100,7 +101,7 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task EnqueueAndGetProxy(Action command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Enqueues an async action and returns a proxy task that will execute the action.
@@ -116,7 +117,7 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task EnqueueAndGetProxy(Func<Task> command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token), out _);
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Enqueues a function and returns a proxy task that will execute the function.
@@ -134,8 +135,8 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task<TResult> EnqueueAndGetProxy<TResult>(Func<TResult> command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token),out _);
-    
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
+
     /// <summary>
     /// Enqueues an async function and returns a proxy task that will execute the function.
     /// Awaiting the returned <see cref="Task"/> waits for the enqueued function to finish executing
@@ -152,7 +153,7 @@ public class BlockingTaskProcessor : IDisposable
     /// call <see cref="StartProcessing"/> for awaiting the result to work.
     /// </remarks>
     public Task<TResult> EnqueueAndGetProxy<TResult>(Func<Task<TResult>> command) =>
-        TryEnqueueTask(UnstartedTask.Create(command,_taskProcessingCancellationSource.Token),out _);
+        TryEnqueueTask(UnstartedTask.Create(command, _taskProcessingCancellationSource.Token), out _);
 
     /// <summary>
     /// Tries to enqueues a task for later execution. If the passed in task is not unstarted,
@@ -178,8 +179,8 @@ public class BlockingTaskProcessor : IDisposable
     public Task<TResult> TryEnqueueTask<TResult>(Task<TResult> task, out bool enqueued)
     {
         if (task == null) throw new ArgumentNullException(nameof(task));
-        enqueued=false;
-        TryEnqueueTask(task as Task,out enqueued);
+        enqueued = false;
+        TryEnqueueTask(task as Task, out enqueued);
         return task;
     }
 
@@ -222,16 +223,16 @@ public class BlockingTaskProcessor : IDisposable
             _queueManagementSemaphore.Release();
         }
     }
-    
+
     #endregion
-    
+
     #region Task Queue Management and Processing
 
     /// <summary>
     /// Gets a flag indicating if there are any pending tasks.
     /// </summary>
     public bool HasTasks => _taskQueue.Count > 0;
-    
+
     /// <summary>
     /// Signals the task processor to halt all processing immediately. This also cancels all
     /// tasks created by this task task processor. This is mostly intended to be called
@@ -248,12 +249,12 @@ public class BlockingTaskProcessor : IDisposable
         _taskProcessingCancellationSource = new CancellationTokenSource();
         RemoveAllTasks();
     }
-    
+
     /// <summary>
     /// Gets a flag indicating if the task processing has started. (it might be paused though).
     /// </summary>
     public bool IsStarted => _taskProcessor != null;
-    
+
     /// <summary>
     /// Gets a flag indicating if the command processing is currently paused.
     /// </summary>
@@ -298,7 +299,7 @@ public class BlockingTaskProcessor : IDisposable
         _taskProcessor = UnstartedTask.Create(TaskExecutionLoop);
         _taskProcessor.Start();
     }
-    
+
     private void RemoveAllTasks()
     {
         Debug.WriteLine(nameof(RemoveAllTasks));
@@ -313,7 +314,7 @@ public class BlockingTaskProcessor : IDisposable
             _queueManagementSemaphore.Release();
         }
     }
-    
+
     private void TaskExecutionLoop()
     {
         try
@@ -377,7 +378,7 @@ public class BlockingTaskProcessor : IDisposable
             _queueManagementSemaphore.Wait();
             if (!cancellationSource.IsCancellationRequested)
             {
-                var result= _taskQueue.TryTake(out item);
+                var result = _taskQueue.TryTake(out item);
                 return result;
             }
         }
@@ -385,6 +386,7 @@ public class BlockingTaskProcessor : IDisposable
         {
             _queueManagementSemaphore.Release();
         }
+
         item = default;
         return false;
     }

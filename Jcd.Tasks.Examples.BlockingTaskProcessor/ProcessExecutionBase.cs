@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Nito.AsyncEx;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable VirtualMemberNeverOverridden.Global
@@ -11,14 +12,14 @@ namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
 public abstract class ProcessExecutionBase<T>
-where T : ProcessExecutionBase<T>, new()
+    where T : ProcessExecutionBase<T>, new()
 {
     public static readonly T Instance = new();
 
-    public readonly SynchronizedValue<int> PingCount = new ();
+    public readonly SynchronizedValue<int> PingCount = new();
     protected readonly FakeServerProxy Server = new();
     protected Type MyType => GetType();
-    
+
     /// <summary>
     /// Runs the simulated calls relying solely on <see cref="AsyncLock"/>.
     /// </summary>
@@ -33,60 +34,65 @@ where T : ProcessExecutionBase<T>, new()
     /// may be based.
     /// </para>
     /// </remarks>
-    public virtual async Task Run(int lifespanInSeconds=60, 
-                          int pingFrequencyInMs=1000, 
-                          int maxTasks=50, 
-                          int taskSchedulingFrequencyInMs=100, 
-                          int minLatencyInMs=10,
-                          int maxAdditionalLatencyInMs=15,
-                          bool logRequestScheduling = true)
+    public virtual async Task Run(int lifespanInSeconds = 60,
+                                  int pingFrequencyInMs = 1000,
+                                  int maxTasks = 50,
+                                  int taskSchedulingFrequencyInMs = 100,
+                                  int minLatencyInMs = 10,
+                                  int maxAdditionalLatencyInMs = 15,
+                                  bool logRequestScheduling = true)
     {
-        Server.SetLatency(minLatencyInMs,maxAdditionalLatencyInMs);
+        Server.SetLatency(minLatencyInMs, maxAdditionalLatencyInMs);
         ReportRunType();
 
-        var makeCallsTask = CreateMakeLotsOfCallsTask(taskSchedulingFrequencyInMs,lifespanInSeconds,maxTasks,logRequestScheduling);
-        var pingTask = CreatePingTask(pingFrequencyInMs,lifespanInSeconds,logRequestScheduling);
+        var makeCallsTask = CreateMakeLotsOfCallsTask(taskSchedulingFrequencyInMs, lifespanInSeconds, maxTasks,
+            logRequestScheduling);
+        var pingTask = CreatePingTask(pingFrequencyInMs, lifespanInSeconds, logRequestScheduling);
 
         // wait for the tasks to finish regardless if their completion status.
         await Task.WhenAll(makeCallsTask.TryWaitAsync(), pingTask.TryWaitAsync());
-        
+
         // cancellation token expired. Cancel pending tasks.
         Server.CancelAllRequests();
     }
 
     #region Private Implementation
-    private Task CreateMakeLotsOfCallsTask(double scheduleDelayInMs = 100, 
-                                             double lifeSpanInSeconds = 120,
-                                             int numberOfMakeRequestTasks = 50, 
-                                             bool logSchedulingRequests=true)
+
+    private Task CreateMakeLotsOfCallsTask(double scheduleDelayInMs = 100,
+                                           double lifeSpanInSeconds = 120,
+                                           int numberOfMakeRequestTasks = 50,
+                                           bool logSchedulingRequests = true)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         return Task.Run(async () =>
         {
-            Console.WriteLine($"{nameof(CreateMakeLotsOfCallsTask)} running, scheduling {numberOfMakeRequestTasks} {nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
+            Console.WriteLine(
+                $"{nameof(CreateMakeLotsOfCallsTask)} running, scheduling {numberOfMakeRequestTasks} {nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
             await Console.Out.FlushAsync();
 
             var rnd = new Random();
             while (!cts.IsCancellationRequested)
             {
-                await WaitToScheduleLotsOfCalls(scheduleDelayInMs, numberOfMakeRequestTasks, logSchedulingRequests, cts);
+                await WaitToScheduleLotsOfCalls(scheduleDelayInMs, numberOfMakeRequestTasks, logSchedulingRequests,
+                    cts);
                 ScheduleLotsOfCalls(numberOfMakeRequestTasks, rnd, cts);
                 await Task.Yield(); // be sort of CPU friendly.
             }
+
             if (cts.IsCancellationRequested) throw new OperationCanceledException();
         }, cts.Token);
     }
 
-    private async Task WaitToScheduleLotsOfCalls(double scheduleDelayInMs, 
+    private async Task WaitToScheduleLotsOfCalls(double scheduleDelayInMs,
                                                  int numberOfMakeRequestTasks,
-                                                 bool logSchedulingRequests, 
+                                                 bool logSchedulingRequests,
                                                  CancellationTokenSource cts)
     {
         await Task.Delay(TimeSpan.FromMilliseconds(scheduleDelayInMs * 5), cts.Token);
         if (cts.IsCancellationRequested) throw new OperationCanceledException();
         LogSchedulingLotsOfTasks(numberOfMakeRequestTasks, logSchedulingRequests, scheduleDelayInMs);
     }
-    
+
     private void ScheduleLotsOfCalls(int numberOfMakeRequestTasks, Random rnd, CancellationTokenSource cts)
     {
         // scheduling without awaiting the calls is intentional.
@@ -97,25 +103,28 @@ where T : ProcessExecutionBase<T>, new()
             ScheduleASingleCall(rnd, cts, i);
         }
     }
-    
-    private Task CreatePingTask(double scheduleDelayInMs = 1000, double lifeSpanInSeconds = 120, bool logRequestScheduling=true)
+
+    private Task CreatePingTask(double scheduleDelayInMs = 1000, double lifeSpanInSeconds = 120,
+                                bool logRequestScheduling = true)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
 
 
         return Task.Run(async () =>
         {
-            Console.WriteLine($"{nameof(CreatePingTask)} running, scheduling {nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
+            Console.WriteLine(
+                $"{nameof(CreatePingTask)} running, scheduling {nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
             await Console.Out.FlushAsync();
             var rnd = new Random();
 
             while (!cts.IsCancellationRequested)
             {
                 if (cts.IsCancellationRequested) throw new OperationCanceledException();
-                await Task.Delay(TimeSpan.FromMilliseconds(scheduleDelayInMs),cts.Token);
+                await Task.Delay(TimeSpan.FromMilliseconds(scheduleDelayInMs), cts.Token);
                 SchedulePing(PingCount, rnd, DateTime.Now, cts, logRequestScheduling);
                 await Task.Yield();
             }
+
             if (cts.IsCancellationRequested) throw new OperationCanceledException();
         }, cts.Token);
     }
@@ -127,7 +136,7 @@ where T : ProcessExecutionBase<T>, new()
         {
             LogPingScheduled(logRequestScheduling, pingBacklog);
             await pingBacklog.ChangeValueAsync(v => v + 1); // increment the value
-            var (startedAt,finishedAt) = await SendPingWrapper(rnd,cts);
+            var (startedAt, finishedAt) = await SendPingWrapper(rnd, cts);
             var backlog = await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
             await ReportPingResults(finishedAt, startedAt, scheduledAt, backlog);
         }
@@ -138,7 +147,7 @@ where T : ProcessExecutionBase<T>, new()
         }
         catch (Exception ex)
         {
-            await LogPingException(ex,pingBacklog);
+            await LogPingException(ex, pingBacklog);
         }
     }
 
@@ -160,7 +169,8 @@ where T : ProcessExecutionBase<T>, new()
     }
 
 
-    private async Task<(DateTime startedAt, DateTime finishedAt)> SendPingWrapper(Random rnd,CancellationTokenSource cts)
+    private async Task<(DateTime startedAt, DateTime finishedAt)> SendPingWrapper(
+        Random rnd, CancellationTokenSource cts)
     {
         CreatePingBuffers(rnd, out var buff, out var buff2);
         // let's read two values from the server but don't care about the order they're returned in.
@@ -172,7 +182,7 @@ where T : ProcessExecutionBase<T>, new()
         if (cts.IsCancellationRequested) throw new OperationCanceledException();
         return (startedAt, finishedAt);
     }
-    
+
     private void CreatePingBuffers(Random rnd, out byte[] buff, out byte[] buff2)
     {
         buff = new byte[20];
@@ -180,11 +190,11 @@ where T : ProcessExecutionBase<T>, new()
         buff2 = new byte[20];
         rnd.NextBytes(buff2);
     }
-    
+
     #endregion
-    
+
     #region Abstract/Virtual Members
-    
+
     protected abstract void ScheduleASingleCall(Random rnd, CancellationTokenSource cts, int fakeBufferType);
 
     protected abstract void ReportRunType();
@@ -198,16 +208,19 @@ where T : ProcessExecutionBase<T>, new()
     }
 
     protected void LogSchedulingLotsOfTasks(int numberOfMakeRequestTasks, bool logSchedulingRequests,
-                                                    double scheduleDelayInMs)
+                                            double scheduleDelayInMs)
     {
         if (logSchedulingRequests)
-            Console.WriteLine($"{nameof(CreateMakeLotsOfCallsTask)} running, scheduling {numberOfMakeRequestTasks} {nameof(FakeServerProxy)}.{nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
+            Console.WriteLine(
+                $"{nameof(CreateMakeLotsOfCallsTask)} running, scheduling {numberOfMakeRequestTasks} {nameof(FakeServerProxy)}.{nameof(FakeServerProxy.SendRequest)} tasks every {scheduleDelayInMs:n2} ms");
     }
 
     protected virtual void SchedulePing(SynchronizedValue<int> pingBacklog, Random rnd, DateTime scheduledAt,
                                         CancellationTokenSource cts, bool logRequestScheduling)
     {
-        if (logRequestScheduling) Console.WriteLine($"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value}");
+        if (logRequestScheduling)
+            Console.WriteLine(
+                $"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value}");
         if (logRequestScheduling) Console.Out.Flush();
         // run the ping in a background thread. This is to simulate a UI or other
         // separate thread of a program periodically telling the communications
@@ -215,6 +228,7 @@ where T : ProcessExecutionBase<T>, new()
         // it will not for this example. In fact we'll see them start stacking up.
         Task.Run(() => ExecutePing(pingBacklog, rnd, scheduledAt, cts, logRequestScheduling), cts.Token);
     }
+
     protected virtual async Task PerformPing(byte[] buff, byte[] buff2)
     {
         await Task.WhenAll(Server.SendRequest(314159, buff), Server.SendRequest(314160, buff2));

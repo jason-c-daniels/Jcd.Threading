@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -33,19 +34,19 @@ public class SynchronizedValue<T> : IDisposable
 {
     private readonly SemaphoreSlim _lock;
     private T _value;
-    
+
     /// <summary>
     /// Constructs an <see cref="SynchronizedValue{T}"/> instance.
     /// </summary>
     /// <param name="initialValue">The starting value.</param>
-    public SynchronizedValue(T initialValue=default)
+    public SynchronizedValue(T initialValue = default)
     {
         _lock = new SemaphoreSlim(1, 1);
         _value = initialValue;
     }
-    
+
     #region properties and accessors
-    
+
     /// <summary>
     /// The synchronized value.
     /// </summary>
@@ -71,7 +72,7 @@ public class SynchronizedValue<T> : IDisposable
     public async Task<T> SetValueAsync(T value)
     {
         await _lock.WaitAsync();
-        var result=_value = value;
+        var result = _value = value;
         _lock.Release();
         return result;
     }
@@ -88,7 +89,7 @@ public class SynchronizedValue<T> : IDisposable
         _lock.Release();
         return value;
     }
-    
+
     /// <summary>
     /// Sets the current value to the provided value.
     /// </summary>
@@ -97,41 +98,41 @@ public class SynchronizedValue<T> : IDisposable
     public T SetValue(T value)
     {
         _lock.Wait();
-        var result= _value = value;
+        var result = _value = value;
         _lock.Release();
         return result;
     }
-    
+
     /// <summary>
     /// Calls the provided function, passing in the current value, and assigns the result of the
     /// function call, to the current value.
     /// </summary>
     /// <param name="func">The function to call.</param>
     /// <returns>The result of calling the function.</returns>
-    public T ChangeValue(Func<T,T> func)
+    public T ChangeValue(Func<T, T> func)
     {
         _lock.Wait();
-        var result=_value = func(_value);
+        var result = _value = func(_value);
         _lock.Release();
         return result;
     }
- 
+
     /// <summary>
     /// Calls the provided function, passing in the current value, and assigns the result of the
     /// function call, to the current value.
     /// </summary>
     /// <param name="func">The function to call.</param>
     /// <returns>A <see cref="Task{T}"/> containing the result of calling the function.</returns>
-    public async Task<T> ChangeValueAsync(Func<T,T> func)
+    public async Task<T> ChangeValueAsync(Func<T, T> func)
     {
         await _lock.WaitAsync();
-        var result=_value = func(_value);
+        var result = _value = func(_value);
         _lock.Release();
         return result;
     }
 
     #endregion
-    
+
     /// <inheritdoc />
     public void Dispose()
     {

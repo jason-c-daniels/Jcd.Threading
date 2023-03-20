@@ -1,4 +1,5 @@
 ﻿using Nito.AsyncEx;
+
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
@@ -44,15 +45,17 @@ namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTaskProcessor>
 {
     protected readonly Tasks.BlockingTaskProcessor CommandProcessor = new();
-    
+
     #region Overrides
 
     /// <inheritdoc />
     public override async Task Run(int lifespanInSeconds = 60, int pingFrequencyInMs = 1000, int maxTasks = 50,
-                             int taskSchedulingFrequencyInMs = 100, int minLatencyInMs = 10, int maxAdditionalLatencyInMs = 15,
-                             bool logRequestScheduling = true)
+                                   int taskSchedulingFrequencyInMs = 100, int minLatencyInMs = 10,
+                                   int maxAdditionalLatencyInMs = 15,
+                                   bool logRequestScheduling = true)
     {
-        await base.Run(lifespanInSeconds, pingFrequencyInMs, maxTasks, taskSchedulingFrequencyInMs, minLatencyInMs, maxAdditionalLatencyInMs, logRequestScheduling);
+        await base.Run(lifespanInSeconds, pingFrequencyInMs, maxTasks, taskSchedulingFrequencyInMs, minLatencyInMs,
+            maxAdditionalLatencyInMs, logRequestScheduling);
         CommandProcessor.Cancel();
     }
 
@@ -67,14 +70,16 @@ public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTa
             await Task.Yield();
         });
     }
-    
-    protected override void SchedulePing(SynchronizedValue<int> pingBacklog, 
-                                         Random rnd, 
+
+    protected override void SchedulePing(SynchronizedValue<int> pingBacklog,
+                                         Random rnd,
                                          DateTime scheduledAt,
-                                         CancellationTokenSource cts, 
+                                         CancellationTokenSource cts,
                                          bool logRequestScheduling)
     {
-        if (logRequestScheduling) Console.WriteLine($"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value} and Command Queue Length of {CommandProcessor.QueueLength}");
+        if (logRequestScheduling)
+            Console.WriteLine(
+                $"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value} and Command Queue Length of {CommandProcessor.QueueLength}");
         if (logRequestScheduling) Console.Out.Flush();
         // run the ping in a background thread. This is to simulate a UI or other
         // separate thread of a program periodically telling the communications
@@ -82,7 +87,7 @@ public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTa
         // it will not for this example. In fact we'll see them start stacking up.
         CommandProcessor.Enqueue(() => ExecutePing(pingBacklog, rnd, scheduledAt, cts, logRequestScheduling));
     }
-    
+
     protected override void ReportRunType()
     {
         Console.WriteLine("-----------------------------------------------");

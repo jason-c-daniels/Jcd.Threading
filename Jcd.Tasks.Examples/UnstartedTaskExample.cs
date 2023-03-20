@@ -1,5 +1,6 @@
 ﻿// ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.BoxingAllocation
+
 namespace Jcd.Tasks.Examples;
 
 public static class UnstartedTaskExample
@@ -22,7 +23,15 @@ public static class UnstartedTaskExample
         await ctA; // wait for it to finish. Should do the output between ctA.Start() and here.
         // don't do this though, starting it a second time gives an exception.
         Console.Write("Try starting it again! (it won't work); ");
-        try {ctA.Start(); } catch(Exception ex){Console.WriteLine($"Bad Programmer Error: {ex.Message}");}
+        try
+        {
+            ctA.Start();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Bad Programmer Error: {ex.Message}");
+        }
+
         Console.WriteLine();
 
         //--------------------------------------------
@@ -57,7 +66,7 @@ public static class UnstartedTaskExample
         //--------------------------------------------
         // create an unstarted task from an async function
         //--------------------------------------------
-        var ctaF = UnstartedTask.Create(async ()=>await TimesTenAsync(12));
+        var ctaF = UnstartedTask.Create(async () => await TimesTenAsync(12));
 
         Console.WriteLine($"ctaF.Status = {ctaF.Status} | Is it an unstarted task? {ctaF.IsUnstarted()}");
 
@@ -70,8 +79,12 @@ public static class UnstartedTaskExample
 
 
         // another no-no, saved for the end. It'll hang the app.
-        var unstarted = UnstartedTask.Create(() => { /* This part is unimportant. */ });
-        Console.WriteLine($"unstarted.Status = {unstarted.Status} | Is it an unstarted task? {unstarted.IsUnstarted()}");
+        var unstarted = UnstartedTask.Create(() =>
+        {
+            /* This part is unimportant. */
+        });
+        Console.WriteLine(
+            $"unstarted.Status = {unstarted.Status} | Is it an unstarted task? {unstarted.IsUnstarted()}");
         Console.WriteLine("Now we await the unstarted task and wait forever. (Press CTRL-C to end)");
         await unstarted;
 
@@ -84,6 +97,5 @@ public static class UnstartedTaskExample
         }
 
         return 0;
-
     }
 }

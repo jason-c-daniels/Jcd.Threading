@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+
 // ReSharper disable UnusedType.Global
 
 namespace Jcd.Tasks;
@@ -7,4 +8,6 @@ namespace Jcd.Tasks;
 /// Provides classes and extension methods to assist with the creation, execution, and
 /// management of <see cref="Task"/> instances.
 /// </summary>
-internal class NamespaceDoc { }
+internal class NamespaceDoc
+{
+}

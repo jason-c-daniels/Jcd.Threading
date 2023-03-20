@@ -2,6 +2,7 @@
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable UnusedMethodReturnValue.Global
+
 namespace Jcd.Tasks.Examples;
 
 /// <summary>
