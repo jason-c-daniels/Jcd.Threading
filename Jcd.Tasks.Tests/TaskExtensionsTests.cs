@@ -37,16 +37,13 @@ public class TaskExtensionsTests
     [Fact]
     public async Task IsUnstarted_Returns_False_For_A_Task_With_Status_Of_Running()
     {
-        using var cts = new CancellationTokenSource();
-
         // ReSharper disable once AccessToDisposedClosure
-        async void Action() => await Task.Delay(1000, cts.Token);
+        async void Action() => await Task.Delay(20);
 
-        var t1 = new Task(Action, cts.Token);
+        var t1 = new Task(Action);
         t1.TryRun(out _);
-        await Task.Delay(2, cts.Token);
+        await Task.Delay(2);
         Assert.False(t1.IsUnstarted());
-        cts.Cancel();
     }
 
     [Fact]
