@@ -147,7 +147,7 @@ public class BlockingTaskProcessorTests
         btp.Cancel();
         btp.Cancel();
     }
-    
+
     [Fact]
     public void StartProcessing_Can_Be_Called_Multiple_Times_In_A_Row_Without_Error()
     {
@@ -160,7 +160,7 @@ public class BlockingTaskProcessorTests
         Thread.Sleep(10);
         btp.StartProcessing();
     }
-    
+
     [Fact]
     public void Pause_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
@@ -168,7 +168,7 @@ public class BlockingTaskProcessorTests
         btp.Pause();
         btp.Pause();
     }
-   
+
     [Fact]
     public async Task PauseAsync_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
@@ -176,7 +176,7 @@ public class BlockingTaskProcessorTests
         await btp.PauseAsync();
         await btp.PauseAsync();
     }
-    
+
     [Fact]
     public void Resume_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
@@ -184,8 +184,8 @@ public class BlockingTaskProcessorTests
         btp.Resume();
         btp.Resume();
     }
-    
-    
+
+
     [Fact]
     public async Task ResumeAsync_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
@@ -206,10 +206,11 @@ public class BlockingTaskProcessorTests
         {
             btp.Enqueue(() => { });
         }
-        Assert.Equal(tasksToCreate,btp.QueueLength);
-        Assert.Equal(tasksToCreate > 0,btp.HasTasks);
+
+        Assert.Equal(tasksToCreate, btp.QueueLength);
+        Assert.Equal(tasksToCreate > 0, btp.HasTasks);
     }
-    
+
     [Theory]
     [InlineData(100)]
     [InlineData(200)]
@@ -221,13 +222,13 @@ public class BlockingTaskProcessorTests
         var cts = new CancellationTokenSource();
         for (var i = 0; i < tasksToCreate; i++)
         {
-            btp.TryEnqueueTask(UnstartedTask.Create(() => { },cts.Token),out _);
+            btp.TryEnqueueTask(UnstartedTask.Create(() => { }, cts.Token), out _);
         }
+
         btp.StartProcessing();
         cts.Cancel();
         while (btp.HasTasks)
         {
-            
-        }        
+        }
     }
 }
