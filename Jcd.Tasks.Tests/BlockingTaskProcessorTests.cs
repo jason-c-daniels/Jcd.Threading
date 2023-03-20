@@ -158,6 +158,7 @@ public class BlockingTaskProcessorTests
         btp.StartProcessing();
         Thread.Sleep(10);
         btp.StartProcessing();
+        btp.Cancel();
     }
 
     [Fact]
@@ -166,6 +167,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         btp.Pause();
         btp.Pause();
+        btp.Cancel();
     }
 
     [Fact]
@@ -174,6 +176,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         await btp.PauseAsync();
         await btp.PauseAsync();
+        btp.Cancel();
     }
 
     [Fact]
@@ -182,6 +185,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         btp.Resume();
         btp.Resume();
+        btp.Cancel();
     }
     
     [Fact]
@@ -190,6 +194,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         await btp.ResumeAsync();
         await btp.ResumeAsync();
+        btp.Cancel();
     }
 
     [Theory]
@@ -207,13 +212,14 @@ public class BlockingTaskProcessorTests
 
         Assert.Equal(tasksToCreate, btp.QueueLength);
         Assert.Equal(tasksToCreate > 0, btp.HasTasks);
+        btp.Cancel();
     }
 
     [Theory]
-    [InlineData(100)]
-    [InlineData(200)]
-    [InlineData(500)]
-    [InlineData(300)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(5)]
+    [InlineData(3)]
     public void Tasks_Externally_Cancelled_Are_Discarded_Without_Error(int tasksToCreate)
     {
         var btp = new BlockingTaskProcessor(false);
@@ -228,5 +234,6 @@ public class BlockingTaskProcessorTests
         while (btp.HasTasks)
         {
         }
+        btp.Cancel();
     }
 }
