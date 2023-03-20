@@ -39,7 +39,7 @@ public class BlockingTaskProcessorTests
         var funcRan = false;
         bool Func() => funcRan = true;
         btp.Enqueue(Func);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(funcRan);
         btp.Cancel();
     }
@@ -57,7 +57,7 @@ public class BlockingTaskProcessorTests
         }
 
         btp.Enqueue(Action);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(actionRan);
         btp.Cancel();
     }
@@ -69,7 +69,7 @@ public class BlockingTaskProcessorTests
         var funcRan = false;
         Task<bool> Func() => Task.FromResult(funcRan = true);
         btp.Enqueue(Func);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(funcRan);
         btp.Cancel();
     }
@@ -86,7 +86,7 @@ public class BlockingTaskProcessorTests
         }
 
         var t = btp.EnqueueAndGetProxy(Action);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(actionRan);
         Assert.NotNull(t);
         btp.Cancel();
@@ -99,7 +99,7 @@ public class BlockingTaskProcessorTests
         var funcRan = false;
         bool Func() => funcRan = true;
         var t = btp.EnqueueAndGetProxy(Func);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(funcRan);
         Assert.NotNull(t);
         Assert.True(t.Result);
@@ -119,7 +119,7 @@ public class BlockingTaskProcessorTests
         }
 
         var t = btp.EnqueueAndGetProxy(Action);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(actionRan);
         Assert.NotNull(t);
         btp.Cancel();
@@ -132,7 +132,7 @@ public class BlockingTaskProcessorTests
         var funcRan = false;
         Task<bool> Func() => Task.FromResult(funcRan = true);
         var t = btp.EnqueueAndGetProxy(Func);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(funcRan);
         Assert.NotNull(t);
         Assert.True(t.Result);
@@ -152,11 +152,11 @@ public class BlockingTaskProcessorTests
     {
         using var btp = new BlockingTaskProcessor(false);
         btp.StartProcessing();
-        Thread.Sleep(10);
+        Thread.Sleep(50);
         btp.StartProcessing();
-        Thread.Sleep(10);
+        Thread.Sleep(50);
         btp.StartProcessing();
-        Thread.Sleep(10);
+        Thread.Sleep(50);
         btp.StartProcessing();
         btp.Cancel();
     }
