@@ -76,8 +76,7 @@ public static class UnstartedTaskExample
         Console.WriteLine($"The result of the task is {await ctaF}");
 
         Console.WriteLine();
-
-
+            
         // another no-no, saved for the end. It'll hang the app.
         var unstarted = UnstartedTask.Create(() =>
         {

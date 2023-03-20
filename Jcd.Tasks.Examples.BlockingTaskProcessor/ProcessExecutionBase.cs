@@ -108,8 +108,7 @@ public abstract class ProcessExecutionBase<T>
                                 bool logRequestScheduling = true)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
-
-
+        
         return Task.Run(async () =>
         {
             Console.WriteLine(
@@ -150,8 +149,7 @@ public abstract class ProcessExecutionBase<T>
             await LogPingException(ex, pingBacklog);
         }
     }
-
-
+    
     private async Task LogPingException(Exception ex, SynchronizedValue<int> pingBacklog)
     {
         Console.WriteLine($"{MyType.Name}: Error during {nameof(ExecutePing)} : {ex.Message}");
@@ -167,8 +165,7 @@ public abstract class ProcessExecutionBase<T>
         await Console.Out.FlushAsync();
         await Task.Yield();
     }
-
-
+    
     private async Task<(DateTime startedAt, DateTime finishedAt)> SendPingWrapper(
         Random rnd, CancellationTokenSource cts)
     {

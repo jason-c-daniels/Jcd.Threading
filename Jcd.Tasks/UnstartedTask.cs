@@ -79,8 +79,7 @@ public static class UnstartedTask
         var task = cancellationToken.HasValue
             ? new Task<TResult>(() => function().Result, cancellationToken.Value, options)
             : new Task<TResult>(() => function().Result, options);
-
-
+        
         return task;
     }
 }
