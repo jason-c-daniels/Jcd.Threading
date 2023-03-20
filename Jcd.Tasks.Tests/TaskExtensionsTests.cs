@@ -57,7 +57,7 @@ public class TaskExtensionsTests
     [Fact]
     public async Task IsUnstarted_Returns_False_For_A_Task_Created_By_Task_Run()
     {
-        var t1 = Task.Run(async () => await Task.Delay(2));
+        var t1 = Task.Run(async () => await Task.Delay(20));
         while (t1.Status == TaskStatus.Created)
         {
             // wait for the status to transition to one of the 
@@ -130,7 +130,7 @@ public class TaskExtensionsTests
     [Fact]
     public void TryWait_Waits_On_A_Running_Task_Until_It_Completes_And_Returns_True()
     {
-        var t = Task.Run(async () => await Task.Delay(2));
+        var t = Task.Run(async () => await Task.Delay(20));
         Assert.True(t.TryWait());
     }
 
@@ -149,7 +149,7 @@ public class TaskExtensionsTests
     [Fact]
     public async Task TryWaitAsync_Waits_On_A_Running_Task_Until_It_Completes_And_Returns_True()
     {
-        var t = Task.Run(async () => await Task.Delay(2));
+        var t = Task.Run(async () => await Task.Delay(20));
         Assert.True(await t.TryWaitAsync());
     }
 
@@ -172,7 +172,7 @@ public class TaskExtensionsTests
     {
         var t = Task.Run(async () =>
         {
-            await Task.Delay(2);
+            await Task.Delay(20);
             if (cancel) throw new OperationCanceledException();
             throw new Exception();
         });
@@ -186,7 +186,7 @@ public class TaskExtensionsTests
     {
         var t = Task.Run(async () =>
         {
-            await Task.Delay(2);
+            await Task.Delay(20);
             if (cancel) throw new OperationCanceledException();
             throw new Exception();
         });
