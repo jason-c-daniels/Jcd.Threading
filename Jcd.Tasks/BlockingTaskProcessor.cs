@@ -49,7 +49,7 @@ public class BlockingTaskProcessor : IDisposable
     /// <param name="autoStart"></param>
     public BlockingTaskProcessor(bool autoStart = true)
     {
-        _taskProcessor = UnstartedTask.Create(TaskExecutionLoop);
+        _taskProcessor = UnstartedTask.Create(TaskExecutionLoop, _taskProcessingCancellationSource.Token);
         if (autoStart) StartProcessing();
     }
 
@@ -243,17 +243,20 @@ public class BlockingTaskProcessor : IDisposable
         Debug.WriteLine($"{nameof(Cancel)} called from Thread {Environment.CurrentManagedThreadId}");
         Debug.Flush();
         _taskProcessingCancellationSource.Cancel();
-        _taskProcessor.Wait();
+        if (_taskProcessor.Status == TaskStatus.Running || _taskProcessor.Status == TaskStatus.WaitingForChildrenToComplete) 
+            _taskProcessor.Wait();
+        _queueManagementSemaphore.Wait();
+        _taskProcessor = UnstartedTask.Create(TaskExecutionLoop, _taskProcessingCancellationSource.Token);
         _taskProcessingCancellationSource.Dispose();
-        _taskProcessor = null;
         _taskProcessingCancellationSource = new CancellationTokenSource();
+        _queueManagementSemaphore.Release();
         RemoveAllTasks();
     }
 
     /// <summary>
     /// Gets a flag indicating if the task processing has started. (it might be paused though).
     /// </summary>
-    public bool IsStarted => _taskProcessor != null;
+    public bool IsStarted => !_taskProcessor.IsUnstarted();
 
     /// <summary>
     /// Gets a flag indicating if the command processing is currently paused.
@@ -296,8 +299,15 @@ public class BlockingTaskProcessor : IDisposable
             return;
         }
 
-        _taskProcessor = UnstartedTask.Create(TaskExecutionLoop);
-        _taskProcessor.Start();
+        if (_taskProcessor != null && _taskProcessor.IsUnstarted())
+        {
+            _taskProcessor.Start();
+        }
+        else
+        {
+            _taskProcessor = UnstartedTask.Create(TaskExecutionLoop, _taskProcessingCancellationSource.Token);
+            _taskProcessor.Start();
+        }
     }
 
     private void RemoveAllTasks()
