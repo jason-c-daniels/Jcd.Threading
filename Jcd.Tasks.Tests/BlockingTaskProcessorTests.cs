@@ -236,4 +236,50 @@ public class BlockingTaskProcessorTests
         }
         btp.Cancel();
     }
+
+    [Fact]
+    public void TryEnqueueTask_Called_With_Null_Task_Throws_ArgumentNullException()
+    {
+        var btp = new BlockingTaskProcessor();
+        Task t1 = null;
+        Task<bool> t2 = null;
+        Assert.ThrowsAsync<ArgumentNullException>(()=>btp.TryEnqueueTask(t1,out _));
+        Assert.ThrowsAsync<ArgumentNullException>(()=>btp.TryEnqueueTask(t2,out _));
+    }
+    
+    [Fact]
+    public void TryEnqueueTask_Called_With_Running_Task_Returns_The_Task_Without_Enqueuing()
+    {
+        var btp = new BlockingTaskProcessor(false);
+        Task t1 = Task.Run(()=>Thread.Sleep(100));
+        Task<bool> t2 = Task.Run(()=>
+        {
+            Thread.Sleep(100);
+            return true;
+        });
+        var rt1 = btp.TryEnqueueTask(t1, out _);
+        Assert.Same(t1, rt1);
+        Assert.Equal(0,btp.QueueLength);
+        var rt2 = btp.TryEnqueueTask(t2, out _);
+        Assert.Same(t2, rt2);
+        Assert.Equal(0,btp.QueueLength);
+    }
+    
+    [Fact]
+    public void TryEnqueueTask_Called_With_Unstarted_Task_Returns_The_Task_After_Enqueuing()
+    {
+        var btp = new BlockingTaskProcessor(false);
+        Task t1 = UnstartedTask.Create(()=>Thread.Sleep(100));
+        Task<bool> t2 = UnstartedTask.Create(()=>
+        {
+            Thread.Sleep(100);
+            return true;
+        });
+        var rt1 = btp.TryEnqueueTask(t1, out _);
+        Assert.Same(t1, rt1);
+        Assert.Equal(1,btp.QueueLength);
+        var rt2 = btp.TryEnqueueTask(t2, out _);
+        Assert.Same(t2, rt2);
+        Assert.Equal(2,btp.QueueLength);
+    }
 }
