@@ -73,8 +73,7 @@ public class BlockingTaskProcessorTests
         Assert.True(funcRan);
         btp.Cancel();
     }
-
-
+    
     [Fact]
     public async Task EnqueueAndGetProxy_Action_Enqueues_Returns_A_Proxy_And_Executes_The_Action()
     {
@@ -184,8 +183,7 @@ public class BlockingTaskProcessorTests
         btp.Resume();
         btp.Resume();
     }
-
-
+    
     [Fact]
     public async Task ResumeAsync_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
