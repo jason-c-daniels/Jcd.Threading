@@ -2,7 +2,7 @@
 
 ## TaskExtensions.Run(this Task) Method
 
-Calls [TryRun(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryRun(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryRun(this System.Threading.Tasks.Task, System.Exception)') on a task then returns the task, discarding exceptions.
+Calls [TryStart(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryStart(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryStart(this System.Threading.Tasks.Task, System.Exception)') on a task then returns the task, discarding exceptions.
 
 ```csharp
 public static System.Threading.Tasks.Task Run(this System.Threading.Tasks.Task task);

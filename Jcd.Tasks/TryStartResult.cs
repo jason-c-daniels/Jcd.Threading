@@ -1,14 +1,14 @@
 ﻿namespace Jcd.Tasks;
 
 /// <summary>
-/// The possible results of calling <see cref="TaskExtensions.TryRun"/>
+/// The possible results of calling <see cref="TaskExtensions.TryStart"/>
 /// </summary>
-public enum TryRunResult
+public enum TryStartResult
 {
     /// <summary>
     /// Start was called and no exception resulted.
     /// </summary>
-    SuccessfullyCalled,
+    SuccessfullyStarted,
 
     /// <summary>
     /// The task was already in a started state. Start was not called.

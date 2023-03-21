@@ -242,10 +242,9 @@ public class BlockingTaskProcessor : IDisposable
     {
         Debug.WriteLine($"{nameof(Cancel)} called from Thread {Environment.CurrentManagedThreadId}");
         Debug.Flush();
-        _taskProcessingCancellationSource.Cancel();
-        if (_taskProcessor.Status == TaskStatus.Running ||
-            _taskProcessor.Status == TaskStatus.WaitingForChildrenToComplete)
-            _taskProcessor.Wait();
+        if (!_taskProcessingCancellationSource.IsCancellationRequested) _taskProcessingCancellationSource.Cancel();
+        if (_taskProcessor.Status is TaskStatus.Running or TaskStatus.WaitingForChildrenToComplete)
+            _taskProcessor.TryWait();
         _queueManagementSemaphore.Wait();
         _taskProcessor = UnstartedTask.Create(TaskExecutionLoop, _taskProcessingCancellationSource.Token);
         _taskProcessingCancellationSource.Dispose();
@@ -352,7 +351,7 @@ public class BlockingTaskProcessor : IDisposable
                     continue;
                 }
 
-                TryRunAndWait(task, cancellationSource);
+                task.Run().TryWait(cancellationSource.Token);
                 Task.Yield(); // yield some CPU time.
             }
         }
@@ -360,25 +359,6 @@ public class BlockingTaskProcessor : IDisposable
         {
             Debug.WriteLine($"Exiting {nameof(TaskExecutionLoop)}");
             Debug.Flush();
-        }
-    }
-
-    private static void TryRunAndWait(Task task, CancellationTokenSource cancellationSource)
-    {
-        if (cancellationSource.IsCancellationRequested)
-        {
-            return;
-        }
-
-        try
-        {
-            task
-                .Run()
-                .Wait(cancellationSource.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            // do nothing. This is expected if lots of tasks are pending and Cancel has been called.
         }
     }
 
