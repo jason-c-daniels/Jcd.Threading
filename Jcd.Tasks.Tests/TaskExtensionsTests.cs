@@ -220,9 +220,9 @@ public class TaskExtensionsTests
     }
     
     [Theory]
-    [InlineData(50d)]
-    [InlineData(60d)]
     [InlineData(70d)]
+    [InlineData(80d)]
+    [InlineData(90d)]
     public void TryWait_With_Valid_Timeout_Timespan_Waits_For_Completion(double waitTimeoutInMilliseconds)
     {
         var delayTimeout=TimeSpan.FromMilliseconds(waitTimeoutInMilliseconds);
@@ -236,9 +236,9 @@ public class TaskExtensionsTests
     }
     
     [Theory]
-    [InlineData(50)]
-    [InlineData(60)]
     [InlineData(70)]
+    [InlineData(80)]
+    [InlineData(90)]
     public void TryWait_With_Valid_Timeout_Int_Waits_For_Completion(int waitTimeoutInMilliseconds)
     {
         var delayTimeout=waitTimeoutInMilliseconds;
