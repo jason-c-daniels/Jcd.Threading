@@ -44,11 +44,13 @@ public static class SynchronizedValueExample
         // faulted tasks.
         //
 
-        await Task.WhenAll(
-            reportValueTask.TryWaitAsync(),
-            setTo20Task.TryWaitAsync(),
-            decBy4Task.TryWaitAsync(),
-            incrementTask.TryWaitAsync());
+        // wait for the tasks to finish regardless if their faulted or cancelled status.
+        while (
+            !reportValueTask.IsCompleted ||
+            !setTo20Task.IsCompleted ||
+            !decBy4Task.IsCompleted ||
+            !incrementTask.IsCompleted)
+            await Task.Yield();
 
         // now report their statuses.
         Console.WriteLine($"reportValue.Status {reportValueTask.Status}");

@@ -319,14 +319,6 @@
             <param name="task">the task to inspect</param>
             <returns>True if unstarted. False otherwise.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWaitAsync(System.Threading.Tasks.Task)">
-            <summary>
-            Tries to await a task regardless of status. 
-            </summary>
-            <param name="task">The task to try awaiting.</param>
-            <returns>true if awaited without exception. false otherwise.</returns>
-            <remarks>If successfully awaited, this method will block until the task completes.</remarks>
-        </member>
         <member name="M:Jcd.Tasks.TaskExtensions.Run(System.Threading.Tasks.Task)">
             <summary>
             Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/> on a task then returns the task, discarding exceptions.

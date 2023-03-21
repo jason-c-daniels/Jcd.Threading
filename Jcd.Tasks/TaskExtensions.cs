@@ -23,25 +23,6 @@ public static class TaskExtensions
         task.Status == TaskStatus.Created;
 
     /// <summary>
-    /// Tries to await a task regardless of status. 
-    /// </summary>
-    /// <param name="task">The task to try awaiting.</param>
-    /// <returns>true if awaited without exception. false otherwise.</returns>
-    /// <remarks>If successfully awaited, this method will block until the task completes.</remarks>
-    public static async Task<bool> TryWaitAsync(this Task task)
-    {
-        try
-        {
-            if (!task.IsCompleted) await task;
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// Calls <see cref="TryStart"/> on a task then returns the task, discarding exceptions.
     /// </summary>
     /// <param name="task">the task to start</param>
@@ -158,7 +139,7 @@ public static class TaskExtensions
     }
 
     #endregion
-
+    
     private static void PerformWait(Task task, int? millisecondsTimeout, CancellationToken? cancellationToken)
     {
         if (millisecondsTimeout.HasValue && cancellationToken.HasValue)

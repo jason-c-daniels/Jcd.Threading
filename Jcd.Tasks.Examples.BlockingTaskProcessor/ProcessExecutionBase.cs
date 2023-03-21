@@ -50,7 +50,7 @@ public abstract class ProcessExecutionBase<T>
         var pingTask = CreatePingTask(pingFrequencyInMs, lifespanInSeconds, logRequestScheduling);
 
         // wait for the tasks to finish regardless if their completion status.
-        await Task.WhenAll(makeCallsTask.TryWaitAsync(), pingTask.TryWaitAsync());
+        while (!makeCallsTask.IsCompleted || !pingTask.IsCompleted) await Task.Yield();
 
         // cancellation token expired. Cancel pending tasks.
         Server.CancelAllRequests();

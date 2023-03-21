@@ -147,25 +147,6 @@ public class TaskExtensionsTests
         Assert.True(t.TryWait());
     }
 
-    [Fact]
-    public async Task TryWaitAsync_Waits_On_A_Running_Task_Until_It_Completes_And_Returns_True()
-    {
-        var t = Task.Run(async () => await Task.Delay(20));
-        Assert.True(await t.TryWaitAsync());
-    }
-
-    [Fact]
-    public async Task TryWaitAsync_Waits_On_A_Completed_Task_Returns_True()
-    {
-        var t = Task.Run(() => { });
-        while (!t.IsCompleted)
-        {
-            /* wait for the status to change.*/
-        }
-
-        Assert.True(await t.TryWaitAsync());
-    }
-
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -178,20 +159,6 @@ public class TaskExtensionsTests
             throw new Exception();
         });
         Assert.False(t.TryWait());
-    }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public async Task TryWaitAsync_Waits_On_A_Task_That_Faults_Returns_False(bool cancel)
-    {
-        var t = Task.Run(async () =>
-        {
-            await Task.Delay(20);
-            if (cancel) throw new OperationCanceledException();
-            throw new Exception();
-        });
-        Assert.False(await t.TryWaitAsync());
     }
 
     [Theory]
