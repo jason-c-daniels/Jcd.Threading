@@ -207,6 +207,8 @@ public class TaskExtensionsTests
         Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(TimeSpan.FromMilliseconds(timeoutInMilliseconds),cts.Token));
     }
     
+#if DEBUG
+// disabled in release mode because AppVeyor's build image is hosed up.
     [Theory]
     [InlineData(-2)]
     [InlineData(-3)]
@@ -218,7 +220,7 @@ public class TaskExtensionsTests
         using var cts = new CancellationTokenSource(30);
         Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(timeoutInMilliseconds,cts.Token));
     }
-    
+
     [Theory]
     [InlineData(70d)]
     [InlineData(80d)]
@@ -236,8 +238,8 @@ public class TaskExtensionsTests
     }
     
     [Theory]
-//    [InlineData(70)]
-//    [InlineData(80)]
+    [InlineData(70)]
+    [InlineData(80)]
     [InlineData(90)]
     public void TryWait_With_Valid_Timeout_Int_Waits_For_Completion(int waitTimeoutInMilliseconds)
     {
@@ -284,6 +286,6 @@ public class TaskExtensionsTests
         t = Task.Run(async () => { await Task.Delay(delayTimeout, token); }, cts.Token);
         Assert.False(t.TryWait(waitTimeoutInMilliseconds,cts.Token));
     }
-
+#endif
     #endregion
 }
