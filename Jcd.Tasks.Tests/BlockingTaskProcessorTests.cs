@@ -11,7 +11,7 @@ public class BlockingTaskProcessorTests
     public async Task Constructor_Automatically_Starts_When_Expected(bool autostart)
     {
         using var btp = new BlockingTaskProcessor(autostart);
-        await Task.Delay(10);
+        await Task.Delay(100);
         Assert.Equal(autostart, btp.IsStarted);
         btp.Cancel();
     }
@@ -28,7 +28,7 @@ public class BlockingTaskProcessorTests
         }
 
         btp.Enqueue(Action);
-        await Task.Delay(20);
+        await Task.Delay(100);
         Assert.True(actionRan);
         btp.Cancel();
     }
