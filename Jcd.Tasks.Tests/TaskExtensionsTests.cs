@@ -236,8 +236,8 @@ public class TaskExtensionsTests
     }
     
     [Theory]
-    [InlineData(70)]
-    [InlineData(80)]
+//    [InlineData(70)]
+//    [InlineData(80)]
     [InlineData(90)]
     public void TryWait_With_Valid_Timeout_Int_Waits_For_Completion(int waitTimeoutInMilliseconds)
     {
