@@ -46,7 +46,7 @@ public static class BlockingTaskProcessorExample
         var ctsSpastic = SpasticPauserTask(Math.PI * (1 + 1d / 3d), 60);
 
         // create a task that periodically calls TaskProcessor.Cancel every 10 seconds for one minute.
-        var ctsCanceler = StartCancellerTask();
+        var ctsCanceler = StartStopProcessingTask();
 
         // create a task that periodically calls TaskProcessor.StartProcessing every 8 seconds for one minute.
         var ctsStarter = StartStarterTask();
@@ -62,7 +62,7 @@ public static class BlockingTaskProcessorExample
               ) await Task.Yield();
 
         // cancel all pending tasks (there should be a lot of them)
-        TaskProcessor.Cancel();
+        TaskProcessor.StopProcessingAndClearQueue();
 
         // NOTE: interpreting the output is a bit messy.
 
@@ -128,7 +128,7 @@ public static class BlockingTaskProcessorExample
         return cts;
     }
 
-    private static CancellationTokenSource StartCancellerTask(double delayInSeconds = 30, double lifeSpanInSeconds = 60)
+    private static CancellationTokenSource StartStopProcessingTask(double delayInSeconds = 30, double lifeSpanInSeconds = 60)
     {
         var cts = new CancellationTokenSource(TimeSpan.FromSeconds(lifeSpanInSeconds));
         Task.Run(async () =>
@@ -137,10 +137,10 @@ public static class BlockingTaskProcessorExample
             {
                 if (TaskProcessor.IsPaused) continue;
                 await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
-                Console.WriteLine($"Cancelling from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
+                Console.WriteLine($"Stopping from {nameof(StartStopProcessingTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
-                TaskProcessor.Cancel();
-                Console.WriteLine($"Canceled from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
+                TaskProcessor.StopProcessingAndClearQueue();
+                Console.WriteLine($"Stopped from {nameof(StartStopProcessingTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
             }
         }, cts.Token);
@@ -157,11 +157,11 @@ public static class BlockingTaskProcessorExample
                 if (TaskProcessor.IsPaused) continue;
                 await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
                 Console.WriteLine(
-                    $"(re?)Starting from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
+                    $"(re?)Starting from {nameof(StartStopProcessingTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
                 TaskProcessor.StartProcessing();
                 Console.WriteLine(
-                    $"(re?)Started from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
+                    $"(re?)Started from {nameof(StartStopProcessingTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
             }
         }, cts.Token);

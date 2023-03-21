@@ -238,9 +238,9 @@ public class BlockingTaskProcessor : IDisposable
     /// tasks created by this task task processor. This is mostly intended to be called
     /// during application shutdown.
     /// </summary>
-    public void Cancel()
+    public void StopProcessingAndClearQueue()
     {
-        Debug.WriteLine($"{nameof(Cancel)} called from Thread {Environment.CurrentManagedThreadId}");
+        Debug.WriteLine($"{nameof(StopProcessingAndClearQueue)} called from Thread {Environment.CurrentManagedThreadId}");
         Debug.Flush();
         if (!_taskProcessingCancellationSource.IsCancellationRequested) _taskProcessingCancellationSource.Cancel();
         if (_taskProcessor.Status is TaskStatus.Running or TaskStatus.WaitingForChildrenToComplete)
@@ -387,7 +387,7 @@ public class BlockingTaskProcessor : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        Cancel();
+        StopProcessingAndClearQueue();
         _paused.Dispose();
         _taskQueue?.Dispose();
         _taskProcessingCancellationSource?.Dispose();
