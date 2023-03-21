@@ -207,8 +207,6 @@ public class TaskExtensionsTests
         Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(TimeSpan.FromMilliseconds(timeoutInMilliseconds),cts.Token));
     }
     
-#if DEBUG
-// disabled in release mode because AppVeyor's build image is hosed up.
     [Theory]
     [InlineData(-2)]
     [InlineData(-3)]
@@ -222,9 +220,9 @@ public class TaskExtensionsTests
     }
 
     [Theory]
-    [InlineData(70d)]
-    [InlineData(80d)]
-    [InlineData(90d)]
+    [InlineData(170d)]
+    [InlineData(180d)]
+    [InlineData(190d)]
     public void TryWait_With_Valid_Timeout_Timespan_Waits_For_Completion(double waitTimeoutInMilliseconds)
     {
         var delayTimeout=TimeSpan.FromMilliseconds(waitTimeoutInMilliseconds);
@@ -238,9 +236,9 @@ public class TaskExtensionsTests
     }
     
     [Theory]
-    [InlineData(70)]
-    [InlineData(80)]
-    [InlineData(90)]
+    [InlineData(170)]
+    [InlineData(180)]
+    [InlineData(190)]
     public void TryWait_With_Valid_Timeout_Int_Waits_For_Completion(int waitTimeoutInMilliseconds)
     {
         var delayTimeout=waitTimeoutInMilliseconds;
@@ -256,9 +254,9 @@ public class TaskExtensionsTests
     }
 
     [Theory]
-    [InlineData(50d)]
-    [InlineData(60d)]
-    [InlineData(70d)]
+    [InlineData(150d)]
+    [InlineData(160d)]
+    [InlineData(170d)]
     public void TryWait_With_Valid_Timeout_Timespan_Times_Out_Returns_False(double waitTimeoutInMilliseconds)
     {
         var waitTimeout = TimeSpan.FromMilliseconds(waitTimeoutInMilliseconds);
@@ -272,9 +270,9 @@ public class TaskExtensionsTests
     }
     
     [Theory]
-    [InlineData(50)]
-    [InlineData(60)]
-    [InlineData(70)]
+    [InlineData(150)]
+    [InlineData(160)]
+    [InlineData(170)]
     public void TryWait_With_Valid_Short_Timeout_Int_Times_Out_Returns_False(int waitTimeoutInMilliseconds)
     {
         var delayTimeout = waitTimeoutInMilliseconds * 5;
@@ -286,6 +284,6 @@ public class TaskExtensionsTests
         t = Task.Run(async () => { await Task.Delay(delayTimeout, token); }, cts.Token);
         Assert.False(t.TryWait(waitTimeoutInMilliseconds,cts.Token));
     }
-#endif
+
     #endregion
 }
