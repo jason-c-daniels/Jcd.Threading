@@ -62,7 +62,7 @@ public static class BlockingTaskProcessorExample
               ) await Task.Yield();
 
         // cancel all pending tasks (there should be a lot of them)
-        TaskProcessor.Cancel();
+        TaskProcessor.StopProcessingAndClearQueue();
 
         // NOTE: interpreting the output is a bit messy.
 
@@ -139,7 +139,7 @@ public static class BlockingTaskProcessorExample
                 await Task.Delay(TimeSpan.FromSeconds(delayInSeconds), cts.Token);
                 Console.WriteLine($"Cancelling from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
-                TaskProcessor.Cancel();
+                TaskProcessor.StopProcessingAndClearQueue();
                 Console.WriteLine($"Canceled from {nameof(StartCancellerTask)} {Environment.CurrentManagedThreadId}");
                 await Console.Out.FlushAsync();
             }

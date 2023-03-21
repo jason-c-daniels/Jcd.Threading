@@ -13,7 +13,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor(autostart);
         await Task.Delay(100);
         Assert.Equal(autostart, btp.IsStarted);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class BlockingTaskProcessorTests
         btp.Enqueue(Action);
         await Task.Delay(100);
         Assert.True(actionRan);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class BlockingTaskProcessorTests
         btp.Enqueue(Func);
         await Task.Delay(100);
         Assert.True(funcRan);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class BlockingTaskProcessorTests
         btp.Enqueue(Action);
         await Task.Delay(100);
         Assert.True(actionRan);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class BlockingTaskProcessorTests
         btp.Enqueue(Func);
         await Task.Delay(100);
         Assert.True(funcRan);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class BlockingTaskProcessorTests
         await Task.Delay(100);
         Assert.True(actionRan);
         Assert.NotNull(t);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class BlockingTaskProcessorTests
         Assert.True(funcRan);
         Assert.NotNull(t);
         Assert.True(t.Result);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class BlockingTaskProcessorTests
         await Task.Delay(100);
         Assert.True(actionRan);
         Assert.NotNull(t);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -137,15 +137,15 @@ public class BlockingTaskProcessorTests
         Assert.True(funcRan);
         Assert.NotNull(t);
         Assert.True(t.Result);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
     public void Cancel_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
         using var btp = new BlockingTaskProcessor();
-        btp.Cancel();
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class BlockingTaskProcessorTests
         btp.StartProcessing();
         Thread.Sleep(50);
         btp.StartProcessing();
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         btp.Pause();
         btp.Pause();
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -177,7 +177,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         await btp.PauseAsync();
         await btp.PauseAsync();
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         btp.Resume();
         btp.Resume();
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]
@@ -195,7 +195,7 @@ public class BlockingTaskProcessorTests
         using var btp = new BlockingTaskProcessor();
         await btp.ResumeAsync();
         await btp.ResumeAsync();
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Theory]
@@ -213,7 +213,7 @@ public class BlockingTaskProcessorTests
 
         Assert.Equal(tasksToCreate, btp.QueueLength);
         Assert.Equal(tasksToCreate > 0, btp.HasTasks);
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Theory]
@@ -236,7 +236,7 @@ public class BlockingTaskProcessorTests
         {
         }
 
-        btp.Cancel();
+        btp.StopProcessingAndClearQueue();
     }
 
     [Fact]

@@ -44,7 +44,7 @@ namespace Jcd.Tasks.Examples.BlockingTaskProcessor;
 /// </remarks>
 public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTaskProcessor>
 {
-    protected readonly Tasks.BlockingTaskProcessor CommandProcessor = new();
+    protected readonly Tasks.BlockingTaskProcessor TaskProcessor = new();
 
     #region Overrides
 
@@ -56,12 +56,12 @@ public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTa
     {
         await base.Run(lifespanInSeconds, pingFrequencyInMs, maxTasks, taskSchedulingFrequencyInMs, minLatencyInMs,
             maxAdditionalLatencyInMs, logRequestScheduling);
-        CommandProcessor.Cancel();
+        TaskProcessor.StopProcessingAndClearQueue();
     }
 
     protected override void ScheduleASingleCall(Random rnd, CancellationTokenSource cts, int fakeBufferType)
     {
-        CommandProcessor.EnqueueAndGetProxy(async () =>
+        TaskProcessor.EnqueueAndGetProxy(async () =>
         {
             var buff = new byte[20];
             rnd.NextBytes(buff);
@@ -79,13 +79,13 @@ public class SingleBlockingTaskProcessor : ProcessExecutionBase<SingleBlockingTa
     {
         if (logRequestScheduling)
             Console.WriteLine(
-                $"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value} and Command Queue Length of {CommandProcessor.QueueLength}");
+                $"{DateTime.Now:O} Scheduling Ping Request. Current {nameof(FakeServerProxy.SendRequest)} Synchronization Lock Backlog = {Server.BacklogCounter.Value} and Command Queue Length of {TaskProcessor.QueueLength}");
         if (logRequestScheduling) Console.Out.Flush();
         // run the ping in a background thread. This is to simulate a UI or other
         // separate thread of a program periodically telling the communications
         // layer to get a status update. Usually we want these to preempt other traffic.
         // it will not for this example. In fact we'll see them start stacking up.
-        CommandProcessor.Enqueue(() => ExecutePing(pingBacklog, rnd, scheduledAt, cts, logRequestScheduling));
+        TaskProcessor.Enqueue(() => ExecutePing(pingBacklog, rnd, scheduledAt, cts, logRequestScheduling));
     }
 
     protected override void ReportRunType()
