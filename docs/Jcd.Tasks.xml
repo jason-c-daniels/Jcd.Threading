@@ -173,7 +173,7 @@
             Gets a flag indicating if there are any pending tasks.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Cancel">
+        <member name="M:Jcd.Tasks.BlockingTaskProcessor.StopProcessingAndClearQueue">
             <summary>
             Signals the task processor to halt all processing immediately. This also cancels all
             tasks created by this task task processor. This is mostly intended to be called
