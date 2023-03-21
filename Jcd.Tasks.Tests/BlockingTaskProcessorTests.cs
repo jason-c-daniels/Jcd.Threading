@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ClosureAllocation
 
 namespace Jcd.Tasks.Tests;
 
@@ -7,7 +8,7 @@ public class BlockingTaskProcessorTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task Constructor_Autostarts_When_Expected(bool autostart)
+    public async Task Constructor_Automatically_Starts_When_Expected(bool autostart)
     {
         using var btp = new BlockingTaskProcessor(autostart);
         await Task.Delay(10);
@@ -73,7 +74,7 @@ public class BlockingTaskProcessorTests
         Assert.True(funcRan);
         btp.Cancel();
     }
-    
+
     [Fact]
     public async Task EnqueueAndGetProxy_Action_Enqueues_Returns_A_Proxy_And_Executes_The_Action()
     {
@@ -187,7 +188,7 @@ public class BlockingTaskProcessorTests
         btp.Resume();
         btp.Cancel();
     }
-    
+
     [Fact]
     public async Task ResumeAsync_Can_Be_Called_Twice_In_A_Row_Without_Error()
     {
@@ -204,7 +205,7 @@ public class BlockingTaskProcessorTests
     [InlineData(3)]
     public void QueueLength_Returns_The_Expected_Value_And_Has(int tasksToCreate)
     {
-        var btp = new BlockingTaskProcessor(false);
+        using var btp = new BlockingTaskProcessor(false);
         for (var i = 0; i < tasksToCreate; i++)
         {
             btp.Enqueue(() => { });
@@ -222,7 +223,7 @@ public class BlockingTaskProcessorTests
     [InlineData(3)]
     public void Tasks_Externally_Cancelled_Are_Discarded_Without_Error(int tasksToCreate)
     {
-        var btp = new BlockingTaskProcessor(false);
+        using var btp = new BlockingTaskProcessor(false);
         var cts = new CancellationTokenSource();
         for (var i = 0; i < tasksToCreate; i++)
         {
@@ -234,52 +235,53 @@ public class BlockingTaskProcessorTests
         while (btp.HasTasks)
         {
         }
+
         btp.Cancel();
     }
 
     [Fact]
     public void TryEnqueueTask_Called_With_Null_Task_Throws_ArgumentNullException()
     {
-        var btp = new BlockingTaskProcessor();
-        Task t1 = null;
-        Task<bool> t2 = null;
-        Assert.ThrowsAsync<ArgumentNullException>(()=>btp.TryEnqueueTask(t1,out _));
-        Assert.ThrowsAsync<ArgumentNullException>(()=>btp.TryEnqueueTask(t2,out _));
+        using var btp = new BlockingTaskProcessor();
+        Task? t1 = null;
+        Task<bool>? t2 = null;
+        Assert.ThrowsAsync<ArgumentNullException>(() => btp.TryEnqueueTask(t1, out _));
+        Assert.ThrowsAsync<ArgumentNullException>(() => btp.TryEnqueueTask(t2, out _));
     }
-    
+
     [Fact]
     public void TryEnqueueTask_Called_With_Running_Task_Returns_The_Task_Without_Enqueuing()
     {
         var btp = new BlockingTaskProcessor(false);
-        Task t1 = Task.Run(()=>Thread.Sleep(100));
-        Task<bool> t2 = Task.Run(()=>
+        var t1 = Task.Run(() => Thread.Sleep(100));
+        var t2 = Task.Run(() =>
         {
             Thread.Sleep(100);
             return true;
         });
         var rt1 = btp.TryEnqueueTask(t1, out _);
         Assert.Same(t1, rt1);
-        Assert.Equal(0,btp.QueueLength);
+        Assert.Equal(0, btp.QueueLength);
         var rt2 = btp.TryEnqueueTask(t2, out _);
         Assert.Same(t2, rt2);
-        Assert.Equal(0,btp.QueueLength);
+        Assert.Equal(0, btp.QueueLength);
     }
-    
+
     [Fact]
     public void TryEnqueueTask_Called_With_Unstarted_Task_Returns_The_Task_After_Enqueuing()
     {
         var btp = new BlockingTaskProcessor(false);
-        Task t1 = UnstartedTask.Create(()=>Thread.Sleep(100));
-        Task<bool> t2 = UnstartedTask.Create(()=>
+        var t1 = UnstartedTask.Create(() => Thread.Sleep(100));
+        var t2 = UnstartedTask.Create(() =>
         {
             Thread.Sleep(100);
             return true;
         });
         var rt1 = btp.TryEnqueueTask(t1, out _);
         Assert.Same(t1, rt1);
-        Assert.Equal(1,btp.QueueLength);
+        Assert.Equal(1, btp.QueueLength);
         var rt2 = btp.TryEnqueueTask(t2, out _);
         Assert.Same(t2, rt2);
-        Assert.Equal(2,btp.QueueLength);
+        Assert.Equal(2, btp.QueueLength);
     }
 }

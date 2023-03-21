@@ -2,7 +2,7 @@
 
 ## TaskExtensions.Run<TResult>(this Task<TResult>) Method
 
-Calls [TryRun(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryRun(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryRun(this System.Threading.Tasks.Task, System.Exception)') on a task then returns the task, discarding exceptions.
+Calls [TryStart(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryStart(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryStart(this System.Threading.Tasks.Task, System.Exception)') on a task then returns the task, discarding exceptions.
 
 ```csharp
 public static System.Threading.Tasks.Task<TResult> Run<TResult>(this System.Threading.Tasks.Task<TResult> task);
@@ -29,4 +29,4 @@ the original task
 ### Remarks
 While this returns the original task, it doesn't guarantee it's awaitable. Only call  
 this method if you've got 100% control over the lifecycle of the task. Otherwise call  
-[TryRun(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryRun(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryRun(this System.Threading.Tasks.Task, System.Exception)') instead and inspect the results before calling await.
+[TryStart(this Task, Exception)](Jcd.Tasks.TaskExtensions.TryStart(thisSystem.Threading.Tasks.Task,System.Exception).md 'Jcd.Tasks.TaskExtensions.TryStart(this System.Threading.Tasks.Task, System.Exception)') instead and inspect the results before calling await.

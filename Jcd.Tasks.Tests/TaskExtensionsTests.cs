@@ -1,6 +1,7 @@
 ﻿// ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
 
+// ReSharper disable HeapView.BoxingAllocation
 namespace Jcd.Tasks.Tests;
 
 public class TaskExtensionsTests
@@ -30,7 +31,7 @@ public class TaskExtensionsTests
         using var cts = new CancellationTokenSource();
         var t1 = new Task(() => throw new Exception("fake fault"),
             cts.Token); // tasks created directly from the constructor have a Status of Unstarted
-        t1.TryRun(out _);
+        t1.TryStart(out _);
         Assert.False(t1.IsUnstarted());
     }
 
@@ -41,7 +42,7 @@ public class TaskExtensionsTests
         async void Action() => await Task.Delay(20);
 
         var t1 = new Task(Action);
-        t1.TryRun(out _);
+        t1.TryStart(out _);
         await Task.Delay(2);
         Assert.False(t1.IsUnstarted());
     }
@@ -99,7 +100,7 @@ public class TaskExtensionsTests
         }
 
         var t = UnstartedTask.Create(Action);
-        Assert.Equal(TryRunResult.SuccessfullyCalled, t.TryRun(out _));
+        Assert.Equal(TryStartResult.SuccessfullyStarted, t.TryStart(out _));
     }
 
     [Fact]
@@ -110,7 +111,7 @@ public class TaskExtensionsTests
         }
 
         var t = Task.Run(Action);
-        Assert.Equal(TryRunResult.AlreadyStarted, t.TryRun(out _));
+        Assert.Equal(TryStartResult.AlreadyStarted, t.TryStart(out _));
     }
 
     /* I can't seem to make this happen in a UT. But there is code for this case as I think I've encountered it in the wild.
@@ -191,6 +192,97 @@ public class TaskExtensionsTests
             throw new Exception();
         });
         Assert.False(await t.TryWaitAsync());
+    }
+
+    [Theory]
+    [InlineData(-2d)]
+    [InlineData(-3d)]
+    [InlineData(int.MinValue)]
+    [InlineData(int.MaxValue+1d)]
+    public void TryWait_With_Timeout_Timespan_Less_Than_Negative_One_Ms_Or_Greater_Than_MaxInt_Throws(double timeoutInMilliseconds)
+    {
+        var t = Task.Run(async () => {  await Task.Delay(100); });
+        Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(TimeSpan.FromMilliseconds(timeoutInMilliseconds)));
+        using var cts = new CancellationTokenSource(30);
+        Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(TimeSpan.FromMilliseconds(timeoutInMilliseconds),cts.Token));
+    }
+    
+    [Theory]
+    [InlineData(-2)]
+    [InlineData(-3)]
+    [InlineData(int.MinValue)]
+    public void TryWait_With_Timeout_Int_Less_Than_Negative_One_Throws(int timeoutInMilliseconds)
+    {
+        var t = Task.Run(async () => { await Task.Delay(100); });
+        Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(timeoutInMilliseconds));
+        using var cts = new CancellationTokenSource(30);
+        Assert.Throws<ArgumentOutOfRangeException>(()=>t.TryWait(timeoutInMilliseconds,cts.Token));
+    }
+    
+    [Theory]
+    [InlineData(50d)]
+    [InlineData(60d)]
+    [InlineData(70d)]
+    public void TryWait_With_Valid_Timeout_Timespan_Waits_For_Completion(double waitTimeoutInMilliseconds)
+    {
+        var delayTimeout=TimeSpan.FromMilliseconds(waitTimeoutInMilliseconds);
+        var waitTimeout = delayTimeout * 5;
+        var t = Task.Run(async () => {  await Task.Delay(delayTimeout); });
+        Assert.True(t.TryWait(waitTimeout));
+        using var cts = new CancellationTokenSource(delayTimeout*2);
+        var token = cts.Token;
+        t = Task.Run(async () => { await Task.Delay(delayTimeout, token); }, cts.Token);
+        Assert.True(t.TryWait(waitTimeout,cts.Token));
+    }
+    
+    [Theory]
+    [InlineData(50)]
+    [InlineData(60)]
+    [InlineData(70)]
+    public void TryWait_With_Valid_Timeout_Int_Waits_For_Completion(int waitTimeoutInMilliseconds)
+    {
+        var delayTimeout=waitTimeoutInMilliseconds;
+        var waitTimeout = delayTimeout * 5;
+
+        var t = Task.Run(async () => { await Task.Delay(delayTimeout); });
+        Assert.True(t.TryWait(waitTimeout));
+        using var cts = new CancellationTokenSource(delayTimeout*2);
+        var token = cts.Token;
+        t = Task.Run(async () => { await Task.Delay(delayTimeout, token); }, cts.Token);
+        var r = t.TryWait(waitTimeout, cts.Token);
+        Assert.True(r);
+    }
+
+    [Theory]
+    [InlineData(50d)]
+    [InlineData(60d)]
+    [InlineData(70d)]
+    public void TryWait_With_Valid_Timeout_Timespan_Times_Out_Returns_False(double waitTimeoutInMilliseconds)
+    {
+        var waitTimeout = TimeSpan.FromMilliseconds(waitTimeoutInMilliseconds);
+        var delayTimeout = waitTimeout * 5;
+        var t = Task.Run(async () => {  await Task.Delay(delayTimeout); });
+        Assert.False(t.TryWait(waitTimeout));
+        using var cts = new CancellationTokenSource(waitTimeout*2);
+        var token = cts.Token;
+        t = Task.Run(async () => { await Task.Delay(delayTimeout, token); }, cts.Token);
+        Assert.False(t.TryWait(waitTimeout,cts.Token));
+    }
+    
+    [Theory]
+    [InlineData(50)]
+    [InlineData(60)]
+    [InlineData(70)]
+    public void TryWait_With_Valid_Short_Timeout_Int_Times_Out_Returns_False(int waitTimeoutInMilliseconds)
+    {
+        var delayTimeout = waitTimeoutInMilliseconds * 5;
+
+        var t = Task.Run(async () => { await Task.Delay(delayTimeout); });
+        Assert.False(t.TryWait(waitTimeoutInMilliseconds));
+        using var cts = new CancellationTokenSource(waitTimeoutInMilliseconds*2);
+        var token = cts.Token;
+        t = Task.Run(async () => { await Task.Delay(delayTimeout, token); }, cts.Token);
+        Assert.False(t.TryWait(waitTimeoutInMilliseconds,cts.Token));
     }
 
     #endregion
