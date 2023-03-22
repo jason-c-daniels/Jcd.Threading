@@ -22,8 +22,8 @@ namespace Jcd.Tasks;
 /// appropriately.
 /// </para>
 /// <para>
-/// NOTE: This was really just a thought experiment. There are probably legitimately better ways of
-/// doing this built in to .Net. I had trouble finding them. If you find them, please let me know!
+/// <i>NOTE: This was really just a thought experiment. There are probably legitimately better ways of
+/// doing this built in to .Net. I had trouble finding them. If you find them, please let me know!</i>
 /// </para>
 /// </remarks>
 public class BlockingTaskProcessor : IDisposable

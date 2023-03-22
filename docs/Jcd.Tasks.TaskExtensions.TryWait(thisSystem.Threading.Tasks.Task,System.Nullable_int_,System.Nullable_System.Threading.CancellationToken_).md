@@ -2,7 +2,9 @@
 
 ## TaskExtensions.TryWait(this Task, Nullable<int>, Nullable<CancellationToken>) Method
 
-Waits on a running task until it completes, is cancelled, faults or times out.
+Waits on a running task until it completes, is cancelled, faults or times out.  
+This extension method swallows exceptions. The exception should be available on  
+the Task.Exception property
 
 ```csharp
 public static bool TryWait(this System.Threading.Tasks.Task task, System.Nullable<int> millisecondsTimeout=null, System.Nullable<System.Threading.CancellationToken> cancellationToken=null);

@@ -27,6 +27,11 @@ public static class TaskExtensions
     /// </summary>
     /// <param name="task">the task to start</param>
     /// <returns>the original task</returns>
+    /// <remarks>
+    /// While this returns the original task, it doesn't guarantee it's awaitable. Only call
+    /// this method if you've got 100% control over the lifecycle of the task. Otherwise call
+    /// <see cref="TryStart"/> instead and inspect the results before calling await.
+    /// </remarks>
     public static Task Run(this Task task)
     {
         task.TryStart(out _);
@@ -37,6 +42,10 @@ public static class TaskExtensions
     /// Calls <see cref="TryStart"/> on a task then returns the task, discarding exceptions.
     /// </summary>
     /// <param name="task">the task to start</param>
+    /// <param name="taskScheduler">
+    /// The <see cref="TaskScheduler"/> to use for executing the task. If not provided the
+    /// current <see cref="TaskScheduler"/> is used.
+    /// </param>
     /// <typeparam name="TResult">The type of data returned from the task.</typeparam>
     /// <returns>the original task</returns>
     /// <remarks>
@@ -44,29 +53,37 @@ public static class TaskExtensions
     /// this method if you've got 100% control over the lifecycle of the task. Otherwise call
     /// <see cref="TryStart"/> instead and inspect the results before calling await.
     /// </remarks>
-    public static Task<TResult> Run<TResult>(this Task<TResult> task)
+    public static Task<TResult> Run<TResult>(this Task<TResult> task, TaskScheduler taskScheduler=null)
     {
-        task.TryStart(out _);
+        task.TryStart(out _, taskScheduler);
         return task;
     }
 
     /// <summary>
     /// Tries to successfully call start. 
     /// </summary>
-    /// <param name="task">The </param>
-    /// <param name="exception"></param>
+    /// <param name="task">The task to call Start on.</param>
+    /// <param name="taskScheduler">
+    /// The <see cref="TaskScheduler"/> to use for executing the task. If not provided the
+    /// current <see cref="TaskScheduler"/> is used.
+    /// </param>
+    /// <param name="exception">The exception resulting from calling Start.</param>
     /// <returns>
     /// <see cref="TryStartResult.SuccessfullyStarted"/> when the Start was called and no exception occurred.
     /// <see cref="TryStartResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
     /// <see cref="TryStartResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
     /// </returns>
-    public static TryStartResult TryStart(this Task task, out Exception exception)
+    public static TryStartResult TryStart(this Task task, out Exception exception, TaskScheduler taskScheduler=null)
     {
         exception = null;
         if (!task.IsUnstarted()) return TryStartResult.AlreadyStarted;
         try
         {
-            task.Start();
+            if (taskScheduler == null)
+                task.Start();
+            else
+                task.Start(taskScheduler);
+            
             return TryStartResult.SuccessfullyStarted;
         }
         catch (Exception ex)
@@ -113,6 +130,8 @@ public static class TaskExtensions
 
     /// <summary>
     /// Waits on a running task until it completes, is cancelled, faults or times out.
+    /// This extension method swallows exceptions. The exception should be available on
+    /// the Task.Exception property
     /// </summary>
     /// <param name="task">the task to wait on.</param>
     /// <param name="millisecondsTimeout">the amount of time to wait. Must be a value between -1 (infinite) and  <see cref="int.MaxValue"/></param>
@@ -132,7 +151,8 @@ public static class TaskExtensions
         }
         catch (Exception)
         {
-            // do nothing. task.Stats has the answer.
+            // do nothing. task.Status has the answer, and task.Exception has the root level
+            // exception for faulted tasks.
         }
 
         return task.Status == TaskStatus.RanToCompletion;

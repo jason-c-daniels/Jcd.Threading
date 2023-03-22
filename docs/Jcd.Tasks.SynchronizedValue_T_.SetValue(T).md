@@ -18,3 +18,15 @@ The provided value.
 #### Returns
 [T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')  
 The provided value.
+
+### Example
+  
+```csharp  
+var sv = new SynchronizedValue<int>();  
+  
+// set the value to 10.  
+setValue = sv.SetValue(10);  
+  
+// set the value to 20.  
+setValue = sv.SetValue(20);  
+```
