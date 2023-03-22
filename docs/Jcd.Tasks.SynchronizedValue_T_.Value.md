@@ -2,7 +2,7 @@
 
 ## SynchronizedValue<T>.Value Property
 
-The synchronized value.
+Get the synchronized value.
 
 ```csharp
 public T Value { get; }
@@ -10,3 +10,12 @@ public T Value { get; }
 
 #### Property Value
 [T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')
+
+### Example
+  
+```csharp  
+var sv = new SynchronizedValue<int>(15);  
+  
+// get the value  
+setValue = sv.Value;  
+```

@@ -19,8 +19,8 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 You must ensure all shared resources for the enqueued tasks have their access synchronized  
 appropriately.  
   
-NOTE: This was really just a thought experiment. There are probably legitimately better ways of  
-doing this built in to .Net. I had trouble finding them. If you find them, please let me know!
+<i>NOTE: This was really just a thought experiment. There are probably legitimately better ways of  
+            doing this built in to .Net. I had trouble finding them. If you find them, please let me know!</i>
 
 | Constructors | |
 | :--- | :--- |

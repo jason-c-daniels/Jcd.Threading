@@ -15,8 +15,8 @@
             appropriately.
             </para>
             <para>
-            NOTE: This was really just a thought experiment. There are probably legitimately better ways of
-            doing this built in to .Net. I had trouble finding them. If you find them, please let me know!
+            <i>NOTE: This was really just a thought experiment. There are probably legitimately better ways of
+            doing this built in to .Net. I had trouble finding them. If you find them, please let me know!</i>
             </para>
             </remarks>
         </member>
@@ -222,14 +222,16 @@
         </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
-            Provides classes and extension methods to assist with the creation, execution, and
-            management of <see cref="T:System.Threading.Tasks.Task"/> instances.
+            Provides types and extension methods to assist with the creation, execution, and
+            management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
         </member>
         <member name="T:Jcd.Tasks.SynchronizedValue`1">
             <summary>
-            Provides a simple async-safe method of setting, getting, and altering values intended to be shared among tasks and threads.
+            Provides a simple async-safe method of setting, getting, and altering values intended
+            to be shared among tasks and threads.
             </summary>
+            <typeparam name="T">The data type to synchronize access to.</typeparam>
             <remarks>
             <para>
             While this provides a method of easily ensuring any one shared value is appropriately
@@ -239,16 +241,17 @@
             potentially unexpected results.
             </para>
             <para>
-            In cases where the pair/tuple must be consistent at all times across all threads,
-            consider creating a struct containing the necessary fields/properties and wrapping that
-            in a SynchronizedValue instead of each individual field/property.
+            In cases where the pair/tuple must be consistent at all times across all accesses,
+            consider creating a struct containing the necessary fields/properties and wrapping
+            that in a <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instead of each individual field/property.
             </para>
             <para>
-            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be called.
-            Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate time.
+            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
+            called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
+            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/> and <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,`0})"/>
+            for recursive reentrancy considerations. <i>(don't try it)</i>
             </para>
             </remarks>
-            <typeparam name="T">The data type to synchronize access to.</typeparam>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.#ctor(`0)">
             <summary>
@@ -258,14 +261,32 @@
         </member>
         <member name="P:Jcd.Tasks.SynchronizedValue`1.Value">
             <summary>
-            The synchronized value.
+            Get the synchronized value.
             </summary>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;(15);
+            
+            // get the value
+            setValue = sv.Value;
+            
+            </code>
+            </example>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValueAsync">
             <summary>
             Gets the value in an async friendly manner.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;(15);
+            
+            // get the value
+            await setValue = sv.GetValueAsync(20);
+            
+            </code>
+            </example>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValueAsync(`0)">
             <summary>
@@ -273,6 +294,18 @@
             </summary>
             <param name="value">The provided value.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;();
+            
+            // set the value to 10.
+            await setValue = sv.SetValueAsync(10);
+            
+            // set the value to 20.
+            await setValue = sv.SetValueAsync(20);
+            
+            </code>
+            </example>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValue">
             <summary>
@@ -280,6 +313,15 @@
             call will yield a different result. 
             </summary>
             <returns>The current value as of establishing the lock.</returns>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;(15);
+            
+            // get the value
+            setValue = sv.GetValue(20);
+            
+            </code>
+            </example>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValue(`0)">
             <summary>
@@ -287,22 +329,89 @@
             </summary>
             <param name="value">The provided value.</param>
             <returns>The provided value.</returns>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;();
+            
+            // set the value to 10.
+            setValue = sv.SetValue(10);
+            
+            // set the value to 20.
+            setValue = sv.SetValue(20);
+            
+            </code>
+            </example>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})">
-            <summary>
-            Calls the provided function, passing in the current value, and assigns the result of the
-            function call, to the current value.
-            </summary>
-            <param name="func">The function to call.</param>
-            <returns>The result of calling the function.</returns>
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">
+             A function to call which receives the current value, modifies it, and returns the
+             modified result.
+             </param>
+             <returns>The modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = sv.ChangeValue(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = sv.ChangeValue(x => x + 2);
+             
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SynchronizedValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = sv.ChangeValue(x=>sv.Value+10);
+             </code>
+             </remarks>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,`0})">
-            <summary>
-            Calls the provided function, passing in the current value, and assigns the result of the
-            function call, to the current value.
-            </summary>
-            <param name="func">The function to call.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the result of calling the function.</returns>
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">The function to call.</param>
+             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = await sv.ChangeValueAsync(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = await sv.ChangeValueAsync(x => x + 2);
+             
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SynchronizedValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
+             </code>
+             </remarks>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.Dispose">
             <inheritdoc />
@@ -321,30 +430,43 @@
         </member>
         <member name="M:Jcd.Tasks.TaskExtensions.Run(System.Threading.Tasks.Task)">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/> on a task then returns the task, discarding exceptions.
+            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> on a task then returns the task, discarding exceptions.
             </summary>
             <param name="task">the task to start</param>
             <returns>the original task</returns>
+            <remarks>
+            While this returns the original task, it doesn't guarantee it's awaitable. Only call
+            this method if you've got 100% control over the lifecycle of the task. Otherwise call
+            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> instead and inspect the results before calling await.
+            </remarks>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.Run``1(System.Threading.Tasks.Task{``0})">
+        <member name="M:Jcd.Tasks.TaskExtensions.Run``1(System.Threading.Tasks.Task{``0},System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/> on a task then returns the task, discarding exceptions.
+            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> on a task then returns the task, discarding exceptions.
             </summary>
             <param name="task">the task to start</param>
+            <param name="taskScheduler">
+            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> to use for executing the task. If not provided the
+            current <see cref="T:System.Threading.Tasks.TaskScheduler"/> is used.
+            </param>
             <typeparam name="TResult">The type of data returned from the task.</typeparam>
             <returns>the original task</returns>
             <remarks>
             While this returns the original task, it doesn't guarantee it's awaitable. Only call
             this method if you've got 100% control over the lifecycle of the task. Otherwise call
-            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/> instead and inspect the results before calling await.
+            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> instead and inspect the results before calling await.
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)">
+        <member name="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)">
             <summary>
             Tries to successfully call start. 
             </summary>
-            <param name="task">The </param>
-            <param name="exception"></param>
+            <param name="task">The task to call Start on.</param>
+            <param name="taskScheduler">
+            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> to use for executing the task. If not provided the
+            current <see cref="T:System.Threading.Tasks.TaskScheduler"/> is used.
+            </param>
+            <param name="exception">The exception resulting from calling Start.</param>
             <returns>
             <see cref="F:Jcd.Tasks.TryStartResult.SuccessfullyStarted"/> when the Start was called and no exception occurred.
             <see cref="F:Jcd.Tasks.TryStartResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
@@ -373,6 +495,8 @@
         <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
             <summary>
             Waits on a running task until it completes, is cancelled, faults or times out.
+            This extension method swallows exceptions. The exception should be available on
+            the Task.Exception property
             </summary>
             <param name="task">the task to wait on.</param>
             <param name="millisecondsTimeout">the amount of time to wait. Must be a value between -1 (infinite) and  <see cref="F:System.Int32.MaxValue"/></param>
@@ -381,7 +505,7 @@
         </member>
         <member name="T:Jcd.Tasks.TryStartResult">
             <summary>
-            The possible results of calling <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@)"/>
+            The possible results of calling <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/>
             </summary>
         </member>
         <member name="F:Jcd.Tasks.TryStartResult.SuccessfullyStarted">

@@ -12,3 +12,12 @@ public T GetValue();
 #### Returns
 [T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')  
 The current value as of establishing the lock.
+
+### Example
+  
+```csharp  
+var sv = new SynchronizedValue<int>(15);  
+  
+// get the value  
+setValue = sv.GetValue(20);  
+```
