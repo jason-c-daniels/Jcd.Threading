@@ -16,7 +16,7 @@ The current value as of establishing the lock.
 ### Example
   
 ```csharp  
-var sv = new SimpleInterlockedValue<int>(15);  
+var sv = new SynchronizedValue<int>(15);  
   
 // get the value  
 setValue = sv.GetValue(20);  

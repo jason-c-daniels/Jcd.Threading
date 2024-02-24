@@ -25,16 +25,16 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 Standard usage: pass in a function to manipulate the current value.  
   
 ```csharp  
-var sv = new SimpleInterlockedValue<int>();  
+var sv = new SynchronizedValue<int>();  
   
 // increment the value by one.  
-var changedValue = await sv.DoAsync(x => x + 1);  
+var changedValue = await sv.ChangeValueAsync(x => x + 1);  
   
 // increment the value by two.  
-changedValue = await sv.DoAsync(x => x + 2);  
+changedValue = await sv.ChangeValueAsync(x => x + 2);  
   
 // Perform some operation that requires the value to remain unchanged during the operation.  
-var sameValue = await sv.DoAsync(x => { DoSomething(x); return x;});  
+var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});  
 ```
 
 ### Remarks
@@ -43,7 +43,7 @@ var sameValue = await sv.DoAsync(x => { DoSomething(x); return x;});
              the following.  
   
 ```csharp  
-var sv=new SimpleInterlockedValue<int>(10);  
+var sv=new SynchronizedValue<int>(10);  
   
 // deadlock yourself in a single line of code!  
 var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);  

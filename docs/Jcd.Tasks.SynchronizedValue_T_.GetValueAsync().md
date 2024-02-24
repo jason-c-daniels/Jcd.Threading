@@ -15,7 +15,7 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 ### Example
   
 ```csharp  
-var sv = new SimpleInterlockedValue<int>(15);  
+var sv = new SynchronizedValue<int>(15);  
   
 // get the value  
 await setValue = sv.GetValueAsync(20);  

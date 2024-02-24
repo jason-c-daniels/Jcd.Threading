@@ -8,6 +8,4 @@ namespace Jcd.Tasks;
 /// Provides types and extension methods to assist with the creation, execution, and
 /// management of unstarted <see cref="Task"/> instances.
 /// </summary>
-internal class NamespaceDoc
-{
-}
+internal class NamespaceDoc;

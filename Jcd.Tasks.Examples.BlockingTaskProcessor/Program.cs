@@ -40,22 +40,6 @@ Console.WriteLine();
 Console.WriteLine();
 Console.WriteLine();
 
-// a subpar attempt at solving the problem which actually made pings worse.
-await SingleBlockingTaskProcessor.Instance.Run(runTimeInSeconds, pingFrequencyInMs, tasksScheduledAtTheSameTime,
-    taskSchedulingFrequencyInMs, minServerLatencyInMs, additionalLatencyInMs, logRequestScheduling);
-Console.WriteLine();
-Console.WriteLine();
-Console.WriteLine();
-
-// A reasonable approach, with caveats is a queue for normal priority and non-queued for high/critical
-// priority requests. You must intentionally limit the frequency and concurrency of high priority calls,
-// otherwise you're back at square one. If this isn't sufficient then having a communications throttled
-// server isn't going to work for your application. See if you can change *that.*
-await SingleBlockingTaskProcessor2.Instance.Run(runTimeInSeconds, pingFrequencyInMs, tasksScheduledAtTheSameTime,
-    taskSchedulingFrequencyInMs, minServerLatencyInMs, additionalLatencyInMs, logRequestScheduling);
-Console.WriteLine();
-Console.WriteLine();
-Console.WriteLine();
 
 pretendUiCts.Cancel();
 

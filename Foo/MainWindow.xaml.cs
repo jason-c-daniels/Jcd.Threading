@@ -1,14 +1,18 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable HeapView.BoxingAllocation
+// ReSharper disable HeapView.ObjectAllocation.Evident
 
 namespace Foo;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow //: Window
 {
     public MainWindow()
     {
@@ -17,21 +21,20 @@ public partial class MainWindow : Window
 
     private async void RunWithMTA_OnClick(object sender, RoutedEventArgs e)
     {
-        RunWithMTA.IsEnabled = false;
-        ReportSchedulerName(nameof(RunWithMTA_OnClick), RunWithMTA ,"Executed", await MTAScheduler.Run(GetExecutingSchedulerAndThreadInfo));
+        RunWithMta.IsEnabled = false;
+        ReportSchedulerName(nameof(RunWithMTA_OnClick), RunWithMta ,"Executed", await MTAScheduler.Run(GetExecutingSchedulerAndThreadInfo));
     }
 
-    private static void ReportSchedulerName(string method, Button button,string message, (TaskScheduler scheduler, Thread thread) ts)
+    private static void ReportSchedulerName(string method, UIElement button,string message, (TaskScheduler scheduler, Thread thread) ts)
     {
-        var schedulerName = ts.scheduler == null ? "<unknown scheduler>" : ts.scheduler.GetType().Name;
-        MessageBox.Show($"{method}[{ts.thread.ManagedThreadId}; {schedulerName}] : {message}");
+        MessageBox.Show($"{method} - {ts.thread.Name} : {message}");
         button.Dispatcher.Invoke(() => button.IsEnabled = true);
     }
 
     private async void RunWithSTA_OnClick(object sender, RoutedEventArgs e)
     {
-        RunWithSTA.IsEnabled=false;
-        ReportSchedulerName(nameof(RunWithSTA_OnClick), RunWithSTA,"Executed", await STAScheduler.Run(GetExecutingSchedulerAndThreadInfo));
+        RunWithSta.IsEnabled=false;
+        ReportSchedulerName(nameof(RunWithSTA_OnClick), RunWithSta,"Executed", await STAScheduler.Run(GetExecutingSchedulerAndThreadInfo));
     }
 
     private void RunInHandler_OnClick(object sender, RoutedEventArgs e)
@@ -40,7 +43,7 @@ public partial class MainWindow : Window
         ReportSchedulerName(nameof(RunInHandler_OnClick), RunInHandler,"Executed", GetExecutingSchedulerAndThreadInfo());
     }
 
-    (TaskScheduler scheduler, Thread thread) GetExecutingSchedulerAndThreadInfo()
+    private static (TaskScheduler scheduler, Thread thread) GetExecutingSchedulerAndThreadInfo()
     {
         var scheduler = TaskScheduler.Current;
         var thread    = Thread.CurrentThread;
@@ -55,14 +58,14 @@ public partial class MainWindow : Window
     
     private async void STAViaMTA_OnClick(object sender, RoutedEventArgs e)
     {
-        STAViaMTA.IsEnabled = false;
-        ReportSchedulerName(nameof(STAViaMTA_OnClick), STAViaMTA, "Executed", await MTAScheduler.Run(()=>STAScheduler.Run(GetExecutingSchedulerAndThreadInfo)));
+        StaViaMta.IsEnabled = false;
+        ReportSchedulerName(nameof(STAViaMTA_OnClick), StaViaMta, "Executed", await MTAScheduler.Run(()=>STAScheduler.Run(GetExecutingSchedulerAndThreadInfo)));
     }
 
     private async void UiViaMTA_OnClick(object sender, RoutedEventArgs e)
     {
-        UiViaMTA.IsEnabled = false;
-        await MTAScheduler.Run(() => Ui.Invoke(()=>ReportSchedulerName(nameof(UiViaMTA_OnClick), UiViaMTA,"Executed",GetExecutingSchedulerAndThreadInfo())));
+        UiViaMta.IsEnabled = false;
+        await MTAScheduler.Run(() => Ui.Invoke(()=>ReportSchedulerName(nameof(UiViaMTA_OnClick), UiViaMta,"Executed",GetExecutingSchedulerAndThreadInfo())));
     }
 
     private async void UiViaCurrent_OnClick(object sender, RoutedEventArgs e)
@@ -73,48 +76,51 @@ public partial class MainWindow : Window
 
     private async void UiViaSTA_OnClick(object sender, RoutedEventArgs e)
     {
-        UiViaSTA.IsEnabled = false;
-        await STAScheduler.Run(() => Ui.Invoke(()=>ReportSchedulerName(nameof(UiViaSTA_OnClick),UiViaSTA,"Executed",GetExecutingSchedulerAndThreadInfo())));
+        UiViaSta.IsEnabled = false;
+        await STAScheduler.Run(() => Ui.Invoke(()=>ReportSchedulerName(nameof(UiViaSTA_OnClick),UiViaSta,"Executed",GetExecutingSchedulerAndThreadInfo())));
     }
 
     private async void LongRunningMTATask_OnClick(object sender, RoutedEventArgs e)
     {
-        LongRunningMTATask.IsEnabled = false;
+        LongRunningMtaTask.IsEnabled = false;
         var sw = Stopwatch.StartNew();
-        await MTAScheduler.Run(async () => await LongRunningTask(nameof(LongRunningMTATask_OnClick),LongRunningMTATask,sw));
+        await MTAScheduler.Run(async () => await LongRunningTask(nameof(LongRunningMTATask_OnClick),LongRunningMtaTask,sw));
     }
 
-    private async Task LongRunningTask(string method, Button button, Stopwatch scheduledStopwatch, int taskCount=20, int durationInMs = 1000, int delay =100)
+    private async Task LongRunningTask(string method, Button button, Stopwatch scheduledStopwatch, int taskCount=20, int durationInMs = 5000, int delay =1)
     {
-        var sw    = Stopwatch.StartNew();
+        var taskSw    = Stopwatch.StartNew();
         var tasks = new List<Task>();
 
-        for (int i = 0; i < taskCount; i++)
+        for (var i = 0; i < taskCount; i++)
         {
             tasks.Add(MTAScheduler.Run(async () =>
                                        {
-                                           using AutoResetEvent waiter = new AutoResetEvent(false);
+                                           var                  randomWait = new Random().Next() % 7;
+                                           using var waiter     = new AutoResetEvent(false);
                                            waiter.WaitOne(1);
-                                           var sw = Stopwatch.StartNew();
-                                           var i = 0;
-                                           var lastElapsed = sw.ElapsedMilliseconds;
-                                           while (sw.ElapsedMilliseconds < durationInMs*5)
+                                           var waitSw = Stopwatch.StartNew();
+                                           var z = 0;
+                                           // do some CPU intensive busywork, yielding every 100 times
+                                           // We modify a and return value outside the loop to prevent the compiler
+                                           // from optimizing out the operations.
+                                           while (waitSw.ElapsedMilliseconds < durationInMs)
                                            {
-                                               i++;
-                                               i %= int.MaxValue / 10;
-                                               if (i%100==0) waiter.WaitOne(1);
+                                               z++;
+                                               z %= int.MaxValue / 10;
+                                               if (z             % 100 == 0) waiter.WaitOne(randomWait);
                                            }
 
-                                           sw.Stop();
+                                           waitSw.Stop();
                                            await Task.Delay(delay);
-                                           return i;
+                                           return z;
                                        }));
         }
 
         await Task.WhenAll(tasks);
-        sw.Stop();
+        taskSw.Stop();
         scheduledStopwatch.Stop();
-        var elapsedMs     = sw.ElapsedMilliseconds;
+        var elapsedMs     = taskSw.ElapsedMilliseconds;
         var scheduleDelay = scheduledStopwatch.ElapsedMilliseconds - elapsedMs;
         var ts            = GetExecutingSchedulerAndThreadInfo();
         Ui.Invoke(() => ReportSchedulerName(method, button, $"Executed in {elapsedMs} ms after a {scheduleDelay} ms delay",ts));
@@ -122,15 +128,15 @@ public partial class MainWindow : Window
     
     private async void LongRunningSTATask_OnClick(object sender, RoutedEventArgs e)
     {
-        LongRunningSTATask.IsEnabled = false;
+        LongRunningStaTask.IsEnabled = false;
         var sw = Stopwatch.StartNew();
-        await STAScheduler.Run(async () => await LongRunningTask(nameof(LongRunningSTATask_OnClick),LongRunningSTATask,sw));
+        await STAScheduler.Run(async () => await LongRunningTask(nameof(LongRunningSTATask_OnClick),LongRunningStaTask,sw));
     }
 
     private void LongRunningUIAction_OnClick(object sender, RoutedEventArgs e)
     {
         var sw = Stopwatch.StartNew();
-        LongRunningUIAction.IsEnabled = false;
-        Ui.Invoke(async () => await LongRunningTask(nameof(LongRunningUIAction_OnClick), LongRunningUIAction,sw));
+        LongRunningUiAction.IsEnabled = false;
+        Ui.Invoke(async () => await LongRunningTask(nameof(LongRunningUIAction_OnClick), LongRunningUiAction,sw));
     }
 }

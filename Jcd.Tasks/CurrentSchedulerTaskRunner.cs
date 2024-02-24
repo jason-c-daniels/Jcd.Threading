@@ -5,61 +5,51 @@ using System.Threading.Tasks;
 namespace Jcd.Tasks;
 
 /// <summary>
-/// A TaskRunner that schedules tasks on the current TaskScheduler or a user provided TaskScheduler.
+/// A TaskRunner that schedules tasks on the current <see cref="TaskScheduler"/> or
+/// a user provided <see cref="TaskScheduler"/>.
 /// </summary>
 public static class CurrentSchedulerTaskRunner
 {
+   /// <summary>
+   /// The current <see cref="TaskScheduler"/>
+   /// </summary>
    public static TaskScheduler Scheduler => TaskScheduler.Current;
    
    /// <summary>
-   /// 
+   /// Runs an action on the current or provided <see cref="TaskScheduler"/>
    /// </summary>
-   /// <param name="action"></param>
-   /// <param name="scheduler"></param>
+   /// <param name="action">the action to run</param>
+   /// <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
    /// <returns></returns>
    public static async Task Run(Action action, TaskScheduler scheduler=null) => 
-      await Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.DenyChildAttach, scheduler ?? Scheduler);
+      await (scheduler ?? Scheduler).Run(action);
 
    public static async Task Run(Action action, CancellationToken cancellationToken, TaskScheduler scheduler =null) =>
-      await Task.Factory.StartNew(action, cancellationToken, TaskCreationOptions.DenyChildAttach, scheduler ?? Scheduler);
+      await (scheduler ?? Scheduler).Run(action, cancellationToken);
 
    public static async Task Run(Func<Task?> function, TaskScheduler scheduler =null) =>
-      await await Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, scheduler ?? Scheduler);
+      await (scheduler ?? Scheduler).Run(function);
 
-   public static async Task Run(Func<Task?> function, CancellationToken cancellationToken) =>
-      await await Task.Factory.StartNew(function, cancellationToken, TaskCreationOptions.DenyChildAttach, Scheduler);
+   public static async Task Run(Func<Task?> function, CancellationToken cancellationToken, TaskScheduler scheduler=null) =>
+      await (scheduler ?? Scheduler).Run(function, cancellationToken);
 
    public static async Task<TResult> Run<TResult>(Func<TResult> function, TaskScheduler scheduler =null) =>
-      await Task.Factory.StartNew(function, CancellationToken.None, TaskCreationOptions.DenyChildAttach, scheduler ?? Scheduler);
+      await (scheduler ?? Scheduler).Run(function);
 
    public static async Task<TResult> Run<TResult>(
       Func<TResult>     function
     , CancellationToken cancellationToken
     , TaskScheduler     scheduler =null
    ) =>
-      await Task.Factory.StartNew(function, cancellationToken, TaskCreationOptions.DenyChildAttach, scheduler ?? Scheduler);
+      await (scheduler ?? Scheduler).Run(function, cancellationToken);
 
    public static async Task<TResult> Run<TResult>(Func<Task<TResult>?> function, TaskScheduler scheduler =null) =>
-      await Run(function, CancellationToken.None, scheduler ?? Scheduler);
+      await (scheduler ?? Scheduler).Run(function);
    
    public static async Task<TResult> Run<TResult>(
       Func<Task<TResult>?> function
     , CancellationToken    cancellationToken
     , TaskScheduler        scheduler =null
-   )
-   {
-      if (function == null) throw new ArgumentNullException(nameof(function));
-
-      // Short-circuit if we are given a pre-canceled token
-      if (cancellationToken.IsCancellationRequested) return await Task.FromCanceled<TResult>(cancellationToken);
-
-      // Kick off initial Task, which will call the user-supplied function and yield a Task.
-      Task<Task<TResult>?> task1 =
-         Task<Task<TResult>?>.Factory.StartNew(function
-                                             , cancellationToken
-                                             , TaskCreationOptions.DenyChildAttach,
-                                               scheduler ?? Scheduler
-                                              );
-      return await task1.Unwrap();
-   }
+   )=>
+      await (scheduler ?? Scheduler).Run(function,cancellationToken);
 }

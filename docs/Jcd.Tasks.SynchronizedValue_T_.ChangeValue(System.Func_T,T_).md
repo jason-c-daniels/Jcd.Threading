@@ -26,7 +26,7 @@ The modified value.
 Standard usage: pass in a function to manipulate the current value.  
   
 ```csharp  
-var sv = new SimpleInterlockedValue<int>();  
+var sv = new SynchronizedValue<int>();  
   
 // increment the value by one.  
 var changedValue = sv.Do(x => x + 1);  
@@ -41,7 +41,7 @@ changedValue = sv.Do(x => x + 2);
              the following.  
   
 ```csharp  
-var sv=new SimpleInterlockedValue<int>(10);  
+var sv=new SynchronizedValue<int>(10);  
   
 // deadlock yourself in a single line of code!  
 var changedValue = sv.Do(x=>sv.Value+10);  

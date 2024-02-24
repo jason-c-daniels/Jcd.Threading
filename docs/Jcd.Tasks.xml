@@ -4,479 +4,76 @@
         <name>Jcd.Tasks</name>
     </assembly>
     <members>
-        <member name="T:Jcd.Tasks.BlockingTaskProcessor">
-            <summary>
-            Represents a high level object that enqueues and executes actions, functions, and unstarted tasks,
-            waiting for each to complete before executing the next.
-            </summary>
-            <remarks>
-            <para>
-            You must ensure all shared resources for the enqueued tasks have their access synchronized
-            appropriately.
-            </para>
-            <para>
-            <i>NOTE: This was really just a thought experiment. There are probably legitimately better ways of
-            doing this built in to .Net. I had trouble finding them. If you find them, please let me know!</i>
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.QueueLength">
-            <summary>
-            The number of pending commands.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.#ctor(System.Boolean)">
-            <summary>
-            Constructs a <see cref="T:Jcd.Tasks.BlockingTaskProcessor"/>
-            </summary>
-            <param name="autoStart"></param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue(System.Action)">
-            <summary>
-            Enqueues an action. This is a "fire and forget" method. Control is immediately
-            returned to the caller.
-            </summary>
-            <param name="command">The action to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Enqueues an async action. This is a "fire and forget" method.
-            Control is returned to the caller immediately.
-            </summary>
-            <param name="command">The asynchronous action to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue``1(System.Func{``0})">
-            <summary>
-            Enqueues a function. This is a "fire and forget" method.
-            The function result will not be available and control is immediately returned to the caller.
-            </summary>
-            <param name="command">The command to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue``1(System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Enqueues an async function. This is a "fire and forget" method.
-            The function result will not be available and control is immediately returned to the caller.
-            </summary>
-            <param name="command">The async function to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Action)">
-            <summary>
-            Enqueues an action and returns a proxy task that will execute the action.
-            Awaiting the returned proxy <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued action to finish executing.
-            </summary>
-            <param name="command">The action to execute.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> that will execute the enqueued action.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Enqueues an async action and returns a proxy task that will execute the action.
-            Awaiting the returned proxy <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued action to finish executing.
-            </summary>
-            <param name="command">The async action to enqueue.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy``1(System.Func{``0})">
-            <summary>
-            Enqueues a function and returns a proxy task that will execute the function.
-            Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued function to finish executing
-            and returns the result.
-            </summary>
-            <param name="command">The command to execute.</param>
-            <typeparam name="TResult">The data type returned by the function</typeparam>
-            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action, once dequeued.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy``1(System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Enqueues an async function and returns a proxy task that will execute the function.
-            Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued function to finish executing
-            and returns the result.
-            </summary>
-            <param name="command">The async function to enqueue.</param>
-            <typeparam name="TResult">The data type returned by the function.</typeparam>
-            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask``1(System.Threading.Tasks.Task{``0},System.Boolean@)">
-            <summary>
-            Tries to enqueues a task for later execution. If the passed in task is not unstarted,
-            it's not enqueued.
-            </summary>
-            <param name="task">the unstarted task</param>
-            <param name="enqueued">a flag indicating if the task was actually enqueued</param>
-            <typeparam name="TResult">The result type of the task.</typeparam>
-            <returns>The passed in task.</returns>
-            <exception cref="T:System.ArgumentNullException">When <paramref name="task"/> is <see langword="null"/> </exception>
-            <remarks>
-            <para>
-            When passing in a previously started task the task is returned so that you can still await
-            the result of the associated action. This is to support framework builders who may not control
-            if a task is started or not.
-            </para>
-            <para>
-            The reason for not enqueuing is to prevent such tasks, which can't be started, from
-            occupying a position in the execution queue. This allows the processor to get to actual
-            unstarted tasks sooner.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task,System.Boolean@)">
-            <summary>
-            Tries to enqueues a task for later execution. If the passed in task is already
-            started, it's not enqueued.
-            </summary>
-            <param name="task">the unstarted task</param>
-            <param name="enqueued">a flag indicating if the task was actually enqueued.</param>
-            <returns>The passed in task.</returns>
-            <exception cref="T:System.ArgumentNullException">When <paramref name="task"/> is <see langword="null"/> </exception>
-            <remarks>
-            <para>
-            When passing in a previously started task the task is still returned so that you can still await the result
-            of the associated action. This is to support framework builders who may not control
-            if a task is unstarted or not.
-            </para>
-            <para>
-            The reason for not enqueuing is to prevent such tasks, which can't be started, from
-            occupying a position in the execution queue. This allows the processor to get to actual
-            unstarted tasks sooner.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.HasTasks">
-            <summary>
-            Gets a flag indicating if there are any pending tasks.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.StopProcessingAndClearQueue">
-            <summary>
-            Signals the task processor to halt all processing immediately. This also cancels all
-            tasks created by this task task processor. This is mostly intended to be called
-            during application shutdown.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.IsStarted">
-            <summary>
-            Gets a flag indicating if the task processing has started. (it might be paused though).
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.IsPaused">
-            <summary>
-            Gets a flag indicating if the command processing is currently paused.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Pause">
-            <summary>
-            Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started when this is
-            called it will still get started.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Resume">
-            <summary>
-            Resumes command processing.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.PauseAsync">
-            <summary>
-            Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started
-            when this is called it will still get started.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.ResumeAsync">
-            <summary>
-            Resumes task processing.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing">
-            <summary>
-            Starts the processing of queued tasks.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Dispose">
-            <inheritdoc />
-        </member>
         <member name="T:Jcd.Tasks.CurrentSchedulerTaskRunner">
             <summary>
-            A TaskRunner that schedules tasks on the current TaskScheduler or a user provided TaskScheduler.
+            A TaskRunner that schedules tasks on the current <see cref="T:System.Threading.Tasks.TaskScheduler"/> or
+            a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.CurrentSchedulerTaskRunner.Scheduler">
+            <summary>
+            The current <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
         </member>
         <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            
+            Runs an action on the current or provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="action"></param>
-            <param name="scheduler"></param>
+            <param name="action">the action to run</param>
+            <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
             <returns></returns>
         </member>
-        <member name="M:Jcd.Tasks.CurrentThreadTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
-            <summary>Runs the provided Task synchronously on the current thread.</summary>
-            <param name="task">The task to be executed.</param>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentThreadTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <summary>Runs the provided Task synchronously on the current thread.</summary>
-            <param name="task">The task to be executed.</param>
-            <param name="taskWasPreviouslyQueued">Whether the Task was previously queued to the scheduler.</param>
-            <returns>True if the Task was successfully executed; otherwise, false.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentThreadTaskScheduler.GetScheduledTasks">
-            <summary>Gets the Tasks currently scheduled to this scheduler.</summary>
-            <returns>An empty enumerable, as Tasks are never queued, only executed.</returns>
-        </member>
-        <member name="P:Jcd.Tasks.CurrentThreadTaskScheduler.MaximumConcurrencyLevel">
-            <summary>Gets the maximum degree of parallelism for this scheduler.</summary>
-        </member>
-        <member name="T:Jcd.Tasks.QueuedTaskScheduler">
+        <member name="T:Jcd.Tasks.DualMtaThreadTaskScheduler">
             <summary>
-            Provides a TaskScheduler that provides control over priorities, fairness, and the underlying threads utilized.
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  STA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
         </member>
-        <member name="T:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerDebugView">
-            <summary>Debug view for the QueuedTaskScheduler.</summary>
+        <member name="M:Jcd.Tasks.DualMtaThreadTaskScheduler.#ctor">
+            <inheritdoc />
         </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerDebugView._scheduler">
-            <summary>The scheduler.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerDebugView.#ctor(Jcd.Tasks.QueuedTaskScheduler)">
-            <summary>Initializes the debug view.</summary>
-            <param name="scheduler">The scheduler.</param>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerDebugView.ScheduledTasks">
-            <summary>Gets all of the Tasks queued to the scheduler directly.</summary>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerDebugView.Queues">
-            <summary>Gets the prioritized and fair queues.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._queueGroups">
+        <member name="T:Jcd.Tasks.DualStaThreadTaskScheduler">
             <summary>
-            A sorted list of round-robin queue lists.  Tasks with the smallest priority value
-            are preferred.  Priority groups are round-robin'd through in order of priority.
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  STA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._disposeCancellation">
-            <summary>Cancellation token used for disposal.</summary>
+        <member name="M:Jcd.Tasks.DualStaThreadTaskScheduler.#ctor">
+            <inheritdoc />
         </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._concurrencyLevel">
+        <member name="T:Jcd.Tasks.FourMtaThreadsPerCpuTaskScheduler">
             <summary>
-            The maximum allowed concurrency level of this scheduler.  If custom threads are
-            used, this represents the number of created threads.
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four MTA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._taskProcessingThread">
-            <summary>Whether we're processing tasks on the current thread.</summary>
+        <member name="M:Jcd.Tasks.FourMtaThreadsPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
         </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._targetScheduler">
-            <summary>The scheduler onto which actual work is scheduled.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._nonthreadsafeTaskQueue">
-            <summary>The queue of tasks to process when using an underlying target scheduler.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._delegatesQueuedOrRunning">
-            <summary>The number of Tasks that have been queued or that are running whiel using an underlying scheduler.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._threads">
-            <summary>The threads used by the scheduler to process work.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler._blockingTaskQueue">
-            <summary>The collection of tasks to be executed on our custom threads.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.#ctor">
-            <summary>Initializes the scheduler.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.#ctor(System.Threading.Tasks.TaskScheduler)">
-            <summary>Initializes the scheduler.</summary>
-            <param name="targetScheduler">The target underlying scheduler onto which this sceduler's work is queued.</param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.#ctor(System.Threading.Tasks.TaskScheduler,System.Int32)">
-            <summary>Initializes the scheduler.</summary>
-            <param name="targetScheduler">The target underlying scheduler onto which this sceduler's work is queued.</param>
-            <param name="maxConcurrencyLevel">The maximum degree of concurrency allowed for this scheduler's work.</param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.#ctor(System.Int32)">
-            <summary>Initializes the scheduler.</summary>
-            <param name="threadCount">The number of threads to create and use for processing work items.</param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.#ctor(System.Int32,System.String,System.Boolean,System.Threading.ThreadPriority,System.Threading.ApartmentState,System.Int32,System.Action,System.Action)">
-            <summary>Initializes the scheduler.</summary>
-            <param name="threadCount">The number of threads to create and use for processing work items.</param>
-            <param name="threadName">The name to use for each of the created threads.</param>
-            <param name="useForegroundThreads">A Boolean value that indicates whether to use foreground threads instead of background.</param>
-            <param name="threadPriority">The priority to assign to each thread.</param>
-            <param name="threadApartmentState">The apartment state to use for each thread.</param>
-            <param name="threadMaxStackSize">The stack size to use for each thread.</param>
-            <param name="threadInit">An initialization routine to run on each thread.</param>
-            <param name="threadFinally">A finalization routine to run on each thread.</param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.ThreadBasedDispatchLoop(System.Action,System.Action)">
-            <summary>The dispatch loop run by all threads in this scheduler.</summary>
-            <param name="threadInit">An initialization routine to run when the thread begins.</param>
-            <param name="threadFinally">A finalization routine to run before the thread ends.</param>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.DebugQueueCount">
-            <summary>Gets the number of queues currently activated.</summary>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.DebugTaskCount">
-            <summary>Gets the number of tasks currently scheduled.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.FindNextTask_NeedsLock(System.Threading.Tasks.Task@,Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue@)">
-            <summary>Find the next task that should be executed, based on priorities and fairness and the like.</summary>
-            <param name="targetTask">The found task, or null if none was found.</param>
-            <param name="queueForTargetTask">
-            The scheduler associated with the found task.  Due to security checks inside of TPL,  
-            this scheduler needs to be used to execute that task.
-            </param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
-            <summary>Queues a task to the scheduler.</summary>
-            <param name="task">The task to be queued.</param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.ProcessPrioritizedAndBatchedTasks">
+        <member name="T:Jcd.Tasks.FourStaThreadsPerCpuTaskScheduler">
             <summary>
-            Process tasks one at a time in the best order.  
-            This should be run in a Task generated by QueueTask.
-            It's been separated out into its own method to show up better in Parallel Tasks.
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four STA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.NotifyNewWorkItem">
-            <summary>Notifies the pool that there's a new item to be executed in one of the round-robin queues.</summary>
+        <member name="M:Jcd.Tasks.FourStaThreadsPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
         </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <summary>Tries to execute a task synchronously on the current thread.</summary>
-            <param name="task">The task to execute.</param>
-            <param name="taskWasPreviouslyQueued">Whether the task was previously queued.</param>
-            <returns>true if the task was executed; otherwise, false.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.GetScheduledTasks">
-            <summary>Gets the tasks scheduled to this scheduler.</summary>
-            <returns>An enumerable of all tasks queued to this scheduler.</returns>
-            <remarks>This does not include the tasks on sub-schedulers.  Those will be retrieved by the debugger separately.</remarks>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.MaximumConcurrencyLevel">
-            <summary>Gets the maximum concurrency level to use when processing tasks.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.Dispose">
-            <summary>Initiates shutdown of the scheduler.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.ActivateNewQueue">
-            <summary>Creates and activates a new scheduling queue for this scheduler.</summary>
-            <returns>The newly created and activated queue at priority 0.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.ActivateNewQueue(System.Int32)">
-            <summary>Creates and activates a new scheduling queue for this scheduler.</summary>
-            <param name="priority">The priority level for the new queue.</param>
-            <returns>The newly created and activated queue at the specified priority.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.RemoveQueue_NeedsLock(Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue)">
-            <summary>Removes a scheduler from the group.</summary>
-            <param name="queue">The scheduler to be removed.</param>
-        </member>
-        <member name="T:Jcd.Tasks.QueuedTaskScheduler.QueueGroup">
-            <summary>A group of queues a the same priority level.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueueGroup.NextQueueIndex">
-            <summary>The starting index for the next round-robin traversal.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueueGroup.CreateSearchOrder">
-            <summary>Creates a search order through this group.</summary>
-            <returns>An enumerable of indices for this group.</returns>
-        </member>
-        <member name="T:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue">
-            <summary>Provides a scheduling queue associatd with a QueuedTaskScheduler.</summary>
-        </member>
-        <member name="T:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView">
-            <summary>A debug view for the queue.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView._queue">
-            <summary>The queue.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView.#ctor(Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue)">
-            <summary>Initializes the debug view.</summary>
-            <param name="queue">The queue to be debugged.</param>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView.Priority">
-            <summary>Gets the priority of this queue in its associated scheduler.</summary>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView.Id">
-            <summary>Gets the ID of this scheduler.</summary>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView.ScheduledTasks">
-            <summary>Gets all of the tasks scheduled to this queue.</summary>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueuedTaskSchedulerQueueDebugView.AssociatedScheduler">
-            <summary>Gets the QueuedTaskScheduler with which this queue is associated.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue._pool">
-            <summary>The scheduler with which this pool is associated.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue._workItems">
-            <summary>The work items stored in this queue.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue._disposed">
-            <summary>Whether this queue has been disposed.</summary>
-        </member>
-        <member name="F:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue._priority">
-            <summary>Gets the priority for this queue.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.#ctor(System.Int32,Jcd.Tasks.QueuedTaskScheduler)">
-            <summary>Initializes the queue.</summary>
-            <param name="priority">The priority associated with this queue.</param>
-            <param name="pool">The scheduler with which this queue is associated.</param>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.WaitingTasks">
-            <summary>Gets the number of tasks waiting in this scheduler.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.GetScheduledTasks">
-            <summary>Gets the tasks scheduled to this scheduler.</summary>
-            <returns>An enumerable of all tasks queued to this scheduler.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.QueueTask(System.Threading.Tasks.Task)">
-            <summary>Queues a task to the scheduler.</summary>
-            <param name="task">The task to be queued.</param>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <summary>Tries to execute a task synchronously on the current thread.</summary>
-            <param name="task">The task to execute.</param>
-            <param name="taskWasPreviouslyQueued">Whether the task was previously queued.</param>
-            <returns>true if the task was executed; otherwise, false.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.ExecuteTask(System.Threading.Tasks.Task)">
-            <summary>Runs the specified ask.</summary>
-            <param name="task">The task to execute.</param>
-        </member>
-        <member name="P:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.MaximumConcurrencyLevel">
-            <summary>Gets the maximum concurrency level to use when processing tasks.</summary>
-        </member>
-        <member name="M:Jcd.Tasks.QueuedTaskScheduler.QueuedTaskSchedulerQueue.Dispose">
-            <summary>Signals that the queue should be removed from the scheduler as soon as the queue is empty.</summary>
-        </member>
-        <member name="T:Jcd.Tasks.DualSTAThreadScheduler">
+        <member name="T:Jcd.Tasks.MtaThreadTaskScheduler">
             <summary>
-            Provides two STA threads
+            The base type for a ThreadTaskScheduler that uses MTA threads. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
+        </member>
+        <member name="M:Jcd.Tasks.MtaThreadTaskScheduler.#ctor(System.Int32)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
         </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
@@ -484,10 +81,75 @@
             management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
         </member>
+        <member name="T:Jcd.Tasks.OneMtaThreadPerCpuTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.OneMtaThreadPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.OneMtaThreadPerTwoCpusTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one MTA thread for every two CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.OneMtaThreadPerTwoCpusTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.OneStaThreadPerCpuTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.OneStaThreadPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.OneStaThreadPerTwoCpusTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread for every two CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.OneStaThreadPerTwoCpusTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.QuadMtaThreadTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four MTA threads to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.QuadMtaThreadTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.QuadStaThreadTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four STA threads to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.QuadStaThreadTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
         <member name="T:Jcd.Tasks.SchedulerBoundTaskRunner`1">
             <summary>
-            A TaskScheduler bound task runner. It ensures all tasks it creates are registered with either its own,
-            or a user provided TaskScheduler.
+            A TaskScheduler bound task runner. It ensures all tasks it creates are registered
+            with either its own, or a user provided TaskScheduler.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.SchedulerBoundTaskRunner`1.Scheduler">
+            <summary>
+            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> used to schedule and execute tasks.
             </summary>
         </member>
         <member name="M:Jcd.Tasks.SchedulerBoundTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
@@ -498,10 +160,22 @@
             <param name="scheduler"></param>
             <returns></returns>
         </member>
+        <member name="T:Jcd.Tasks.StaThreadTaskScheduler">
+            <summary>
+            The base type for a ThreadTaskScheduler that uses STA threads. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.StaThreadTaskScheduler.#ctor(System.Int32)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
+        </member>
         <member name="T:Jcd.Tasks.SynchronizedValue`1">
             <summary>
-            Provides a simple async-safe method of setting, getting, and altering values intended
-            to be shared among tasks and threads.
+            Provides a simple async-safe and thread-safe method of setting, getting, acting on,
+            and altering values shared among tasks and threads.
             </summary>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
             <remarks>
@@ -520,14 +194,14 @@
             <para>
             As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
-            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/> and <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>
-            for recursive reentrancy considerations. <i>(don't try it)</i>
+            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})"/>, and <see cref="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
+            for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
             </para>
             </remarks>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.#ctor(`0)">
             <summary>
-            Constructs an <see cref="!:SimpleInterlockedValue&lt;T&gt;"/> instance.
+            Constructs an <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instance.
             </summary>
             <param name="initialValue">The starting value.</param>
         </member>
@@ -540,7 +214,7 @@
             </summary>
             <example>
             <code>
-            var sv = new SimpleInterlockedValue&lt;int&gt;(15);
+            var sv = new SynchronizedValue&lt;int&gt;(15);
             
             // get the value
             setValue = sv.Value;
@@ -555,7 +229,7 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
             <example>
             <code>
-            var sv = new SimpleInterlockedValue&lt;int&gt;(15);
+            var sv = new SynchronizedValue&lt;int&gt;(15);
             
             // get the value
             await setValue = sv.GetValueAsync(20);
@@ -571,7 +245,7 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
             <example>
             <code>
-            var sv = new SimpleInterlockedValue&lt;int&gt;();
+            var sv = new SynchronizedValue&lt;int&gt;();
             
             // set the value to 10.
             await setValue = sv.SetValueAsync(10);
@@ -590,7 +264,7 @@
             <returns>The current value as of establishing the lock.</returns>
             <example>
             <code>
-            var sv = new SimpleInterlockedValue&lt;int&gt;(15);
+            var sv = new SynchronizedValue&lt;int&gt;(15);
             
             // get the value
             setValue = sv.GetValue(20);
@@ -606,7 +280,7 @@
             <returns>The provided value.</returns>
             <example>
             <code>
-            var sv = new SimpleInterlockedValue&lt;int&gt;();
+            var sv = new SynchronizedValue&lt;int&gt;();
             
             // set the value to 10.
             setValue = sv.SetValue(10);
@@ -631,7 +305,7 @@
              <example>
              Standard usage: pass in a function to manipulate the current value.
              <code>
-             var sv = new SimpleInterlockedValue&lt;int&gt;();
+             var sv = new SynchronizedValue&lt;int&gt;();
              
              // increment the value by one.
              var changedValue = sv.Do(x => x + 1);
@@ -647,7 +321,7 @@
              the following.
              </para>
              <code>
-             var sv=new SimpleInterlockedValue&lt;int&gt;(10);
+             var sv=new SynchronizedValue&lt;int&gt;(10);
             
              // deadlock yourself in a single line of code!
              var changedValue = sv.Do(x=>sv.Value+10);
@@ -665,16 +339,16 @@
              <example>
              Standard usage: pass in a function to manipulate the current value.
              <code>
-             var sv = new SimpleInterlockedValue&lt;int&gt;();
+             var sv = new SynchronizedValue&lt;int&gt;();
              
              // increment the value by one.
-             var changedValue = await sv.DoAsync(x => x + 1);
+             var changedValue = await sv.ChangeValueAsync(x => x + 1);
              
              // increment the value by two.
-             changedValue = await sv.DoAsync(x => x + 2);
+             changedValue = await sv.ChangeValueAsync(x => x + 2);
              
              // Perform some operation that requires the value to remain unchanged during the operation.
-             var sameValue = await sv.DoAsync(x => { DoSomething(x); return x;});
+             var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});
              </code>
              </example>
              <remarks>
@@ -683,173 +357,161 @@
              the following.
              </para>
              <code>
-             var sv=new SimpleInterlockedValue&lt;int&gt;(10);
+             var sv=new SynchronizedValue&lt;int&gt;(10);
             
              // deadlock yourself in a single line of code!
              var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
              </code>
              </remarks>
         </member>
-        <member name="T:Jcd.Tasks.TaskExtensions">
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})">
+             <summary>
+             Executes an action on the synchronized value after locking it.
+             <b>This is not recursively reentrant. See remarks for details.</b>
+             </summary>
+             <param name="action">The function to call.</param>
+             <example>
+             Standard usage: pass in an asynchronous action to action the current value.
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;();
+             
+             // increment the value by one and discard the result.
+             sv.Do(x => x + 1);
+             
+             // increment the value by two and discard the result.
+             sv.Do(x => x + 2);
+             
+             // Perform some other operation that requires the value to
+             remain unchanged during the operation.
+             sv.Do(x => DoSomething(x));
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SynchronizedValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             sv.Do(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})">
+             <summary>
+             Executes an asynchronous action on the synchronized value after locking it.
+             <b>This is not recursively reentrant. See remarks for details.</b>
+             </summary>
+             <param name="asyncAction">The function to call.</param>
+             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for the action.</returns>
+             <example>
+             Standard usage: pass in an asynchronous action to action the current value.
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;();
+             
+             // increment the value by one and discard the result.
+             var changedValue = await sv.DoAsync(x => x + 1);
+             
+             // increment the value by two and discard the result.
+             await sv.DoAsync(x => x + 2);
+             
+             // Perform some other operation that requires the value to
+             remain unchanged during the operation.
+             await sv.DoAsync(x => DoSomething(x));
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SynchronizedValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             await sv.DoAsync(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
             <summary>
-            A set of helpers for <see cref="T:System.Threading.Tasks.Task"/> objects.
+            
+            </summary>
+            <param name="action"></param>
+            <param name="scheduler"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Jcd.Tasks.ThreadTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived base type that runs <see cref="T:System.Threading.Tasks.Task"/> instances
+            in a fixed size pool of threads. Inlining is disabled by default to ensure only
+            the threads managed by this <see cref="T:System.Threading.Tasks.TaskScheduler"/> will process the tasks.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.IsUnstarted(System.Threading.Tasks.Task)">
-            <summary>
-            Checks if a task is unstarted and startable. (Status==Created)
-            </summary>
-            <param name="task">the task to inspect</param>
-            <returns>True if unstarted. False otherwise.</returns>
+        <member name="M:Jcd.Tasks.ThreadTaskScheduler.GetScheduledTasks">
+            <inheritdoc />
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.Run(System.Threading.Tasks.Task)">
+        <member name="P:Jcd.Tasks.ThreadTaskScheduler.Threads">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> on a task then returns the task, discarding exceptions.
+            The set of threads that will process Tasks. This is provided for
+            advanced use cases where an action needs to be taken on the entire
+            pool of threads.
             </summary>
-            <param name="task">the task to start</param>
-            <returns>the original task</returns>
-            <remarks>
-            While this returns the original task, it doesn't guarantee it's awaitable. Only call
-            this method if you've got 100% control over the lifecycle of the task. Otherwise call
-            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> instead and inspect the results before calling await.
-            </remarks>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.Run``1(System.Threading.Tasks.Task{``0},System.Threading.Tasks.TaskScheduler)">
+        <member name="M:Jcd.Tasks.ThreadTaskScheduler.Shutdown">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> on a task then returns the task, discarding exceptions.
+            Signals the underlying threads that the <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            is being shutdown. Threads will end shortly thereafter. 
             </summary>
-            <param name="task">the task to start</param>
-            <param name="taskScheduler">
-            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> to use for executing the task. If not provided the
-            current <see cref="T:System.Threading.Tasks.TaskScheduler"/> is used.
-            </param>
-            <typeparam name="TResult">The type of data returned from the task.</typeparam>
-            <returns>the original task</returns>
-            <remarks>
-            While this returns the original task, it doesn't guarantee it's awaitable. Only call
-            this method if you've got 100% control over the lifecycle of the task. Otherwise call
-            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> instead and inspect the results before calling await.
-            </remarks>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)">
+        <member name="M:Jcd.Tasks.ThreadTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
             <summary>
-            Tries to successfully call start. 
+            Constructs an instance of the type.
             </summary>
-            <param name="task">The task to call Start on.</param>
-            <param name="taskScheduler">
-            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> to use for executing the task. If not provided the
-            current <see cref="T:System.Threading.Tasks.TaskScheduler"/> is used.
-            </param>
-            <param name="exception">The exception resulting from calling Start.</param>
-            <returns>
-            <see cref="F:Jcd.Tasks.TryStartResult.SuccessfullyStarted"/> when the Start was called and no exception occurred.
-            <see cref="F:Jcd.Tasks.TryStartResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
-            <see cref="F:Jcd.Tasks.TryStartResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
-            </returns>
+            <param name="threadCount">The number of threads to create.</param>
+            <param name="state">the thread apartment state setting for all threads.</param>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.Threading.CancellationToken)">
-            <summary>
-            Waits on a running task until it completes, is cancelled, faults or times out.
-            </summary>
-            <param name="task">the task to wait on.</param>
-            <param name="cancellationToken">An optional cancellation token.</param>
-            <returns><see langword="true"/> if it ran to completion. <see langword="false"/> otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the task is unstarted.</exception>
+        <member name="M:Jcd.Tasks.ThreadTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <inheritdoc />
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.TimeSpan,System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:Jcd.Tasks.ThreadTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
             <summary>
-            Waits on a running task until it completes, is cancelled, faults or times out.
-            </summary>
-            <param name="task">the task to wait on.</param>
-            <param name="timeout">the amount of time to wait. Must be a value between -1 (infinite) and  <see cref="F:System.Int32.MaxValue"/></param>
-            <param name="cancellationToken">An optional cancellation token.</param>
-            <returns><see langword="true"/> if ran to completion. <see langword="false"/> otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the task is unstarted.</exception>
-        </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
-            <summary>
-            Waits on a running task until it completes, is cancelled, faults or times out.
-            This extension method swallows exceptions. The exception should be available on
-            the Task.Exception property
-            </summary>
-            <param name="task">the task to wait on.</param>
-            <param name="millisecondsTimeout">the amount of time to wait. Must be a value between -1 (infinite) and  <see cref="F:System.Int32.MaxValue"/></param>
-            <param name="cancellationToken">An optional cancellation token.</param>
-            <returns><see langword="true"/> if ran to completion. <see langword="false"/> otherwise.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.ThreadScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <summary>
-            This the default implementation for this scheduler guarantees only its threads are processing tasks, so we cannot
-            inline operations as inlining executes the task on the ThreadPool, which may not meet the same requirements as our
-            dedicated threads.
+            The method to attempt executing a Task in the calling thread's context.
+            This is disabled by default. See remarks for discussion. 
             </summary>
             <param name="task">the task to try inlining</param>
             <param name="taskWasPreviouslyQueued">indicates if it was previously queued with this scheduler</param>
-            <returns>true if it was executed inline.</returns>
+            <returns>false, by default, may be overridden in a derived type.</returns>
+            <remarks>
+            The default implementation for this scheduler guarantees only its threads are processing tasks, so we cannot
+            inline operations as inlining executes the task on the ThreadPool, which may not meet the same requirements as our
+            dedicated threads.
+            </remarks>
         </member>
-        <member name="T:Jcd.Tasks.TryStartResult">
+        <member name="M:Jcd.Tasks.ThreadTaskScheduler.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TwoMtaThreadsPerCpuTaskScheduler">
             <summary>
-            The possible results of calling <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses two MTA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.TryStartResult.SuccessfullyStarted">
+        <member name="M:Jcd.Tasks.TwoMtaThreadsPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TwoStaThreadsPerCpuTaskScheduler">
             <summary>
-            Start was called and no exception resulted.
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses two MTA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            for details.
             </summary>
         </member>
-        <member name="F:Jcd.Tasks.TryStartResult.AlreadyStarted">
-            <summary>
-            The task was already in a started state. Start was not called.
-            </summary>
-        </member>
-        <member name="F:Jcd.Tasks.TryStartResult.ErrorDuringStart">
-            <summary>
-            An exception occurred during the call to start. 
-            </summary>
-        </member>
-        <member name="T:Jcd.Tasks.UnstartedTask">
-            <summary>
-            A Task factory that wraps the constructor with a tiny bit of logic, simplifying the process
-            of directly creating unstarted <see cref="T:System.Threading.Tasks.Task"/>s.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create(System.Action,System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task"/> as a proxy for an action. Once started the task will execute the action.
-            </summary>
-            <param name="action">The work to execute.</param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task"/> proxy for the action.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create(System.Func{System.Threading.Tasks.Task},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task"/> as a proxy for an asynchronous action. Once started the task will execute the action. 
-            </summary>
-            <param name="action"></param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task"/> proxy for the asynchronous action.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create``1(System.Func{``0},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task`1"/> as a proxy for a function. Once started the task will execute the function.
-            </summary>
-            <param name="function">The function to execute.</param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task`1"/> proxy for the function.</returns>
-            <typeparam name="TResult">The type of the data returned.</typeparam>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create``1(System.Func{System.Threading.Tasks.Task{``0}},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task`1"/> as a proxy for an asynchronous function. Once started the task will execute the function.
-            </summary>
-            <param name="function"></param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task`1"/> proxy for the asynchronous function.</returns>
-            <typeparam name="TResult">The type of the data returned.</typeparam>
+        <member name="M:Jcd.Tasks.TwoStaThreadsPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
         </member>
     </members>
 </doc>

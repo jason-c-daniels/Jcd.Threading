@@ -14,7 +14,7 @@ public T Value { get; }
 ### Example
   
 ```csharp  
-var sv = new SimpleInterlockedValue<int>(15);  
+var sv = new SynchronizedValue<int>(15);  
   
 // get the value  
 setValue = sv.Value;  

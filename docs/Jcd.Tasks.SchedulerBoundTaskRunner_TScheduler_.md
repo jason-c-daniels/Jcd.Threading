@@ -2,8 +2,8 @@
 
 ## SchedulerBoundTaskRunner<TScheduler> Class
 
-A TaskScheduler bound task runner. It ensures all tasks it creates are registered with either its own,  
-or a user provided TaskScheduler.
+A TaskScheduler bound task runner. It ensures all tasks it creates are registered  
+with either its own, or a user provided TaskScheduler.
 
 ```csharp
 public static class SchedulerBoundTaskRunner<TScheduler>
@@ -16,6 +16,10 @@ public static class SchedulerBoundTaskRunner<TScheduler>
 `TScheduler`
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; SchedulerBoundTaskRunner<TScheduler>
+
+| Properties | |
+| :--- | :--- |
+| [Scheduler](Jcd.Tasks.SchedulerBoundTaskRunner_TScheduler_.Scheduler.md 'Jcd.Tasks.SchedulerBoundTaskRunner<TScheduler>.Scheduler') | The [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') used to schedule and execute tasks. |
 
 | Methods | |
 | :--- | :--- |

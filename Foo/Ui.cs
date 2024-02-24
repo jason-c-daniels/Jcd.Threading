@@ -1,5 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MethodCanBePrivate.Global
 
 namespace Foo;
 
