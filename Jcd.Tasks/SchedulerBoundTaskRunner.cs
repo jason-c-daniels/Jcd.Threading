@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 namespace Jcd.Tasks;
 
 /// <summary>
-/// A TaskScheduler bound task runner. It ensures all tasks it creates are registered
-/// with either its own, or a user provided TaskScheduler.
+/// A <see cref="TaskScheduler"/> bound task runner. It ensures all tasks it creates are registered
+/// with either its own, or a user provided <see cref="TaskScheduler"/>.
 /// </summary>
 public static class SchedulerBoundTaskRunner<TScheduler>
    where TScheduler : TaskScheduler, new()

@@ -3,7 +3,7 @@ using System.Threading;
 namespace Jcd.Tasks;
 
 /// <summary>
-/// The base type for a ThreadTaskScheduler that uses MTA threads. Inlining is not honored. <see cref="ThreadTaskScheduler"/>
+/// The base type for a <see cref="ThreadTaskScheduler"/> that uses MTA threads. Inlining is not honored. See <see cref="ThreadTaskScheduler"/>
 /// for details.
 /// </summary>
 public abstract class MtaThreadTaskScheduler : ThreadTaskScheduler

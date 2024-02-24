@@ -2,7 +2,7 @@
 
 ## StaThreadTaskScheduler Class
 
-The base type for a ThreadTaskScheduler that uses STA threads. Inlining is not honored. [ThreadTaskScheduler](Jcd.Tasks.ThreadTaskScheduler.md 'Jcd.Tasks.ThreadTaskScheduler')  
+The base type for a ThreadTaskScheduler that uses STA threads. Inlining is not honored. See [ThreadTaskScheduler](Jcd.Tasks.ThreadTaskScheduler.md 'Jcd.Tasks.ThreadTaskScheduler')  
 for details.
 
 ```csharp

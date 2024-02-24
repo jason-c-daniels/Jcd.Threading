@@ -2,7 +2,7 @@
 
 ## MtaThreadTaskScheduler Class
 
-The base type for a ThreadTaskScheduler that uses MTA threads. Inlining is not honored. [ThreadTaskScheduler](Jcd.Tasks.ThreadTaskScheduler.md 'Jcd.Tasks.ThreadTaskScheduler')  
+The base type for a [ThreadTaskScheduler](Jcd.Tasks.ThreadTaskScheduler.md 'Jcd.Tasks.ThreadTaskScheduler') that uses MTA threads. Inlining is not honored. See [ThreadTaskScheduler](Jcd.Tasks.ThreadTaskScheduler.md 'Jcd.Tasks.ThreadTaskScheduler')  
 for details.
 
 ```csharp
