@@ -11,7 +11,5 @@ namespace Jcd.Tasks;
 public class OneStaThreadPerCpuTaskScheduler : StaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public OneStaThreadPerCpuTaskScheduler() : base(Environment.ProcessorCount)
-   {
-   }
+   public OneStaThreadPerCpuTaskScheduler() : base(Environment.ProcessorCount) { }
 }

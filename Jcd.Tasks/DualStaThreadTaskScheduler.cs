@@ -10,8 +10,5 @@ namespace Jcd.Tasks;
 public class DualStaThreadTaskScheduler : StaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public DualStaThreadTaskScheduler() : base(2)
-   {
-      
-   }
+   public DualStaThreadTaskScheduler() : base(2) { }
 }

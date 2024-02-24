@@ -11,6 +11,5 @@ namespace Jcd.Tasks;
 public class FourStaThreadsPerCpuTaskScheduler : StaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public FourStaThreadsPerCpuTaskScheduler():base(Environment.ProcessorCount*4){}
-
+   public FourStaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 4) { }
 }

@@ -8,12 +8,9 @@ namespace Jcd.Tasks;
 /// </summary>
 public abstract class StaThreadTaskScheduler : ThreadTaskScheduler
 {
-
    /// <summary>
    /// Creates an instance of the type.
    /// </summary>
    /// <param name="threadCount">The number of threads to use for executing <see cref="Tasks"/> instances. </param>
-   protected StaThreadTaskScheduler(int threadCount) : base(threadCount,ApartmentState.STA)
-   {
-   }
+   protected StaThreadTaskScheduler(int threadCount) : base(threadCount, ApartmentState.STA) { }
 }

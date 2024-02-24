@@ -12,6 +12,5 @@ public abstract class MtaThreadTaskScheduler : ThreadTaskScheduler
    /// Creates an instance of the type.
    /// </summary>
    /// <param name="threadCount">The number of threads to use for executing <see cref="Tasks"/> instances. </param>
-   protected MtaThreadTaskScheduler(int threadCount) : base(threadCount,ApartmentState.MTA){}
-
+   protected MtaThreadTaskScheduler(int threadCount) : base(threadCount, ApartmentState.MTA) { }
 }

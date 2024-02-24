@@ -11,5 +11,5 @@ namespace Jcd.Tasks;
 public class TwoStaThreadsPerCpuTaskScheduler : StaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public TwoStaThreadsPerCpuTaskScheduler():base(Environment.ProcessorCount *2){}
+   public TwoStaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 2) { }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -18,22 +19,25 @@ namespace Jcd.Tasks;
 /// in a fixed size pool of threads. Inlining is disabled by default to ensure only
 /// the threads managed by this <see cref="TaskScheduler"/> will process the tasks.
 /// </summary>
-public abstract class ThreadTaskScheduler : TaskScheduler, IDisposable
+public abstract class ThreadTaskScheduler
+   : TaskScheduler
+   , IDisposable
 {
-   private  readonly BlockingCollection<Task> _tasks = new ();
-   private readonly  CancellationTokenSource  _cts   = new();
-   /// <inheritdoc />
-   protected override IEnumerable<Task> GetScheduledTasks() => _tasks.ToList().AsReadOnly();
+   private readonly BlockingCollection<Task> _tasks = new();
+   private readonly CancellationTokenSource  _cts   = new();
 
-   private readonly List<Thread>          _internalThreads = [];
-   
+   /// <inheritdoc />
+   protected override IEnumerable<Task> GetScheduledTasks() { return _tasks.ToList().AsReadOnly(); }
+
+   private readonly List<Thread> _internalThreads = [];
+
    /// <summary>
    /// The set of threads that will process Tasks. This is provided for
    /// advanced use cases where an action needs to be taken on the entire
    /// pool of threads.
    /// </summary>
-   public             IReadOnlyList<Thread> Threads => _internalThreads;
-   
+   public IReadOnlyList<Thread> Threads => _internalThreads;
+
    private void ThreadProc()
    {
       while (true)
@@ -41,7 +45,8 @@ public abstract class ThreadTaskScheduler : TaskScheduler, IDisposable
          Thread.Sleep(10);
 
          if (_cts.IsCancellationRequested) return;
-         if (!_tasks.TryTake(out var task,100) && !_cts.IsCancellationRequested) 
+
+         if (!_tasks.TryTake(out var task, 100) && !_cts.IsCancellationRequested)
             continue;
 
          try
@@ -63,7 +68,7 @@ public abstract class ThreadTaskScheduler : TaskScheduler, IDisposable
    {
       if (!_cts.IsCancellationRequested) _cts.Cancel();
    }
-   
+
    /// <summary>
    /// Constructs an instance of the type.
    /// </summary>
@@ -76,7 +81,10 @@ public abstract class ThreadTaskScheduler : TaskScheduler, IDisposable
 
       for (var i = 0; i < threadCount; i++)
       {
-         var thread = new Thread(ThreadProc) { IsBackground = true, Name = $"{GetType().Name}.Threads[{_internalThreads.Count:D4}]"};
+         var thread = new Thread(ThreadProc)
+                      {
+                         IsBackground = true, Name = $"{GetType().Name}.Threads[{_internalThreads.Count:D4}]"
+                      };
          thread.TrySetApartmentState(state);
          _internalThreads.Add(thread);
          thread.Start();
@@ -84,10 +92,7 @@ public abstract class ThreadTaskScheduler : TaskScheduler, IDisposable
    }
 
    /// <inheritdoc />
-   protected override void QueueTask(Task task)
-   {
-      _tasks.Add(task);
-   }
+   protected override void QueueTask(Task task) { _tasks.Add(task); }
 
    /// <summary>
    /// The method to attempt executing a Task in the calling thread's context.
@@ -101,11 +106,8 @@ public abstract class ThreadTaskScheduler : TaskScheduler, IDisposable
    /// inline operations as inlining executes the task on the ThreadPool, which may not meet the same requirements as our
    /// dedicated threads.
    /// </remarks>
-   protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => false;
+   protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) { return false; }
 
    /// <inheritdoc />
-   public void Dispose()
-   {
-      _tasks?.Dispose();
-   }
+   public void Dispose() { _tasks?.Dispose(); }
 }

@@ -1,5 +1,6 @@
 ﻿// ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
+
 const int count = 10000;
 
 Log(-999, TaskScheduler.Current, "App Started");
@@ -7,6 +8,7 @@ Log(-999, TaskScheduler.Current, "App Started");
 await STaskRunner.Run(Main);
 
 Log(-999, TaskScheduler.Current, "App Ending");
+
 return;
 
 async Task Main()
@@ -38,13 +40,13 @@ async Task InnerReportScheduler(int i)
    var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(InnerReportScheduler)}");
    await Task.Delay(250);
-   await STaskRunner.Run(()=>FinalInnerReportScheduler(i));
+   await STaskRunner.Run(() => FinalInnerReportScheduler(i));
 }
 
 async Task FinalInnerReportScheduler(int i)
 {
    var ts = TaskScheduler.Current;
-   await LogAsync(i,ts,$"{nameof(FinalInnerReportScheduler)}");
+   await LogAsync(i, ts, $"{nameof(FinalInnerReportScheduler)}");
    await Task.Delay(100);
 }
 
@@ -52,7 +54,10 @@ Task LogAsync(int i, TaskScheduler ts, string text)
 {
    var name                                  = Thread.CurrentThread.Name;
    if (string.IsNullOrWhiteSpace(name)) name = "<unnamed>";
-   return Console.Out.WriteLineAsync($"[{i:D4}:{Environment.CurrentManagedThreadId:D10}; {name} ;{ts.GetType().Name}; {TaskScheduler.Current.GetType().Name}]  : {text}");
+
+   return
+      Console.Out.WriteLineAsync($"[{i:D4}:{Environment.CurrentManagedThreadId:D10}; {name} ;{ts.GetType().Name}; {TaskScheduler.Current.GetType().Name}]  : {text}"
+                                );
 }
 
 void Log(int i, TaskScheduler ts, string text)

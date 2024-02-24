@@ -4,13 +4,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Foo"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <StackPanel>
         <StackPanel.Resources>
             <Style TargetType="StackPanel">
-                <Setter Property="Margin" Value="5 5"/>
+                <Setter Property="Margin" Value="5 5" />
             </Style>
         </StackPanel.Resources>
         <StackPanel x:Name="ActionBar" Orientation="Horizontal" MinHeight="0" VerticalAlignment="Top">
@@ -24,9 +23,9 @@
                     <Setter Property="Padding" Value="5" />
                 </Style>
             </StackPanel.Resources>
-            <Button x:Name="RunWithMta" Click="RunWithMTA_OnClick" >Run with MTA</Button>
+            <Button x:Name="RunWithMta" Click="RunWithMTA_OnClick">Run with MTA</Button>
             <Button x:Name="RunWithSta" Click="RunWithSTA_OnClick">Run with STA</Button>
-            <Button x:Name="RunWithCurrent" Click="RunWithCurrent_OnClick" >Run with Current Scheduler</Button>
+            <Button x:Name="RunWithCurrent" Click="RunWithCurrent_OnClick">Run with Current Scheduler</Button>
             <Button x:Name="RunInHandler" Click="RunInHandler_OnClick">Run in Event Handler</Button>
         </StackPanel>
         <StackPanel x:Name="ActionBar2" Orientation="Horizontal" MinHeight="0" VerticalAlignment="Top">
@@ -40,8 +39,8 @@
                     <Setter Property="Padding" Value="5" />
                 </Style>
             </StackPanel.Resources>
-            <Button x:Name="StaViaMta" Click="STAViaMTA_OnClick" >Run with STA via MTA </Button>
-            <Button x:Name="UiViaMta" Click="UiViaMTA_OnClick" >Run in UI via MTA </Button>
+            <Button x:Name="StaViaMta" Click="STAViaMTA_OnClick">Run with STA via MTA </Button>
+            <Button x:Name="UiViaMta" Click="UiViaMTA_OnClick">Run in UI via MTA </Button>
             <Button x:Name="UiViaCurrent" Click="UiViaCurrent_OnClick">Run in UI via Current </Button>
             <Button x:Name="UiViaSta" Click="UiViaSTA_OnClick">Run in UI via STA </Button>
         </StackPanel>
@@ -56,8 +55,8 @@
                     <Setter Property="Padding" Value="5" />
                 </Style>
             </StackPanel.Resources>
-            <Button x:Name="LongRunningMtaTask" Click="LongRunningMTATask_OnClick" >Run Long Task in MTA Scheduler </Button>
-            <Button x:Name="LongRunningStaTask" Click="LongRunningSTATask_OnClick" >Run Long Task in STA Scheduler </Button>
+            <Button x:Name="LongRunningMtaTask" Click="LongRunningMTATask_OnClick">Run Long Task in MTA Scheduler </Button>
+            <Button x:Name="LongRunningStaTask" Click="LongRunningSTATask_OnClick">Run Long Task in STA Scheduler </Button>
             <Button x:Name="LongRunningUiAction" Click="LongRunningUIAction_OnClick">Run Long Task in UI Thread </Button>
         </StackPanel>
     </StackPanel>

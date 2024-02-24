@@ -11,6 +11,5 @@ namespace Jcd.Tasks;
 public class OneMtaThreadPerCpuTaskScheduler : MtaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public OneMtaThreadPerCpuTaskScheduler() : base(Environment.ProcessorCount){}
-
+   public OneMtaThreadPerCpuTaskScheduler() : base(Environment.ProcessorCount) { }
 }

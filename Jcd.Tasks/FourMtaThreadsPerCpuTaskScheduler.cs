@@ -11,7 +11,7 @@ namespace Jcd.Tasks;
 public class FourMtaThreadsPerCpuTaskScheduler : MtaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public FourMtaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount *4)
+   public FourMtaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 4)
    {
       // intentionally empty.
    }

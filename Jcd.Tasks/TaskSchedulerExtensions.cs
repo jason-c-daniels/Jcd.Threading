@@ -12,58 +12,73 @@ public static class TaskSchedulerExtensions
    /// <param name="action"></param>
    /// <param name="scheduler"></param>
    /// <returns></returns>
-   public static async Task Run(this TaskScheduler scheduler, Action action) =>
+   public static async Task Run(this TaskScheduler scheduler, Action action)
+   {
       await Task.Factory.StartNew(action
                                 , CancellationToken.None
                                 , TaskCreationOptions.DenyChildAttach
                                 , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
                                  );
+   }
 
-   public static async Task Run(this TaskScheduler scheduler, Action action, CancellationToken cancellationToken) =>
+   public static async Task Run(this TaskScheduler scheduler, Action action, CancellationToken cancellationToken)
+   {
       await Task.Factory.StartNew(action
-                                      , cancellationToken
-                                      , TaskCreationOptions.DenyChildAttach
-                                      , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
-                                       );
+                                , cancellationToken
+                                , TaskCreationOptions.DenyChildAttach
+                                , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
+                                 );
+   }
 
-   public static async Task Run(this TaskScheduler scheduler, Func<Task?> function) =>
+   public static async Task Run(this TaskScheduler scheduler, Func<Task?> function)
+   {
       await await Task.Factory.StartNew(function
                                       , CancellationToken.None
                                       , TaskCreationOptions.DenyChildAttach
                                       , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
                                        );
+   }
 
-   public static async Task Run(this TaskScheduler scheduler, Func<Task?> function, CancellationToken cancellationToken) =>
-      await await Task.Factory.StartNew(function, 
-                                        cancellationToken, 
-                                        TaskCreationOptions.DenyChildAttach, 
-                                        scheduler ?? throw new ArgumentNullException(nameof(scheduler)));
+   public static async Task Run(this TaskScheduler scheduler, Func<Task?> function, CancellationToken cancellationToken)
+   {
+      await await Task.Factory.StartNew(function
+                                      , cancellationToken
+                                      , TaskCreationOptions.DenyChildAttach
+                                      , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
+                                       );
+   }
 
-   public static async Task<TResult> Run<TResult>(this TaskScheduler scheduler, Func<TResult> function) =>
-      await Task.Factory.StartNew(function
-                                , CancellationToken.None
-                                , TaskCreationOptions.DenyChildAttach
-                                , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
-                                 );
-
-   public static async Task<TResult> Run<TResult>(
-      this TaskScheduler scheduler, 
-      Func<TResult> function
-    , CancellationToken  cancellationToken
-   ) =>
-      await Task.Factory.StartNew(function
-                                , cancellationToken
-                                , TaskCreationOptions.DenyChildAttach
-                                , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
-                                 );
-
-   public static async Task<TResult> Run<TResult>(this TaskScheduler scheduler, Func<Task<TResult>?> function) =>
-      await scheduler.Run(function, CancellationToken.None);
+   public static async Task<TResult> Run<TResult>(this TaskScheduler scheduler, Func<TResult> function)
+   {
+      return await Task.Factory.StartNew(function
+                                       , CancellationToken.None
+                                       , TaskCreationOptions.DenyChildAttach
+                                       , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
+                                        );
+   }
 
    public static async Task<TResult> Run<TResult>(
-      this TaskScheduler scheduler, 
-      Func<Task<TResult>?> function
+      this TaskScheduler scheduler
+    , Func<TResult>      function
     , CancellationToken  cancellationToken
+   )
+   {
+      return await Task.Factory.StartNew(function
+                                       , cancellationToken
+                                       , TaskCreationOptions.DenyChildAttach
+                                       , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
+                                        );
+   }
+
+   public static async Task<TResult> Run<TResult>(this TaskScheduler scheduler, Func<Task<TResult>?> function)
+   {
+      return await scheduler.Run(function, CancellationToken.None);
+   }
+
+   public static async Task<TResult> Run<TResult>(
+      this TaskScheduler   scheduler
+    , Func<Task<TResult>?> function
+    , CancellationToken    cancellationToken
    )
    {
       if (function == null) throw new ArgumentNullException(nameof(function));

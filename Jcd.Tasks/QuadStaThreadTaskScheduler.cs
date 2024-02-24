@@ -10,8 +10,5 @@ namespace Jcd.Tasks;
 public class QuadStaThreadTaskScheduler : StaThreadTaskScheduler
 {
    /// <inheritdoc />
-   public QuadStaThreadTaskScheduler() : base(4)
-   {
-      
-   }
+   public QuadStaThreadTaskScheduler() : base(4) { }
 }

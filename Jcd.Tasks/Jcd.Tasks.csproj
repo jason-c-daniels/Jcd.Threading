@@ -11,7 +11,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Jcd.Validations" Version="1.1.7" />
+        <PackageReference Include="Jcd.Validations" Version="1.1.7"/>
     </ItemGroup>
 
 
@@ -38,9 +38,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\" />
-        <None Include="..\LICENSE" Pack="false" PackagePath="\" />
-        <None Include="..\nuget.config" Pack="false" PackagePath="\" />
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\LICENSE" Pack="false" PackagePath="\"/>
+        <None Include="..\nuget.config" Pack="false" PackagePath="\"/>
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

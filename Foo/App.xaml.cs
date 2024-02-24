@@ -12,18 +12,16 @@ namespace Foo;
 public partial class App //: Application
 {
    [STAThread]
-   public static int Main(string[] args)
-   {
-      return MainScheduler.Run(() => AsyncMain()).Result;
-   }
+   public static int Main(string[] args) { return MainScheduler.Run(() => AsyncMain()).Result; }
 
    [STAThread]
    private static Task<int> AsyncMain()
    {
       var mainWindow = new MainWindow();
       var app        = new App();
-      
+
       app.Run(mainWindow);
+
       return Task.FromResult(0);
    }
 }
