@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable HeapView.ObjectAllocation.Evident
 
 namespace Jcd.Tasks;
 
+/// <summary>
+/// Adds various `Run` as an extension method off of any <see cref="TaskScheduler"/>.
+/// This allows tasks to be scheduled with the desired <see cref="TaskScheduler"/>
+/// in a manner similar to `Task.Run` 
+/// </summary>
 public static class TaskSchedulerExtensions
 {
    /// <summary>

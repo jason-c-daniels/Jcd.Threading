@@ -6,8 +6,8 @@
     <members>
         <member name="T:Jcd.Tasks.CurrentSchedulerTaskRunner">
             <summary>
-            A TaskRunner that schedules tasks on the current <see cref="T:System.Threading.Tasks.TaskScheduler"/> or
-            a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            A static class that schedules tasks on the current <see cref="T:System.Threading.Tasks.TaskScheduler"/> or
+            a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/> if null is passed in or none is specified.
             </summary>
         </member>
         <member name="P:Jcd.Tasks.CurrentSchedulerTaskRunner.Scheduler">
@@ -434,6 +434,13 @@
              await sv.DoAsync(x=>sv.Value+10);
              </code>
              </remarks>
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulerExtensions">
+            <summary>
+            Adds various `Run` as an extension method off of any <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            in a manner similar to `Task.Run` 
+            </summary>
         </member>
         <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
             <summary>

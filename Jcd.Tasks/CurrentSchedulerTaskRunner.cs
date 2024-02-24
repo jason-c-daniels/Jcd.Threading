@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable HeapView.ObjectAllocation.Evident
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Jcd.Tasks;
 
 /// <summary>
-/// A TaskRunner that schedules tasks on the current <see cref="TaskScheduler"/> or
-/// a user provided <see cref="TaskScheduler"/>.
+/// A static class that schedules tasks on the current <see cref="TaskScheduler"/> or
+/// a user provided <see cref="TaskScheduler"/> if null is passed in or none is specified.
 /// </summary>
 public static class CurrentSchedulerTaskRunner
 {
