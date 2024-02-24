@@ -66,11 +66,11 @@ public class SynchronizedValueTests
     [InlineData(2)]
     public void ChangeValue_Modifies_And_Returns_The_Modified_Value(int value)
     {
-        int TimesTen(int i) => i * 10;
-        var expectedValue = TimesTen(value);
+        int MultiplyByTen(int i) => i * 10;
+        var expectedValue = MultiplyByTen(value);
         using var sv = new SynchronizedValue<int>();
         sv.SetValue(value);
-        var result = sv.ChangeValue(TimesTen);
+        var result = sv.ChangeValue(MultiplyByTen);
         Assert.Equal(expectedValue, sv.Value);
         Assert.Equal(expectedValue, result);
     }
@@ -81,11 +81,11 @@ public class SynchronizedValueTests
     [InlineData(2)]
     public async Task ChangeValueAsync_Sets_And_Returns_The_Provided_Value(int value)
     {
-        int TimesTen(int i) => i * 10;
-        var expectedValue = TimesTen(value);
+        Task<int> MultiplyByTenAsync(int i) => Task.FromResult(i * 10);
+        var expectedValue = await MultiplyByTenAsync(value);
         using var sv = new SynchronizedValue<int>();
         await sv.SetValueAsync(value);
-        var result = await sv.ChangeValueAsync(TimesTen);
+        var result = await sv.ChangeValueAsync(MultiplyByTenAsync);
         Assert.Equal(expectedValue, sv.Value);
         Assert.Equal(expectedValue, result);
     }

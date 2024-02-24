@@ -39,13 +39,19 @@ public class SynchronizedValue<T> : IDisposable
     private T _value;
 
     /// <summary>
-    /// Constructs an <see cref="SynchronizedValue{T}"/> instance.
+    /// Constructs an <see cref="SimpleInterlockedValue{T}"/> instance.
     /// </summary>
     /// <param name="initialValue">The starting value.</param>
     public SynchronizedValue(T initialValue = default)
     {
         _lock = new SemaphoreSlim(1, 1);
         _value = initialValue;
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _lock.Dispose();
     }
 
     #region properties and accessors
@@ -55,7 +61,7 @@ public class SynchronizedValue<T> : IDisposable
     /// </summary>
     /// <example>
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;(15);
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;(15);
     /// 
     /// // get the value
     /// setValue = sv.Value;
@@ -70,19 +76,16 @@ public class SynchronizedValue<T> : IDisposable
     /// <returns>A <see cref="Task{T}"/> containing the retrieved value.</returns>
     /// <example>
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;(15);
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;(15);
     /// 
     /// // get the value
     /// await setValue = sv.GetValueAsync(20);
     /// 
     /// </code>
     /// </example>
-    public async Task<T> GetValueAsync()
+    public Task<T> GetValueAsync()
     {
-        await _lock.WaitAsync();
-        var value = _value;
-        _lock.Release();
-        return value;
+        return InternalExecuteAsync(null);
     }
 
     /// <summary>
@@ -92,7 +95,7 @@ public class SynchronizedValue<T> : IDisposable
     /// <returns>A <see cref="Task{T}"/> containing the provided value.</returns>
     /// <example>
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;();
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;();
     /// 
     /// // set the value to 10.
     /// await setValue = sv.SetValueAsync(10);
@@ -102,12 +105,9 @@ public class SynchronizedValue<T> : IDisposable
     /// 
     /// </code>
     /// </example>
-    public async Task<T> SetValueAsync(T value)
+    public Task<T> SetValueAsync(T value)
     {
-        await _lock.WaitAsync();
-        var result = _value = value;
-        _lock.Release();
-        return result;
+        return InternalExecuteAsync((_)=>Task.FromResult(value));
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public class SynchronizedValue<T> : IDisposable
     /// <returns>The current value as of establishing the lock.</returns>
     /// <example>
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;(15);
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;(15);
     /// 
     /// // get the value
     /// setValue = sv.GetValue(20);
@@ -126,10 +126,7 @@ public class SynchronizedValue<T> : IDisposable
     /// </example>
     public T GetValue()
     {
-        _lock.Wait();
-        var value = _value;
-        _lock.Release();
-        return value;
+        return InternalExecute(null);
     }
 
     /// <summary>
@@ -139,7 +136,7 @@ public class SynchronizedValue<T> : IDisposable
     /// <returns>The provided value.</returns>
     /// <example>
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;();
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;();
     /// 
     /// // set the value to 10.
     /// setValue = sv.SetValue(10);
@@ -151,10 +148,7 @@ public class SynchronizedValue<T> : IDisposable
     /// </example>
     public T SetValue(T value)
     {
-        _lock.Wait();
-        var result = _value = value;
-        _lock.Release();
-        return result;
+        return InternalExecute(_ => value);
     }
 
     /// <summary>
@@ -170,13 +164,13 @@ public class SynchronizedValue<T> : IDisposable
     /// <example>
     /// Standard usage: pass in a function to manipulate the current value.
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;();
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;();
     /// 
     /// // increment the value by one.
-    /// var changedValue = sv.ChangeValue(x => x + 1);
+    /// var changedValue = sv.Do(x => x + 1);
     /// 
     /// // increment the value by two.
-    /// changedValue = sv.ChangeValue(x => x + 2);
+    /// changedValue = sv.Do(x => x + 2);
     /// 
     /// </code>
     /// </example>
@@ -186,16 +180,20 @@ public class SynchronizedValue<T> : IDisposable
     /// the following.
     /// </para>
     /// <code>
-    /// var sv=new SynchronizedValue&lt;int&gt;(10);
+    /// var sv=new SimpleInterlockedValue&lt;int&gt;(10);
     ///
     /// // deadlock yourself in a single line of code!
-    /// var changedValue = sv.ChangeValue(x=>sv.Value+10);
+    /// var changedValue = sv.Do(x=>sv.Value+10);
     /// </code>
     /// </remarks>
-    public T ChangeValue(Func<T, T> func)
+    public T ChangeValue(Func<T, T> func) { return InternalExecute(func); }
+
+    private T InternalExecute(Func<T, T> func)
     {
         _lock.Wait();
-        var result = _value = func(_value);
+        var result = _value;
+        if (func != null)
+            result = _value = func(_value);
         _lock.Release();
         return result;
     }
@@ -210,14 +208,16 @@ public class SynchronizedValue<T> : IDisposable
     /// <example>
     /// Standard usage: pass in a function to manipulate the current value.
     /// <code>
-    /// var sv = new SynchronizedValue&lt;int&gt;();
+    /// var sv = new SimpleInterlockedValue&lt;int&gt;();
     /// 
     /// // increment the value by one.
-    /// var changedValue = await sv.ChangeValueAsync(x => x + 1);
+    /// var changedValue = await sv.DoAsync(x => x + 1);
     /// 
     /// // increment the value by two.
-    /// changedValue = await sv.ChangeValueAsync(x => x + 2);
+    /// changedValue = await sv.DoAsync(x => x + 2);
     /// 
+    /// // Perform some operation that requires the value to remain unchanged during the operation.
+    /// var sameValue = await sv.DoAsync(x => { DoSomething(x); return x;});
     /// </code>
     /// </example>
     /// <remarks>
@@ -226,25 +226,38 @@ public class SynchronizedValue<T> : IDisposable
     /// the following.
     /// </para>
     /// <code>
-    /// var sv=new SynchronizedValue&lt;int&gt;(10);
+    /// var sv=new SimpleInterlockedValue&lt;int&gt;(10);
     ///
     /// // deadlock yourself in a single line of code!
     /// var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
     /// </code>
     /// </remarks>
-    public async Task<T> ChangeValueAsync(Func<T, T> func)
+    public Task<T> ChangeValueAsync(Func<T, Task<T>> func) { return InternalExecuteAsync(func); }
+
+    private async Task<T> InternalExecuteAsync(Func<T, Task<T>> func)
     {
         await _lock.WaitAsync();
-        var result = _value = func(_value);
+        var result = _value;
+        if (func != null)
+            result = _value = await func(_value);
         _lock.Release();
         return result;
     }
 
-    #endregion
-
-    /// <inheritdoc />
-    public void Dispose()
+    public void Do(Action<T> action)
     {
-        _lock.Dispose();
+        if (action != null)
+        {
+            InternalExecute(t => { action(t); return t; });
+        }
     }
+
+    public Task DoAsync(Func<T, Task> asyncAction)
+    {
+        return asyncAction == null 
+                   ? Task.CompletedTask 
+                   : InternalExecuteAsync(t => { asyncAction(t); return Task.FromResult(t); });
+    }
+
+    #endregion
 }

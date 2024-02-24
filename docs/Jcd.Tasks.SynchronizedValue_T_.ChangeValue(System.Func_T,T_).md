@@ -26,13 +26,13 @@ The modified value.
 Standard usage: pass in a function to manipulate the current value.  
   
 ```csharp  
-var sv = new SynchronizedValue<int>();  
+var sv = new SimpleInterlockedValue<int>();  
   
 // increment the value by one.  
-var changedValue = sv.ChangeValue(x => x + 1);  
+var changedValue = sv.Do(x => x + 1);  
   
 // increment the value by two.  
-changedValue = sv.ChangeValue(x => x + 2);  
+changedValue = sv.Do(x => x + 2);  
 ```
 
 ### Remarks
@@ -41,8 +41,8 @@ changedValue = sv.ChangeValue(x => x + 2);
              the following.  
   
 ```csharp  
-var sv=new SynchronizedValue<int>(10);  
+var sv=new SimpleInterlockedValue<int>(10);  
   
 // deadlock yourself in a single line of code!  
-var changedValue = sv.ChangeValue(x=>sv.Value+10);  
+var changedValue = sv.Do(x=>sv.Value+10);  
 ```

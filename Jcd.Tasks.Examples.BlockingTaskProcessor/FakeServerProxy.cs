@@ -41,7 +41,7 @@ public class FakeServerProxy
         if (_logDetailedCallInformation)
             Console.WriteLine(
                 $"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} started. {BacklogCounter.Value} calls from other tasks are already waiting.");
-        await BacklogCounter.ChangeValueAsync(x => x + 1);
+        await BacklogCounter.ChangeValueAsync(x => Task.FromResult(x + 1));
 
         // The former developers decided to alleviate server load with client side locking.
         // it works for the server side and Nito.AsyncEx is a great choice for this, in fact.
@@ -49,7 +49,7 @@ public class FakeServerProxy
         // deadlock/excessive load to the client side and not eliminated it.
         using (await _lock.LockAsync(_cts.Token))
         {
-            var backlog = await BacklogCounter.ChangeValueAsync(x => x - 1);
+            var backlog = await BacklogCounter.ChangeValueAsync(x => Task.FromResult(x - 1));
             if (_logDetailedCallInformation)
                 Console.WriteLine(
                     $"{DateTime.Now:yyyy-MM-dd hh:mm:ss.FFFF} {nameof(FakeServerProxy)}{nameof(SendRequest)} lock acquired with {backlog} other tasks waiting for this call to complete.");

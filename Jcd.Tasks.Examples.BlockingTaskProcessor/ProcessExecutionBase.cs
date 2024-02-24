@@ -134,15 +134,15 @@ public abstract class ProcessExecutionBase<T>
         try
         {
             LogPingScheduled(logRequestScheduling, pingBacklog);
-            await pingBacklog.ChangeValueAsync(v => v + 1); // increment the value
+            await pingBacklog.ChangeValueAsync(v => Task.FromResult(v+1)); // increment the value
             var (startedAt, finishedAt) = await SendPingWrapper(rnd, cts);
-            var backlog = await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
+            var backlog = await pingBacklog.ChangeValueAsync(v => Task.FromResult(v - 1)); // decrement the value
             await ReportPingResults(finishedAt, startedAt, scheduledAt, backlog);
         }
         catch (OperationCanceledException)
         {
             // Decrement the count so its accurate.
-            await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
+            await pingBacklog.ChangeValueAsync(v => Task.FromResult(v - 1)); // decrement the value
         }
         catch (Exception ex)
         {
@@ -153,7 +153,7 @@ public abstract class ProcessExecutionBase<T>
     private async Task LogPingException(Exception ex, SynchronizedValue<int> pingBacklog)
     {
         Console.WriteLine($"{MyType.Name}: Error during {nameof(ExecutePing)} : {ex.Message}");
-        await pingBacklog.ChangeValueAsync(v => v - 1); // decrement the value
+        await pingBacklog.ChangeValueAsync(v => Task.FromResult(v - 1)); // decrement the value
     }
 
     private async Task ReportPingResults(DateTime finishedAt, DateTime startedAt, DateTime scheduledAt, int backlog)

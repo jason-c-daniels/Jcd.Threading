@@ -22,7 +22,7 @@ The provided value.
 ### Example
   
 ```csharp  
-var sv = new SynchronizedValue<int>();  
+var sv = new SimpleInterlockedValue<int>();  
   
 // set the value to 10.  
 setValue = sv.SetValue(10);  

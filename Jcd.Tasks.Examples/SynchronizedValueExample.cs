@@ -100,7 +100,7 @@ public static class SynchronizedValueExample
             while (!cts.IsCancellationRequested)
             {
                 await Task.Delay(420, cts.Token);
-                await counter.ChangeValueAsync(x => x - 3);
+                await counter.ChangeValueAsync(x => Task.FromResult(x - 3));
             }
 
             if (cts.IsCancellationRequested) throw new TaskCanceledException();
@@ -115,7 +115,7 @@ public static class SynchronizedValueExample
             while (!cts.IsCancellationRequested)
             {
                 await Task.Delay(100, cts.Token);
-                await counter.ChangeValueAsync(x => x + 1);
+                await counter.ChangeValueAsync(x => Task.FromResult(x + 1));
             }
 
             if (cts.IsCancellationRequested) throw new TaskCanceledException();

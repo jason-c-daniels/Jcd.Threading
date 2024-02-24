@@ -2,7 +2,7 @@
 
 ## SynchronizedValue(T) Constructor
 
-Constructs an [SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>') instance.
+Constructs an [SimpleInterlockedValue&lt;T&gt;](https://docs.microsoft.com/en-us/dotnet/api/SimpleInterlockedValue<T> 'SimpleInterlockedValue<T>') instance.
 
 ```csharp
 public SynchronizedValue(T initialValue=default(T));

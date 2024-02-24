@@ -22,7 +22,7 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 ### Example
   
 ```csharp  
-var sv = new SynchronizedValue<int>();  
+var sv = new SimpleInterlockedValue<int>();  
   
 // set the value to 10.  
 await setValue = sv.SetValueAsync(10);  

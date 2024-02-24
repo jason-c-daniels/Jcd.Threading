@@ -1,19 +1,19 @@
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>')
 
-## SynchronizedValue<T>.ChangeValueAsync(Func<T,T>) Method
+## SynchronizedValue<T>.ChangeValueAsync(Func<T,Task<T>>) Method
 
 Calls the provided function, passing in the current value, and assigns the result  
 of the function call, to the current value. <b>This is not recursively reentrant.  
 see remarks for details.</b>
 
 ```csharp
-public System.Threading.Tasks.Task<T> ChangeValueAsync(System.Func<T,T> func);
+public System.Threading.Tasks.Task<T> ChangeValueAsync(System.Func<T,System.Threading.Tasks.Task<T>> func);
 ```
 #### Parameters
 
-<a name='Jcd.Tasks.SynchronizedValue_T_.ChangeValueAsync(System.Func_T,T_).func'></a>
+<a name='Jcd.Tasks.SynchronizedValue_T_.ChangeValueAsync(System.Func_T,System.Threading.Tasks.Task_T__).func'></a>
 
-`func` [System.Func&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Func-2 'System.Func`2')[T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')[,](https://docs.microsoft.com/en-us/dotnet/api/System.Func-2 'System.Func`2')[T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Func-2 'System.Func`2')
+`func` [System.Func&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Func-2 'System.Func`2')[T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')[,](https://docs.microsoft.com/en-us/dotnet/api/System.Func-2 'System.Func`2')[System.Threading.Tasks.Task&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1')[T](Jcd.Tasks.SynchronizedValue_T_.md#Jcd.Tasks.SynchronizedValue_T_.T 'Jcd.Tasks.SynchronizedValue<T>.T')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Func-2 'System.Func`2')
 
 The function to call.
 
@@ -25,13 +25,16 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 Standard usage: pass in a function to manipulate the current value.  
   
 ```csharp  
-var sv = new SynchronizedValue<int>();  
+var sv = new SimpleInterlockedValue<int>();  
   
 // increment the value by one.  
-var changedValue = await sv.ChangeValueAsync(x => x + 1);  
+var changedValue = await sv.DoAsync(x => x + 1);  
   
 // increment the value by two.  
-changedValue = await sv.ChangeValueAsync(x => x + 2);  
+changedValue = await sv.DoAsync(x => x + 2);  
+  
+// Perform some operation that requires the value to remain unchanged during the operation.  
+var sameValue = await sv.DoAsync(x => { DoSomething(x); return x;});  
 ```
 
 ### Remarks
@@ -40,7 +43,7 @@ changedValue = await sv.ChangeValueAsync(x => x + 2);
              the following.  
   
 ```csharp  
-var sv=new SynchronizedValue<int>(10);  
+var sv=new SimpleInterlockedValue<int>(10);  
   
 // deadlock yourself in a single line of code!  
 var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);  
