@@ -1,6 +1,7 @@
 # Jcd.Tasks
 
-A *netstandard2.0* library that provides utility classes to help with creating and managing unstarted `Task`s.
+A *netstandard2.0* library that provides utility classes to help with managing `Task`s, 
+creating custom `TaskScheduler`s, and creating thread safe value access.
 
 Read the API docs carefully.
 

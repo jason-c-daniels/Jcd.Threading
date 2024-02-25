@@ -54,7 +54,7 @@ public class SimpleThreadedTaskScheduler
 
             TryExecuteTask(task);
          }
-         catch (Exception ex)
+         catch (Exception)
          {
             // intentionally ignored. 
          }
