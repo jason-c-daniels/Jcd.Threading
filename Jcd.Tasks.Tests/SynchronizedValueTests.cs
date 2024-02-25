@@ -73,6 +73,8 @@ public class SynchronizedValueTests
       var result = sv.ChangeValue(MultiplyByTen);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
+
+      return;
       int MultiplyByTen(int i) { return i * 10; }
    }
 
@@ -88,6 +90,9 @@ public class SynchronizedValueTests
       var result = await sv.ChangeValueAsync(MultiplyByTenAsync);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
+
+      return;
+
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
 }

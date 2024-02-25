@@ -1,3 +1,4 @@
+#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>')
 
 ## SynchronizedValue<T>.GetValueAsync() Method
@@ -5,7 +6,7 @@
 Gets the value in an async friendly manner.
 
 ```csharp
-public System.Threading.Tasks.Task<T> GetValueAsync();
+public System.Threading.Tasks.Task<T?> GetValueAsync();
 ```
 
 #### Returns

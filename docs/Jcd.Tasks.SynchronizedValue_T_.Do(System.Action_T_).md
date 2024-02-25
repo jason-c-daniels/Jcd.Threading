@@ -1,3 +1,4 @@
+#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>')
 
 ## SynchronizedValue<T>.Do(Action<T>) Method
@@ -6,7 +7,7 @@ Executes an action on the synchronized value after locking it.
 <b>This is not recursively reentrant. See remarks for details.</b>
 
 ```csharp
-public void Do(System.Action<T> action);
+public void Do(System.Action<T>? action);
 ```
 #### Parameters
 

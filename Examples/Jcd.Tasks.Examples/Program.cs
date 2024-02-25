@@ -1,7 +1,7 @@
 ﻿// ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable HeapView.ObjectAllocation.Evident
 
-using Jcd.Tasks;
 using Jcd.Tasks.Examples;
 
 const int count = 10000;
@@ -40,6 +40,7 @@ async Task ReportScheduler(int i)
    await InnerReportScheduler(i);
 }
 
+// ReSharper disable once HeapView.ClosureAllocation
 async Task InnerReportScheduler(int i)
 {
    var ts = TaskScheduler.Current;

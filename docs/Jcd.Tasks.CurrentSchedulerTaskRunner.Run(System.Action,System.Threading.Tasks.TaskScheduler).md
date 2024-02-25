@@ -1,11 +1,12 @@
+#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[CurrentSchedulerTaskRunner](Jcd.Tasks.CurrentSchedulerTaskRunner.md 'Jcd.Tasks.CurrentSchedulerTaskRunner')
 
 ## CurrentSchedulerTaskRunner.Run(Action, TaskScheduler) Method
 
-Runs an action on the current or provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')
+Schedules work with the current or user provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')
 
 ```csharp
-public static System.Threading.Tasks.Task Run(System.Action action, System.Threading.Tasks.TaskScheduler scheduler=null);
+public static System.Threading.Tasks.Task Run(System.Action action, System.Threading.Tasks.TaskScheduler? scheduler=null);
 ```
 #### Parameters
 

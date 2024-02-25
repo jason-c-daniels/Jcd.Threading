@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using Jcd.Tasks.TaskSchedulers;
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable MemberCanBePrivate.Global
@@ -20,58 +22,104 @@ public static class CurrentSchedulerTaskRunner
    public static TaskScheduler Scheduler => TaskScheduler.Current;
 
    /// <summary>
-   /// Runs an action on the current or provided <see cref="TaskScheduler"/>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="action">the action to run</param>
    /// <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
    /// <returns></returns>
-   public static async Task Run(Action action, TaskScheduler scheduler = null)
+   public static async Task Run(Action action, TaskScheduler? scheduler = null)
    {
       await (scheduler ?? Scheduler).Run(action);
    }
 
-   public static async Task Run(Action action, CancellationToken cancellationToken, TaskScheduler scheduler = null)
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="action">the action to execute.</param>
+   /// <param name="cancellationToken">the token to check for cancellation.</param>
+   /// <param name="scheduler">The optional scheduler to execute the action with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
+   public static async Task Run(Action action, CancellationToken cancellationToken, TaskScheduler? scheduler = null)
    {
       await (scheduler ?? Scheduler).Run(action, cancellationToken);
    }
 
-   public static async Task Run(Func<Task?> function, TaskScheduler scheduler = null)
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="function">the function to execute.</param>
+   /// <param name="scheduler">The optional scheduler to execute the function with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
+   public static async Task Run(Func<Task?> function, TaskScheduler? scheduler = null)
    {
       await (scheduler ?? Scheduler).Run(function);
    }
 
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="function">the function to execute.</param>
+   /// <param name="cancellationToken">the token to check for cancellation.</param>
+   /// <param name="scheduler">The optional scheduler to execute the function with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
    public static async Task Run(
       Func<Task?>       function
     , CancellationToken cancellationToken
-    , TaskScheduler     scheduler = null
+    , TaskScheduler?    scheduler = null
    )
    {
       await (scheduler ?? Scheduler).Run(function, cancellationToken);
    }
 
-   public static async Task<TResult> Run<TResult>(Func<TResult> function, TaskScheduler scheduler = null)
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="function">the function to execute.</param>
+   /// <param name="scheduler">The optional scheduler to execute the function with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
+   public static async Task<TResult> Run<TResult>(Func<TResult> function, TaskScheduler? scheduler = null)
    {
       return await (scheduler ?? Scheduler).Run(function);
    }
 
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="function">the function to execute.</param>
+   /// <param name="cancellationToken">the token to check for cancellation.</param>
+   /// <param name="scheduler">The optional scheduler to execute the function with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
    public static async Task<TResult> Run<TResult>(
       Func<TResult>     function
     , CancellationToken cancellationToken
-    , TaskScheduler     scheduler = null
+    , TaskScheduler?    scheduler = null
    )
    {
       return await (scheduler ?? Scheduler).Run(function, cancellationToken);
    }
 
-   public static async Task<TResult> Run<TResult>(Func<Task<TResult>?> function, TaskScheduler scheduler = null)
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="function">the function to execute.</param>
+   /// <param name="scheduler">The optional scheduler to execute the function with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
+   public static async Task<TResult> Run<TResult>(Func<Task<TResult>?> function, TaskScheduler? scheduler = null)
    {
       return await (scheduler ?? Scheduler).Run(function);
    }
 
+   /// <summary>
+   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// </summary>
+   /// <param name="function">the function to execute.</param>
+   /// <param name="cancellationToken">the token to check for cancellation.</param>
+   /// <param name="scheduler">The optional scheduler to execute the function with.</param>
+   /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
    public static async Task<TResult> Run<TResult>(
       Func<Task<TResult>?> function
     , CancellationToken    cancellationToken
-    , TaskScheduler        scheduler = null
+    , TaskScheduler?       scheduler = null
    )
    {
       return await (scheduler ?? Scheduler).Run(function, cancellationToken);

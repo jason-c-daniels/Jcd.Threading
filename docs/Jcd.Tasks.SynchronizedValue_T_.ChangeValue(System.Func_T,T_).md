@@ -1,3 +1,4 @@
+#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>')
 
 ## SynchronizedValue<T>.ChangeValue(Func<T,T>) Method
@@ -7,7 +8,7 @@ of the function call, to the current value. <b>This is not recursively reentrant
 see remarks for details.</b>
 
 ```csharp
-public T ChangeValue(System.Func<T,T> func);
+public T ChangeValue(System.Func<T,T>? func);
 ```
 #### Parameters
 

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
-
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -39,21 +38,21 @@ namespace Jcd.Tasks;
 /// </remarks>
 public sealed class SynchronizedValue<T> : IDisposable
 {
-   private readonly SemaphoreSlim _lock;
-   private          T             _value;
+   private readonly SemaphoreSlim @lock;
+   private          T             val;
 
    /// <summary>
    /// Constructs an <see cref="SynchronizedValue{T}"/> instance.
    /// </summary>
    /// <param name="initialValue">The starting value.</param>
-   public SynchronizedValue(T initialValue = default)
+   public SynchronizedValue(T initialValue = default!)
    {
-      _lock  = new SemaphoreSlim(1, 1);
-      _value = initialValue;
+      @lock = new SemaphoreSlim(1, 1);
+      val   = initialValue;
    }
 
    /// <inheritdoc />
-   public void Dispose() { _lock.Dispose(); }
+   public void Dispose() { @lock.Dispose(); }
 
    #region properties and accessors
 
@@ -84,7 +83,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public Task<T> GetValueAsync() { return InternalExecuteAsync(null); }
+   public Task<T?> GetValueAsync() { return InternalExecuteAsync(null); }
 
    /// <summary>
    /// Sets the current value to the provided value.
@@ -103,7 +102,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public Task<T> SetValueAsync(T value) { return InternalExecuteAsync(_ => Task.FromResult(value)); }
+   public Task<T?> SetValueAsync(T value) { return InternalExecuteAsync(_ => Task.FromResult(value)); }
 
    /// <summary>
    /// Retrieves the current value. If another thread edits the value, moment later a subsequent
@@ -175,15 +174,15 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// var changedValue = sv.Do(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public T ChangeValue(Func<T, T> func) { return InternalExecute(func); }
+   public T ChangeValue(Func<T, T>? func) { return InternalExecute(func); }
 
-   private T InternalExecute(Func<T, T> func)
+   private T InternalExecute(Func<T, T>? func)
    {
-      _lock.Wait();
-      var result = _value;
+      @lock.Wait();
+      var result = val;
       if (func != null)
-         result = _value = func(_value);
-      _lock.Release();
+         result = val = func(val);
+      @lock.Release();
 
       return result;
    }
@@ -222,7 +221,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public Task<T> ChangeValueAsync(Func<T, Task<T>> func) { return InternalExecuteAsync(func); }
+   public Task<T?> ChangeValueAsync(Func<T, Task<T>>? func) { return InternalExecuteAsync(func); }
 
    /// <summary>
    /// Executes an action on the synchronized value after locking it.
@@ -257,7 +256,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// sv.Do(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public void Do(Action<T> action)
+   public void Do(Action<T>? action)
    {
       if (action != null)
          InternalExecute(t =>
@@ -303,7 +302,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// await sv.DoAsync(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public Task DoAsync(Func<T, Task> asyncAction)
+   public Task DoAsync(Func<T, Task>? asyncAction)
    {
       return asyncAction == null
                 ? Task.CompletedTask
@@ -316,13 +315,13 @@ public sealed class SynchronizedValue<T> : IDisposable
                                       );
    }
 
-   private async Task<T> InternalExecuteAsync(Func<T, Task<T>> func)
+   private async Task<T?> InternalExecuteAsync(Func<T, Task<T>>? func)
    {
-      await _lock.WaitAsync();
-      var result = _value;
+      await @lock.WaitAsync();
+      var result = val;
       if (func != null)
-         result = _value = await func(_value);
-      _lock.Release();
+         result = val = await func(val);
+      @lock.Release();
 
       return result;
    }

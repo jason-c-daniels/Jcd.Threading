@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net462-windows</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <UseWPF>true</UseWPF>
-        <LangVersion>latest</LangVersion>
-        <AssemblyName>Jcd.Examples.Wpf.CustomTaskSchedulers</AssemblyName>
-        <RootNamespace>Jcd.Examples.Wpf.CustomTaskSchedulers</RootNamespace>
-    </PropertyGroup>
+   <PropertyGroup>
+      <OutputType>WinExe</OutputType>
+      <TargetFramework>net462-windows</TargetFramework>
+      <Nullable>enable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <UseWPF>true</UseWPF>
+      <LangVersion>latest</LangVersion>
+      <AssemblyName>Jcd.Examples.Wpf.CustomTaskSchedulers</AssemblyName>
+      <RootNamespace>Jcd.Examples.Wpf.CustomTaskSchedulers</RootNamespace>
+   </PropertyGroup>
 
-    <ItemGroup>
-        <ApplicationDefinition Remove="App.xaml"/>
-        <Page Include="App.xaml"/>
-    </ItemGroup>
+   <ItemGroup>
+      <ApplicationDefinition Remove="App.xaml"/>
+      <Page Include="App.xaml"/>
+   </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj"/>
-    </ItemGroup>
+   <ItemGroup>
+      <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj"/>
+   </ItemGroup>
 
 </Project>

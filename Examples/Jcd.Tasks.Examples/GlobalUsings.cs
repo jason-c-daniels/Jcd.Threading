@@ -1,1 +1,2 @@
-﻿global using CustomTaskRunner = Jcd.Tasks.CustomSchedulerTaskRunner<Jcd.Tasks.QuadMtaThreadTaskScheduler>;
+﻿global using CustomTaskRunner =
+   Jcd.Tasks.CustomSchedulerTaskRunner<Jcd.Tasks.TaskSchedulers.QuadMtaThreadTaskScheduler>;

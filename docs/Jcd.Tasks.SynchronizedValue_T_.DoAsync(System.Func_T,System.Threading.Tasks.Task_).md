@@ -1,3 +1,4 @@
+#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>')
 
 ## SynchronizedValue<T>.DoAsync(Func<T,Task>) Method
@@ -6,7 +7,7 @@ Executes an asynchronous action on the synchronized value after locking it.
 <b>This is not recursively reentrant. See remarks for details.</b>
 
 ```csharp
-public System.Threading.Tasks.Task DoAsync(System.Func<T,System.Threading.Tasks.Task> asyncAction);
+public System.Threading.Tasks.Task DoAsync(System.Func<T,System.Threading.Tasks.Task>? asyncAction);
 ```
 #### Parameters
 

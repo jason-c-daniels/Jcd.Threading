@@ -17,16 +17,76 @@
         </member>
         <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Runs an action on the current or provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
             <param name="action">the action to run</param>
             <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
             <returns></returns>
         </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
         <member name="T:Jcd.Tasks.CustomSchedulerTaskRunner`1">
             <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates are registered
-            with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            A singleton <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates
+            are registered with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
             </summary>
         </member>
         <member name="P:Jcd.Tasks.CustomSchedulerTaskRunner`1.Scheduler">
@@ -36,141 +96,77 @@
         </member>
         <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
-            <param name="action"></param>
-            <param name="scheduler"></param>
-            <returns></returns>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="T:Jcd.Tasks.DualMtaThreadTaskScheduler">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="action">the action to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.DualMtaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.DualStaThreadTaskScheduler">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
             <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  STA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="asyncAction">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.DualStaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.FourMtaThreadsPerCpuTaskScheduler">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses four MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="asyncAction">the action to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.FourMtaThreadsPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.FourStaThreadsPerCpuTaskScheduler">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
             <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses four STA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.FourStaThreadsPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.MtaThreadTaskScheduler">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            The base type for a <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/> that uses MTA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.MtaThreadTaskScheduler.#ctor(System.Int32)">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Creates an instance of the type.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
-            <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
             Provides types and extension methods to assist with the creation, execution, and
             management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
-        </member>
-        <member name="T:Jcd.Tasks.OneMtaThreadPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.OneMtaThreadPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.OneMtaThreadPerTwoCpusTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one MTA thread for every two CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.OneMtaThreadPerTwoCpusTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.OneStaThreadPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.OneStaThreadPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.OneStaThreadPerTwoCpusTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread for every two CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.OneStaThreadPerTwoCpusTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.QuadMtaThreadTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four MTA threads to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.QuadMtaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.QuadStaThreadTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four STA threads to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.QuadStaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.StaThreadTaskScheduler">
-            <summary>
-            The base type for a ThreadTaskScheduler that uses STA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.StaThreadTaskScheduler.#ctor(System.Int32)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
         </member>
         <member name="T:Jcd.Tasks.SynchronizedValue`1">
             <summary>
@@ -435,55 +431,239 @@
              </code>
              </remarks>
         </member>
-        <member name="T:Jcd.Tasks.TaskSchedulerExtensions">
+        <member name="T:Jcd.Tasks.TaskSchedulers.DualMtaThreadTaskScheduler">
             <summary>
-            Adds various `Run` as an extension method off of any <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  MTA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.DualMtaThreadTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.DualStaThreadTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  STA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.DualStaThreadTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.FourMtaThreadsPerCpuTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses four MTA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.FourMtaThreadsPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.FourStaThreadsPerCpuTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses four STA threads per CPU to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.FourStaThreadsPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.MtaThreadTaskScheduler">
+            <summary>
+            The base type for a <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/> that uses MTA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.MtaThreadTaskScheduler.#ctor(System.Int32)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerCpuTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerTwoCpusTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one MTA thread for every two CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerTwoCpusTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.OneStaThreadPerCpuTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.OneStaThreadPerCpuTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.OneStaThreadPerTwoCpusTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread for every two CPUs to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.OneStaThreadPerTwoCpusTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.QuadMtaThreadTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four MTA threads to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.QuadMtaThreadTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.QuadStaThreadTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four STA threads to execute
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.QuadStaThreadTaskScheduler.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.StaThreadTaskScheduler">
+            <summary>
+            The base type for a ThreadTaskScheduler that uses STA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            for details.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.StaThreadTaskScheduler.#ctor(System.Int32)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions">
+            <summary>
+            Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
             This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             in a manner similar to `Task.Run` 
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
             <summary>
-            
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="action"></param>
-            <param name="scheduler"></param>
-            <returns></returns>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="T:Jcd.Tasks.ThreadTaskScheduler">
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0})">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler">
             <summary>
             A <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived base type that runs <see cref="T:System.Threading.Tasks.Task"/> instances
             in a fixed size pool of threads. Inlining is disabled by default to ensure only
             the threads managed by this <see cref="T:System.Threading.Tasks.TaskScheduler"/> will process the tasks.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ThreadTaskScheduler.GetScheduledTasks">
+        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.GetScheduledTasks">
             <inheritdoc />
         </member>
-        <member name="P:Jcd.Tasks.ThreadTaskScheduler.Threads">
+        <member name="P:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Threads">
             <summary>
             The set of threads that will process Tasks. This is provided for
             advanced use cases where an action needs to be taken on the entire
             pool of threads.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ThreadTaskScheduler.Shutdown">
+        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Shutdown">
             <summary>
             Signals the underlying threads that the <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            is being shutdown. Threads will end shortly thereafter. 
+            is being shutdown (i.e. disposed of). Threads should shortly thereafter. 
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ThreadTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
             <summary>
             Constructs an instance of the type.
             </summary>
             <param name="threadCount">The number of threads to create.</param>
             <param name="state">the thread apartment state setting for all threads.</param>
         </member>
-        <member name="M:Jcd.Tasks.ThreadTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
             <inheritdoc />
         </member>
-        <member name="M:Jcd.Tasks.ThreadTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
             <summary>
             The method to attempt executing a Task in the calling thread's context.
             This is disabled by default. See remarks for discussion. 
@@ -497,27 +677,27 @@
             dedicated threads.
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.ThreadTaskScheduler.Dispose">
+        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Dispose">
             <inheritdoc />
         </member>
-        <member name="T:Jcd.Tasks.TwoMtaThreadsPerCpuTaskScheduler">
+        <member name="T:Jcd.Tasks.TaskSchedulers.TwoMtaThreadsPerCpuTaskScheduler">
             <summary>
             A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses two MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
             for details.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TwoMtaThreadsPerCpuTaskScheduler.#ctor">
+        <member name="M:Jcd.Tasks.TaskSchedulers.TwoMtaThreadsPerCpuTaskScheduler.#ctor">
             <inheritdoc />
         </member>
-        <member name="T:Jcd.Tasks.TwoStaThreadsPerCpuTaskScheduler">
+        <member name="T:Jcd.Tasks.TaskSchedulers.TwoStaThreadsPerCpuTaskScheduler">
             <summary>
             A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses two MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.ThreadTaskScheduler"/>
+            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
             for details.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TwoStaThreadsPerCpuTaskScheduler.#ctor">
+        <member name="M:Jcd.Tasks.TaskSchedulers.TwoStaThreadsPerCpuTaskScheduler.#ctor">
             <inheritdoc />
         </member>
     </members>

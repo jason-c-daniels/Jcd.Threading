@@ -7,11 +7,11 @@ Read the API docs carefully.
 ## Types Provided.
 
 * The main types provided are:
-    * `BlockingTaskProcessor` a Task-consumer in a Producer-Consumer model that starts tasks one at a time and waits
-      for their completion before executing the next task.
-    * `SynchronizedValue` a more flexible and CLS compliant re-imagining of `Interlocked`.
-    * `TaskExtensions` some simple task extension methods for working with unstarted tasks.
-    * `UnstartedTask` a static factory class for creating unstarted tasks.
+   * `BlockingTaskProcessor` a Task-consumer in a Producer-Consumer model that starts tasks one at a time and waits
+     for their completion before executing the next task.
+   * `SynchronizedValue` a more flexible and CLS compliant re-imagining of `Interlocked`.
+   * `TaskExtensions` some simple task extension methods for working with unstarted tasks.
+   * `UnstartedTask` a static factory class for creating unstarted tasks.
 
 ## Examples
 

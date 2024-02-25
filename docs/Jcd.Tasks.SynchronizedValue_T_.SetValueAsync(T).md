@@ -1,3 +1,4 @@
+#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>')
 
 ## SynchronizedValue<T>.SetValueAsync(T) Method
@@ -5,7 +6,7 @@
 Sets the current value to the provided value.
 
 ```csharp
-public System.Threading.Tasks.Task<T> SetValueAsync(T value);
+public System.Threading.Tasks.Task<T?> SetValueAsync(T value);
 ```
 #### Parameters
 

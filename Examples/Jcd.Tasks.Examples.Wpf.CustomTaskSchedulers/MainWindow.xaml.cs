@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ClosureAllocation
@@ -131,7 +130,7 @@ public partial class MainWindow //: Window
 
    private async Task LongRunningTask(
       string    method
-    , Button    button
+    , UIElement button
     , Stopwatch scheduledStopwatch
     , int       taskCount    = 20
     , int       durationInMs = 5000
