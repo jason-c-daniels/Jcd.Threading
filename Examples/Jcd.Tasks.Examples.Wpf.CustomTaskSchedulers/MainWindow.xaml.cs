@@ -157,7 +157,6 @@ public partial class MainWindow //: Window
                                        {
                                           z++;
                                           z %= int.MaxValue / 10;
-                                          if (z             % 100 == 0) waiter.WaitOne(randomWait);
                                        }
 
                                        waitSw.Stop();
