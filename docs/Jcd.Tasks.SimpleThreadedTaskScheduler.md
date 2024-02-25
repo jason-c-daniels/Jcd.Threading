@@ -7,7 +7,7 @@ in a fixed size pool of threads. Inlining is disabled by default to ensure only
 the threads managed by this [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') will process the tasks.
 
 ```csharp
-public abstract class SimpleThreadedTaskScheduler : System.Threading.Tasks.TaskScheduler,
+public class SimpleThreadedTaskScheduler : System.Threading.Tasks.TaskScheduler,
 System.IDisposable
 ```
 

@@ -5,7 +5,7 @@
 Constructs an instance of the type.
 
 ```csharp
-protected SimpleThreadedTaskScheduler(int threadCount, System.Threading.ApartmentState state=System.Threading.ApartmentState.Unknown);
+public SimpleThreadedTaskScheduler(int threadCount, System.Threading.ApartmentState state=System.Threading.ApartmentState.Unknown);
 ```
 #### Parameters
 

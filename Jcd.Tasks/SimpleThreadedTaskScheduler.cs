@@ -18,7 +18,7 @@ namespace Jcd.Tasks;
 /// in a fixed size pool of threads. Inlining is disabled by default to ensure only
 /// the threads managed by this <see cref="TaskScheduler"/> will process the tasks.
 /// </summary>
-public abstract class SimpleThreadedTaskScheduler
+public class SimpleThreadedTaskScheduler
    : TaskScheduler
    , IDisposable
 {
@@ -39,23 +39,17 @@ public abstract class SimpleThreadedTaskScheduler
 
    private void ThreadProc()
    {
+      using var waitHandle = new AutoResetEvent(false);
+
       while (true)
       {
-         Thread.Sleep(10);
-
          if (cts.IsCancellationRequested) return;
+         waitHandle.WaitOne(1);
 
-         if (!tasks.TryTake(out var task, 100) && !cts.IsCancellationRequested)
+         if (!tasks.TryTake(out var task, 50) && !cts.IsCancellationRequested)
             continue;
 
-         try
-         {
-            TryExecuteTask(task);
-         }
-         catch
-         {
-            // intentionally ignored.
-         }
+         TryExecuteTask(task);
       }
    }
 
@@ -73,7 +67,7 @@ public abstract class SimpleThreadedTaskScheduler
    /// </summary>
    /// <param name="threadCount">The number of threads to create.</param>
    /// <param name="state">the thread apartment state setting for all threads.</param>
-   protected SimpleThreadedTaskScheduler(int threadCount, ApartmentState state = ApartmentState.Unknown)
+   public SimpleThreadedTaskScheduler(int threadCount, ApartmentState state = ApartmentState.Unknown)
    {
       if (state       == ApartmentState.Unknown) state = ApartmentState.MTA;
       if (threadCount < 1) threadCount                 = Environment.ProcessorCount;
@@ -110,15 +104,7 @@ public abstract class SimpleThreadedTaskScheduler
    /// <inheritdoc />
    public void Dispose()
    {
-      try
-      {
-         Shutdown();
-      }
-      catch
-      {
-         /*ignore errors as we can't do anything about them during a dispose.*/
-      }
-
+      Shutdown();
       tasks.Dispose();
    }
 }
