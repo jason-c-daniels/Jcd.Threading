@@ -1,4 +1,3 @@
-#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[TaskSchedulerExtensions](Jcd.Tasks.TaskSchedulerExtensions.md 'Jcd.Tasks.TaskSchedulerExtensions')
 
 ## TaskSchedulerExtensions.Run(this TaskScheduler, Func<Task>) Method

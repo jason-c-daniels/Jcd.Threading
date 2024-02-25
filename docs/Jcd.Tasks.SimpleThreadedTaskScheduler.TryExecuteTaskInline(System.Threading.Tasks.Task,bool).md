@@ -1,5 +1,4 @@
-#### [Jcd.Tasks](index.md 'index')
-### [Jcd.Tasks.TaskSchedulers](Jcd.Tasks.TaskSchedulers.md 'Jcd.Tasks.TaskSchedulers').[SimpleThreadedTaskScheduler](Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.md 'Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler')
+### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SimpleThreadedTaskScheduler](Jcd.Tasks.SimpleThreadedTaskScheduler.md 'Jcd.Tasks.SimpleThreadedTaskScheduler')
 
 ## SimpleThreadedTaskScheduler.TryExecuteTaskInline(Task, bool) Method
 
@@ -11,13 +10,13 @@ protected override bool TryExecuteTaskInline(System.Threading.Tasks.Task task, b
 ```
 #### Parameters
 
-<a name='Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,bool).task'></a>
+<a name='Jcd.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,bool).task'></a>
 
 `task` [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task')
 
 the task to try inlining
 
-<a name='Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,bool).taskWasPreviouslyQueued'></a>
+<a name='Jcd.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,bool).taskWasPreviouslyQueued'></a>
 
 `taskWasPreviouslyQueued` [System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
 

@@ -1,5 +1,4 @@
-#### [Jcd.Tasks](index.md 'index')
-### [Jcd.Tasks.TaskSchedulers](Jcd.Tasks.TaskSchedulers.md 'Jcd.Tasks.TaskSchedulers').[SimpleThreadedTaskScheduler](Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.md 'Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler')
+### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[SimpleThreadedTaskScheduler](Jcd.Tasks.SimpleThreadedTaskScheduler.md 'Jcd.Tasks.SimpleThreadedTaskScheduler')
 
 ## SimpleThreadedTaskScheduler.Shutdown() Method
 

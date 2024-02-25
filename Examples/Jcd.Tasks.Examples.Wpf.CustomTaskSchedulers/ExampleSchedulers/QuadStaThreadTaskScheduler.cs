@@ -1,4 +1,4 @@
-using Jcd.Tasks.TaskSchedulers;
+using Jcd.Tasks;
 
 namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
@@ -7,8 +7,8 @@ namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class QuadStaThreadTaskScheduler : SimpleStaThreadedTaskScheduler
+public class QuadStaThreadTaskScheduler : SimpleThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public QuadStaThreadTaskScheduler() : base(4) { }
+   public QuadStaThreadTaskScheduler() : base(4, ApartmentState.STA) { }
 }

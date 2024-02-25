@@ -49,13 +49,18 @@ public static class SynchronizedValueExample
    {
       var reportValue = Task.Run(async () =>
                                  {
-                                    while (!cts.IsCancellationRequested)
+                                    try
                                     {
-                                       await Task.Delay(100, cts.Token);
-                                       Console.WriteLine($"{DateTime.Now:O} : counter.Value = {counter.Value}");
+                                       while (!cts.IsCancellationRequested)
+                                       {
+                                          await Task.Delay(100, cts.Token);
+                                          Console.WriteLine($"{DateTime.Now:O} : counter.Value = {counter.Value}");
+                                       }
                                     }
-
-                                    if (cts.IsCancellationRequested) throw new TaskCanceledException();
+                                    catch (TaskCanceledException)
+                                    {
+                                       // ignored. This is expected behavior.
+                                    }
                                  }
                                , cts.Token
                                 );
@@ -67,15 +72,20 @@ public static class SynchronizedValueExample
    {
       var setTo20Task = Task.Run(async () =>
                                  {
-                                    while (!cts.IsCancellationRequested)
+                                    try
                                     {
-                                       await Task.Delay(5000, cts.Token);
-                                       await counter.SetValueAsync(10);
-                                       Console.WriteLine($"{DateTime.Now:O} : Reset to 10!");
-                                       await Console.Out.FlushAsync();
+                                       while (!cts.IsCancellationRequested)
+                                       {
+                                          await Task.Delay(5000, cts.Token);
+                                          await counter.SetValueAsync(10);
+                                          Console.WriteLine($"{DateTime.Now:O} : Reset to 10!");
+                                          await Console.Out.FlushAsync();
+                                       }
                                     }
-
-                                    if (cts.IsCancellationRequested) throw new TaskCanceledException();
+                                    catch (TaskCanceledException)
+                                    {
+                                       // ignored. This is expected behavior.
+                                    }
                                  }
                                , cts.Token
                                 );
@@ -87,13 +97,18 @@ public static class SynchronizedValueExample
    {
       var decBy4Task = Task.Run(async () =>
                                 {
-                                   while (!cts.IsCancellationRequested)
+                                   try
                                    {
-                                      await Task.Delay(420, cts.Token);
-                                      await counter.ChangeValueAsync(x => Task.FromResult(x - 3));
+                                      while (!cts.IsCancellationRequested)
+                                      {
+                                         await Task.Delay(420, cts.Token);
+                                         await counter.ChangeValueAsync(x => Task.FromResult(x - 3));
+                                      }
                                    }
-
-                                   if (cts.IsCancellationRequested) throw new TaskCanceledException();
+                                   catch (TaskCanceledException)
+                                   {
+                                      // ignored. This is expected behavior.
+                                   }
                                 }
                               , cts.Token
                                );
@@ -105,13 +120,18 @@ public static class SynchronizedValueExample
    {
       var incrementTask = Task.Run(async () =>
                                    {
-                                      while (!cts.IsCancellationRequested)
+                                      try
                                       {
-                                         await Task.Delay(100, cts.Token);
-                                         await counter.ChangeValueAsync(x => Task.FromResult(x + 1));
+                                         while (!cts.IsCancellationRequested)
+                                         {
+                                            await Task.Delay(100, cts.Token);
+                                            await counter.ChangeValueAsync(x => Task.FromResult(x + 1));
+                                         }
                                       }
-
-                                      if (cts.IsCancellationRequested) throw new TaskCanceledException();
+                                      catch (TaskCanceledException)
+                                      {
+                                         // ignored. This is expected behavior.
+                                      }
                                    }
                                  , cts.Token
                                   );

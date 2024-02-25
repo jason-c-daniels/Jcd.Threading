@@ -7,11 +7,15 @@ Read the API docs carefully.
 ## Types Provided.
 
 * The main types provided are:
-   * `BlockingTaskProcessor` a Task-consumer in a Producer-Consumer model that starts tasks one at a time and waits
-     for their completion before executing the next task.
-   * `SynchronizedValue` a more flexible and CLS compliant re-imagining of `Interlocked`.
-   * `TaskExtensions` some simple task extension methods for working with unstarted tasks.
-   * `UnstartedTask` a static factory class for creating unstarted tasks.
+   * `TaskSchedulerExtensions` - a static class supporting a `Task.Run`-compatible API that ensures
+     actions are executed on a specified instance of `TaskScheduler`.
+   * `SynchronizedValue` - a flexible and CLS compliant re-imagining of `Interlocked`.
+   * `CurrentSchedulerTaskRunner` - a static class supporting a `Task.Run`-compatible API that ensures
+     actions are executed on the current executing `TaskScheduler`.
+   * `CuustomSchedulerTaskRunner` - a static class supporting a `Task.Run`-compatible API that ensures
+     actions are executed on a single instance of a custom implementation of `TaskScheduler`.
+   * `SimpleThreadedTaskScheduler` - A custom task scheduler base class that allocates a fixed pool
+     of threads on which to run tasks.
 
 ## Examples
 

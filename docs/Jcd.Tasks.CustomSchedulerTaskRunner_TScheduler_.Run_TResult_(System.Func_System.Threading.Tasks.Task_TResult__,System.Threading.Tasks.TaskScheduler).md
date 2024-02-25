@@ -1,4 +1,3 @@
-#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[CustomSchedulerTaskRunner&lt;TScheduler&gt;](Jcd.Tasks.CustomSchedulerTaskRunner_TScheduler_.md 'Jcd.Tasks.CustomSchedulerTaskRunner<TScheduler>')
 
 ## CustomSchedulerTaskRunner<TScheduler>.Run<TResult>(Func<Task<TResult>>, TaskScheduler) Method

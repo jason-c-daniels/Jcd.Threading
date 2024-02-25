@@ -1,6 +1,8 @@
-﻿using CustomSchedulerTaskRunner = Jcd.Tasks.CustomSchedulerTaskRunner<Jcd.Tasks.Tests.Helpers.CallingThreadTaskScheduler>;
+﻿using CustomSchedulerTaskRunner =
+   Jcd.Tasks.CustomSchedulerTaskRunner<Jcd.Tasks.Tests.Helpers.CallingThreadTaskScheduler>;
 
 using Jcd.Tasks.Tests.Helpers;
+
 // ReSharper disable InlineTemporaryVariable
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable HeapView.ClosureAllocation
@@ -17,7 +19,12 @@ public class CustomSchedulerTaskRunnerTests
       var            scheduler         = new CallingThreadTaskScheduler();
       var            expectedScheduler = CustomSchedulerTaskRunner.Scheduler;
       TaskScheduler? capturedScheduler = null;
-      await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }));
+      await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
+                                                                          }
+                                                                         )
+                         );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
 
@@ -28,12 +35,12 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = CustomSchedulerTaskRunner.Scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.CompletedTask;
-                                                    }
-                                                   )
+                                                                             return Task.CompletedTask;
+                                                                          }
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -45,7 +52,11 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = CustomSchedulerTaskRunner.Scheduler;
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
-      await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }, cts.Token));
+      await scheduler.Run(async () =>
+                             await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }
+                                                               , cts.Token
+                                                                )
+                         );
 
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -58,13 +69,13 @@ public class CustomSchedulerTaskRunnerTests
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.CompletedTask;
-                                                    }
-                                                  , cts.Token
-                                                   )
+                                                                             return Task.CompletedTask;
+                                                                          }
+                                                                        , cts.Token
+                                                                         )
                          );
 
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
@@ -77,12 +88,12 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = CustomSchedulerTaskRunner.Scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return 10;
-                                                    }
-                                                   )
+                                                                             return 10;
+                                                                          }
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -94,12 +105,12 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = CustomSchedulerTaskRunner.Scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.FromResult(10);
-                                                    }
-                                                   )
+                                                                             return Task.FromResult(10);
+                                                                          }
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -112,13 +123,13 @@ public class CustomSchedulerTaskRunnerTests
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return 10;
-                                                    }
-                                                  , cts.Token
-                                                   )
+                                                                             return 10;
+                                                                          }
+                                                                        , cts.Token
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -131,13 +142,13 @@ public class CustomSchedulerTaskRunnerTests
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.FromResult(10);
-                                                    }
-                                                  , cts.Token
-                                                   )
+                                                                             return Task.FromResult(10);
+                                                                          }
+                                                                        , cts.Token
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -149,7 +160,9 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () =>
-                             await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }, scheduler)
+                             await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }
+                                                               , scheduler
+                                                                )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -161,13 +174,13 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.CompletedTask;
-                                                    }
-                                                  , scheduler
-                                                   )
+                                                                             return Task.CompletedTask;
+                                                                          }
+                                                                        , scheduler
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -179,10 +192,11 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = scheduler;
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
-      await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }
-                                                  , cts.Token
-                                                  , scheduler
-                                                   )
+      await scheduler.Run(async () =>
+                             await CustomSchedulerTaskRunner.Run(() => { capturedScheduler = TaskScheduler.Current; }
+                                                               , cts.Token
+                                                               , scheduler
+                                                                )
                          );
 
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
@@ -196,14 +210,14 @@ public class CustomSchedulerTaskRunnerTests
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.CompletedTask;
-                                                    }
-                                                  , cts.Token
-                                                  , scheduler
-                                                   )
+                                                                             return Task.CompletedTask;
+                                                                          }
+                                                                        , cts.Token
+                                                                        , scheduler
+                                                                         )
                          );
 
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
@@ -216,13 +230,13 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return 10;
-                                                    }
-                                                  , scheduler
-                                                   )
+                                                                             return 10;
+                                                                          }
+                                                                        , scheduler
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -234,13 +248,13 @@ public class CustomSchedulerTaskRunnerTests
       var            expectedScheduler = scheduler;
       TaskScheduler? capturedScheduler = null;
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.FromResult(10);
-                                                    }
-                                                  , scheduler
-                                                   )
+                                                                             return Task.FromResult(10);
+                                                                          }
+                                                                        , scheduler
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -253,14 +267,14 @@ public class CustomSchedulerTaskRunnerTests
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return 10;
-                                                    }
-                                                  , cts.Token
-                                                  , scheduler
-                                                   )
+                                                                             return 10;
+                                                                          }
+                                                                        , cts.Token
+                                                                        , scheduler
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }
@@ -273,14 +287,14 @@ public class CustomSchedulerTaskRunnerTests
       TaskScheduler? capturedScheduler = null;
       using var      cts               = new CancellationTokenSource();
       await scheduler.Run(async () => await CustomSchedulerTaskRunner.Run(() =>
-                                                    {
-                                                       capturedScheduler = TaskScheduler.Current;
+                                                                          {
+                                                                             capturedScheduler = TaskScheduler.Current;
 
-                                                       return Task.FromResult(10);
-                                                    }
-                                                  , cts.Token
-                                                  , scheduler
-                                                   )
+                                                                             return Task.FromResult(10);
+                                                                          }
+                                                                        , cts.Token
+                                                                        , scheduler
+                                                                         )
                          );
       Assert.True(ReferenceEquals(expectedScheduler, capturedScheduler));
    }

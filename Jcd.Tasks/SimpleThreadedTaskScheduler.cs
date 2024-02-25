@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable HeapView.DelegateAllocation
 
-namespace Jcd.Tasks.TaskSchedulers;
+namespace Jcd.Tasks;
 
 /// <summary>
 /// A <see cref="TaskScheduler"/> derived base type that runs <see cref="Task"/> instances
@@ -73,7 +73,7 @@ public abstract class SimpleThreadedTaskScheduler
    /// </summary>
    /// <param name="threadCount">The number of threads to create.</param>
    /// <param name="state">the thread apartment state setting for all threads.</param>
-   protected SimpleThreadedTaskScheduler(int threadCount, ApartmentState state)
+   protected SimpleThreadedTaskScheduler(int threadCount, ApartmentState state = ApartmentState.Unknown)
    {
       if (state       == ApartmentState.Unknown) state = ApartmentState.MTA;
       if (threadCount < 1) threadCount                 = Environment.ProcessorCount;

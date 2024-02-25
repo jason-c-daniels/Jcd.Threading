@@ -1,4 +1,3 @@
-#### [Jcd.Tasks](index.md 'index')
 ### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks')
 
 ## CurrentSchedulerTaskRunner Class

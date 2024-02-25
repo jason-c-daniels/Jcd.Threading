@@ -1,4 +1,4 @@
-using Jcd.Tasks.TaskSchedulers;
+using Jcd.Tasks;
 
 // ReSharper disable UnusedType.Global
 
@@ -9,7 +9,7 @@ namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class TwoStaThreadsPerCpuTaskScheduler : SimpleStaThreadedTaskScheduler
+public class TwoStaThreadsPerCpuTaskScheduler : SimpleThreadedTaskScheduler
 {
    /// <inheritdoc />
    public TwoStaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 2) { }
