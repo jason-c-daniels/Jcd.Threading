@@ -19,8 +19,8 @@
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Title>Jcd.Tasks</Title>
       <Authors>Jason C. Daniels</Authors>
-      <Description>A netstandard2.0 library that provides utility classes to help with creating and managing unstarted Tasks.</Description>
-      <Copyright>2023</Copyright>
+      <Description>A *netstandard2.0* library that provides utility classes to help with managing `Task`s, creating custom `TaskScheduler`s, and creating thread safe value access.</Description>
+      <Copyright>2023 to 2024</Copyright>
       <PackageProjectUrl>https://github.com/jason-c-daniels/Jcd.Tasks</PackageProjectUrl>
       <PackageLicenseUrl>https://github.com/jason-c-daniels/Jcd.Tasks/blob/main/LICENSE</PackageLicenseUrl>
       <RepositoryUrl>https://github.com/jason-c-daniels/Jcd.Tasks</RepositoryUrl>
