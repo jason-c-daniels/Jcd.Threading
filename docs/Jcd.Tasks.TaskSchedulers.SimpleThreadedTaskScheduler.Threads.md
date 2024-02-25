@@ -1,7 +1,7 @@
 #### [Jcd.Tasks](index.md 'index')
-### [Jcd.Tasks.TaskSchedulers](Jcd.Tasks.TaskSchedulers.md 'Jcd.Tasks.TaskSchedulers').[ThreadTaskScheduler](Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.md 'Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler')
+### [Jcd.Tasks.TaskSchedulers](Jcd.Tasks.TaskSchedulers.md 'Jcd.Tasks.TaskSchedulers').[SimpleThreadedTaskScheduler](Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.md 'Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler')
 
-## ThreadTaskScheduler.Threads Property
+## SimpleThreadedTaskScheduler.Threads Property
 
 The set of threads that will process Tasks. This is provided for  
 advanced use cases where an action needs to be taken on the entire  

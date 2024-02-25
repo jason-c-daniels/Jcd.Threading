@@ -7,10 +7,10 @@ namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class FourSimpleMtaPerCpuTaskScheduler : SimpleMtaTaskScheduler
+public class FourMtaThreadsPerCpuTaskScheduler : SimpleMtaThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public FourSimpleMtaPerCpuTaskScheduler() : base(Environment.ProcessorCount * 4)
+   public FourMtaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 4)
    {
       // intentionally empty.
    }

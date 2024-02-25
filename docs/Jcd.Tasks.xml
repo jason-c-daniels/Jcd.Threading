@@ -506,64 +506,63 @@
             <param name="cancellationToken">the token to check for cancellation</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.MtaThreadTaskScheduler">
+        <member name="T:Jcd.Tasks.TaskSchedulers.SimpleMtaThreadedTaskScheduler">
             <summary>
-            The base type for a <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/> that uses MTA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
+            An ease of use wrapper on top of <see cref="T:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler"/> that uses MTA threads. Inlining is not honored.
             for details.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.MtaThreadTaskScheduler.#ctor(System.Int32)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleMtaThreadedTaskScheduler.#ctor(System.Int32)">
             <summary>
             Creates an instance of the type.
             </summary>
             <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
         </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.StaThreadTaskScheduler">
+        <member name="T:Jcd.Tasks.TaskSchedulers.SimpleStaThreadedTaskScheduler">
             <summary>
-            The base type for a ThreadTaskScheduler that uses STA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
+            An ease of use wrapper on top of <see cref="T:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler"/> that uses STA threads. Inlining is not honored. 
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.StaThreadTaskScheduler.#ctor(System.Int32)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleStaThreadedTaskScheduler.#ctor(System.Int32)">
             <summary>
             Creates an instance of the type.
             </summary>
             <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
         </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler">
+        <member name="T:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler">
             <summary>
             A <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived base type that runs <see cref="T:System.Threading.Tasks.Task"/> instances
             in a fixed size pool of threads. Inlining is disabled by default to ensure only
             the threads managed by this <see cref="T:System.Threading.Tasks.TaskScheduler"/> will process the tasks.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.GetScheduledTasks">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.GetScheduledTasks">
             <inheritdoc />
         </member>
-        <member name="P:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Threads">
+        <member name="P:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.Threads">
             <summary>
             The set of threads that will process Tasks. This is provided for
             advanced use cases where an action needs to be taken on the entire
             pool of threads.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Shutdown">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.Shutdown">
             <summary>
             Signals the underlying threads that the <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             is being shutdown (i.e. disposed of). Threads should shortly thereafter. 
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
             <summary>
             Constructs an instance of the type.
             </summary>
             <param name="threadCount">The number of threads to create.</param>
             <param name="state">the thread apartment state setting for all threads.</param>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
             <inheritdoc />
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
             <summary>
             The method to attempt executing a Task in the calling thread's context.
             This is disabled by default. See remarks for discussion. 
@@ -577,7 +576,7 @@
             dedicated threads.
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Dispose">
+        <member name="M:Jcd.Tasks.TaskSchedulers.SimpleThreadedTaskScheduler.Dispose">
             <inheritdoc />
         </member>
     </members>

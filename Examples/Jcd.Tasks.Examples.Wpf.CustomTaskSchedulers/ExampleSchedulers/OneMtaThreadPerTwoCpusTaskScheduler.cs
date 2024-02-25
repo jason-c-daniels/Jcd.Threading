@@ -7,10 +7,10 @@ namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class OneSimpleMtaPerTwoCpusTaskScheduler : SimpleMtaTaskScheduler
+public class OneMtaThreadPerTwoCpusTaskScheduler : SimpleMtaThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public OneSimpleMtaPerTwoCpusTaskScheduler() : base(Environment.ProcessorCount / 2 == 0
+   public OneMtaThreadPerTwoCpusTaskScheduler() : base(Environment.ProcessorCount / 2 == 0
                                                           ? 1
                                                           : Environment.ProcessorCount / 2
                                                       )

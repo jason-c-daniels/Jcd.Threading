@@ -7,13 +7,13 @@ namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class OneSimpleStaThreadedPerTwoCpusTaskScheduler : SimpleStaThreadedTaskScheduler
+public class OneStaThreadPerTwoCpusTaskScheduler : SimpleStaThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public OneSimpleStaThreadedPerTwoCpusTaskScheduler() : base(Environment.ProcessorCount / 2 == 0
-                                                          ? 1
-                                                          : Environment.ProcessorCount / 2
-                                                      )
+   public OneStaThreadPerTwoCpusTaskScheduler() : base(Environment.ProcessorCount / 2 == 0
+                                                                  ? 1
+                                                                  : Environment.ProcessorCount / 2
+                                                              )
    {
    }
 }

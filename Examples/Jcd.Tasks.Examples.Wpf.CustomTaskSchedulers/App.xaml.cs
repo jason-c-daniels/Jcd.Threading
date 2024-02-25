@@ -3,7 +3,7 @@
 
 using MainScheduler =
    Jcd.Tasks.CustomSchedulerTaskRunner<
-      Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.QuadSimpleStaThreadedTaskScheduler>;
+      Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.QuadStaThreadTaskScheduler>;
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
