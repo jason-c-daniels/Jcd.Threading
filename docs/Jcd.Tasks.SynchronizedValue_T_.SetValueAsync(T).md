@@ -5,7 +5,7 @@
 Sets the current value to the provided value.
 
 ```csharp
-public System.Threading.Tasks.Task<T> SetValueAsync(T value);
+public System.Threading.Tasks.Task<T?> SetValueAsync(T value);
 ```
 #### Parameters
 

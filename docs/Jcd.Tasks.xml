@@ -4,221 +4,163 @@
         <name>Jcd.Tasks</name>
     </assembly>
     <members>
-        <member name="T:Jcd.Tasks.BlockingTaskProcessor">
+        <member name="T:Jcd.Tasks.CurrentSchedulerTaskRunner">
             <summary>
-            Represents a high level object that enqueues and executes actions, functions, and unstarted tasks,
-            waiting for each to complete before executing the next.
-            </summary>
-            <remarks>
-            <para>
-            You must ensure all shared resources for the enqueued tasks have their access synchronized
-            appropriately.
-            </para>
-            <para>
-            <i>NOTE: This was really just a thought experiment. There are probably legitimately better ways of
-            doing this built in to .Net. I had trouble finding them. If you find them, please let me know!</i>
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.QueueLength">
-            <summary>
-            The number of pending commands.
+            A static class that schedules tasks on the current <see cref="T:System.Threading.Tasks.TaskScheduler"/> or
+            a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/> if null is passed in or none is specified.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.#ctor(System.Boolean)">
+        <member name="P:Jcd.Tasks.CurrentSchedulerTaskRunner.Scheduler">
             <summary>
-            Constructs a <see cref="T:Jcd.Tasks.BlockingTaskProcessor"/>
-            </summary>
-            <param name="autoStart"></param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue(System.Action)">
-            <summary>
-            Enqueues an action. This is a "fire and forget" method. Control is immediately
-            returned to the caller.
-            </summary>
-            <param name="command">The action to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Enqueues an async action. This is a "fire and forget" method.
-            Control is returned to the caller immediately.
-            </summary>
-            <param name="command">The asynchronous action to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue``1(System.Func{``0})">
-            <summary>
-            Enqueues a function. This is a "fire and forget" method.
-            The function result will not be available and control is immediately returned to the caller.
-            </summary>
-            <param name="command">The command to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Enqueue``1(System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Enqueues an async function. This is a "fire and forget" method.
-            The function result will not be available and control is immediately returned to the caller.
-            </summary>
-            <param name="command">The async function to enqueue.</param>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Action)">
-            <summary>
-            Enqueues an action and returns a proxy task that will execute the action.
-            Awaiting the returned proxy <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued action to finish executing.
-            </summary>
-            <param name="command">The action to execute.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> that will execute the enqueued action.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy(System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Enqueues an async action and returns a proxy task that will execute the action.
-            Awaiting the returned proxy <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued action to finish executing.
-            </summary>
-            <param name="command">The async action to enqueue.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy``1(System.Func{``0})">
-            <summary>
-            Enqueues a function and returns a proxy task that will execute the function.
-            Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued function to finish executing
-            and returns the result.
-            </summary>
-            <param name="command">The command to execute.</param>
-            <typeparam name="TResult">The data type returned by the function</typeparam>
-            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action, once dequeued.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.EnqueueAndGetProxy``1(System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Enqueues an async function and returns a proxy task that will execute the function.
-            Awaiting the returned <see cref="T:System.Threading.Tasks.Task"/> waits for the enqueued function to finish executing
-            and returns the result.
-            </summary>
-            <param name="command">The async function to enqueue.</param>
-            <typeparam name="TResult">The data type returned by the function.</typeparam>
-            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> that will execute the enqueued action.</returns>
-            <remarks>
-            Awaiting this task before <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called will cause the calling
-            thread of execution to block until <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> is called. Ensure that
-            either <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> has already been called, or that your program has
-            a mechanism in another thread to call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/>. You really need to
-            call <see cref="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing"/> for awaiting the result to work.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask``1(System.Threading.Tasks.Task{``0},System.Boolean@)">
-            <summary>
-            Tries to enqueues a task for later execution. If the passed in task is not unstarted,
-            it's not enqueued.
-            </summary>
-            <param name="task">the unstarted task</param>
-            <param name="enqueued">a flag indicating if the task was actually enqueued</param>
-            <typeparam name="TResult">The result type of the task.</typeparam>
-            <returns>The passed in task.</returns>
-            <exception cref="T:System.ArgumentNullException">When <paramref name="task"/> is <see langword="null"/> </exception>
-            <remarks>
-            <para>
-            When passing in a previously started task the task is returned so that you can still await
-            the result of the associated action. This is to support framework builders who may not control
-            if a task is started or not.
-            </para>
-            <para>
-            The reason for not enqueuing is to prevent such tasks, which can't be started, from
-            occupying a position in the execution queue. This allows the processor to get to actual
-            unstarted tasks sooner.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.TryEnqueueTask(System.Threading.Tasks.Task,System.Boolean@)">
-            <summary>
-            Tries to enqueues a task for later execution. If the passed in task is already
-            started, it's not enqueued.
-            </summary>
-            <param name="task">the unstarted task</param>
-            <param name="enqueued">a flag indicating if the task was actually enqueued.</param>
-            <returns>The passed in task.</returns>
-            <exception cref="T:System.ArgumentNullException">When <paramref name="task"/> is <see langword="null"/> </exception>
-            <remarks>
-            <para>
-            When passing in a previously started task the task is still returned so that you can still await the result
-            of the associated action. This is to support framework builders who may not control
-            if a task is unstarted or not.
-            </para>
-            <para>
-            The reason for not enqueuing is to prevent such tasks, which can't be started, from
-            occupying a position in the execution queue. This allows the processor to get to actual
-            unstarted tasks sooner.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.HasTasks">
-            <summary>
-            Gets a flag indicating if there are any pending tasks.
+            The current <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.StopProcessingAndClearQueue">
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Signals the task processor to halt all processing immediately. This also cancels all
-            tasks created by this task task processor. This is mostly intended to be called
-            during application shutdown.
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to run</param>
+            <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
+            <returns></returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="T:Jcd.Tasks.CustomSchedulerTaskRunner`1">
+            <summary>
+            A singleton <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates
+            are registered with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
             </summary>
         </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.IsStarted">
+        <member name="P:Jcd.Tasks.CustomSchedulerTaskRunner`1.Scheduler">
             <summary>
-            Gets a flag indicating if the task processing has started. (it might be paused though).
+            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> used to schedule and execute tasks.
             </summary>
         </member>
-        <member name="P:Jcd.Tasks.BlockingTaskProcessor.IsPaused">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Gets a flag indicating if the command processing is currently paused.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Pause">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started when this is
-            called it will still get started.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="action">the action to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Resume">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Resumes command processing.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="asyncAction">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.PauseAsync">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Pauses the retrieval and execution of queued tasks. If a task is in the middle of being started
-            when this is called it will still get started.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="asyncAction">the action to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.ResumeAsync">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Resumes task processing.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.StartProcessing">
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Starts the processing of queued tasks.
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
             </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.BlockingTaskProcessor.Dispose">
-            <inheritdoc />
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
@@ -226,10 +168,60 @@
             management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
         </member>
+        <member name="T:Jcd.Tasks.SimpleThreadedTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived base type that runs <see cref="T:System.Threading.Tasks.Task"/> instances
+            in a fixed size pool of threads. Inlining is disabled by default to ensure only
+            the threads managed by this <see cref="T:System.Threading.Tasks.TaskScheduler"/> will process the tasks.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.GetScheduledTasks">
+            <inheritdoc />
+        </member>
+        <member name="P:Jcd.Tasks.SimpleThreadedTaskScheduler.Threads">
+            <summary>
+            The set of threads that will process Tasks. This is provided for
+            advanced use cases where an action needs to be taken on the entire
+            pool of threads.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Shutdown">
+            <summary>
+            Signals the underlying threads that the <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            is being shutdown (i.e. disposed of). Threads should shortly thereafter. 
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
+            <summary>
+            Constructs an instance of the type.
+            </summary>
+            <param name="threadCount">The number of threads to create.</param>
+            <param name="state">the thread apartment state setting for all threads.</param>
+        </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>
+            The method to attempt executing a Task in the calling thread's context.
+            This is disabled by default. See remarks for discussion. 
+            </summary>
+            <param name="task">the task to try inlining</param>
+            <param name="taskWasPreviouslyQueued">indicates if it was previously queued with this scheduler</param>
+            <returns>false, by default, may be overridden in a derived type.</returns>
+            <remarks>
+            The default implementation for this scheduler guarantees only its threads are processing tasks, so we cannot
+            inline operations as inlining executes the task on the ThreadPool, which may not meet the same requirements as our
+            dedicated threads.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose">
+            <inheritdoc />
+        </member>
         <member name="T:Jcd.Tasks.SynchronizedValue`1">
             <summary>
-            Provides a simple async-safe method of setting, getting, and altering values intended
-            to be shared among tasks and threads.
+            Provides a simple async-safe and thread-safe method of setting, getting, acting on,
+            and altering values shared among tasks and threads.
             </summary>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
             <remarks>
@@ -248,8 +240,8 @@
             <para>
             As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
-            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/> and <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,`0})"/>
-            for recursive reentrancy considerations. <i>(don't try it)</i>
+            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})"/>, and <see cref="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
+            for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
             </para>
             </remarks>
         </member>
@@ -258,6 +250,9 @@
             Constructs an <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instance.
             </summary>
             <param name="initialValue">The starting value.</param>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.Dispose">
+            <inheritdoc />
         </member>
         <member name="P:Jcd.Tasks.SynchronizedValue`1.Value">
             <summary>
@@ -359,10 +354,10 @@
              var sv = new SynchronizedValue&lt;int&gt;();
              
              // increment the value by one.
-             var changedValue = sv.ChangeValue(x => x + 1);
+             var changedValue = sv.Do(x => x + 1);
              
              // increment the value by two.
-             changedValue = sv.ChangeValue(x => x + 2);
+             changedValue = sv.Do(x => x + 2);
              
              </code>
              </example>
@@ -375,11 +370,11 @@
              var sv=new SynchronizedValue&lt;int&gt;(10);
             
              // deadlock yourself in a single line of code!
-             var changedValue = sv.ChangeValue(x=>sv.Value+10);
+             var changedValue = sv.Do(x=>sv.Value+10);
              </code>
              </remarks>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,`0})">
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
              <summary>
              Calls the provided function, passing in the current value, and assigns the result
              of the function call, to the current value. <b>This is not recursively reentrant.
@@ -398,6 +393,8 @@
              // increment the value by two.
              changedValue = await sv.ChangeValueAsync(x => x + 2);
              
+             // Perform some operation that requires the value to remain unchanged during the operation.
+             var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});
              </code>
              </example>
              <remarks>
@@ -413,159 +410,151 @@
              </code>
              </remarks>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.Dispose">
-            <inheritdoc />
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})">
+             <summary>
+             Executes an action on the synchronized value after locking it.
+             <b>This is not recursively reentrant. See remarks for details.</b>
+             </summary>
+             <param name="action">The function to call.</param>
+             <example>
+             Standard usage: pass in an asynchronous action to action the current value.
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;();
+             
+             // increment the value by one and discard the result.
+             sv.Do(x => x + 1);
+             
+             // increment the value by two and discard the result.
+             sv.Do(x => x + 2);
+             
+             // Perform some other operation that requires the value to
+             remain unchanged during the operation.
+             sv.Do(x => DoSomething(x));
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SynchronizedValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             sv.Do(x=>sv.Value+10);
+             </code>
+             </remarks>
         </member>
-        <member name="T:Jcd.Tasks.TaskExtensions">
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})">
+             <summary>
+             Executes an asynchronous action on the synchronized value after locking it.
+             <b>This is not recursively reentrant. See remarks for details.</b>
+             </summary>
+             <param name="asyncAction">The function to call.</param>
+             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for the action.</returns>
+             <example>
+             Standard usage: pass in an asynchronous action to action the current value.
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;();
+             
+             // increment the value by one and discard the result.
+             var changedValue = await sv.DoAsync(x => x + 1);
+             
+             // increment the value by two and discard the result.
+             await sv.DoAsync(x => x + 2);
+             
+             // Perform some other operation that requires the value to
+             remain unchanged during the operation.
+             await sv.DoAsync(x => DoSomething(x));
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SynchronizedValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             await sv.DoAsync(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="T:Jcd.Tasks.TaskSchedulerExtensions">
             <summary>
-            A set of helpers for <see cref="T:System.Threading.Tasks.Task"/> objects.
+            Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
+            This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            in a manner similar to `Task.Run` 
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.IsUnstarted(System.Threading.Tasks.Task)">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
             <summary>
-            Checks if a task is unstarted and startable. (Status==Created)
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">the task to inspect</param>
-            <returns>True if unstarted. False otherwise.</returns>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.Run(System.Threading.Tasks.Task)">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken)">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> on a task then returns the task, discarding exceptions.
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">the task to start</param>
-            <returns>the original task</returns>
-            <remarks>
-            While this returns the original task, it doesn't guarantee it's awaitable. Only call
-            this method if you've got 100% control over the lifecycle of the task. Otherwise call
-            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> instead and inspect the results before calling await.
-            </remarks>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.Run``1(System.Threading.Tasks.Task{``0},System.Threading.Tasks.TaskScheduler)">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task})">
             <summary>
-            Calls <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> on a task then returns the task, discarding exceptions.
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">the task to start</param>
-            <param name="taskScheduler">
-            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> to use for executing the task. If not provided the
-            current <see cref="T:System.Threading.Tasks.TaskScheduler"/> is used.
-            </param>
-            <typeparam name="TResult">The type of data returned from the task.</typeparam>
-            <returns>the original task</returns>
-            <remarks>
-            While this returns the original task, it doesn't guarantee it's awaitable. Only call
-            this method if you've got 100% control over the lifecycle of the task. Otherwise call
-            <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/> instead and inspect the results before calling await.
-            </remarks>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
             <summary>
-            Tries to successfully call start. 
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">The task to call Start on.</param>
-            <param name="taskScheduler">
-            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> to use for executing the task. If not provided the
-            current <see cref="T:System.Threading.Tasks.TaskScheduler"/> is used.
-            </param>
-            <param name="exception">The exception resulting from calling Start.</param>
-            <returns>
-            <see cref="F:Jcd.Tasks.TryStartResult.SuccessfullyStarted"/> when the Start was called and no exception occurred.
-            <see cref="F:Jcd.Tasks.TryStartResult.AlreadyStarted"/> When the task was already in a started state. Start was not called.
-            <see cref="F:Jcd.Tasks.TryStartResult.ErrorDuringStart"/> When start was called and an exception occurred during the call to start. Check the exception parameter for details.
-            </returns>
+            <param name="function">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.Threading.CancellationToken)">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0})">
             <summary>
-            Waits on a running task until it completes, is cancelled, faults or times out.
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">the task to wait on.</param>
-            <param name="cancellationToken">An optional cancellation token.</param>
-            <returns><see langword="true"/> if it ran to completion. <see langword="false"/> otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the task is unstarted.</exception>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.TimeSpan,System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0},System.Threading.CancellationToken)">
             <summary>
-            Waits on a running task until it completes, is cancelled, faults or times out.
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">the task to wait on.</param>
-            <param name="timeout">the amount of time to wait. Must be a value between -1 (infinite) and  <see cref="F:System.Int32.MaxValue"/></param>
-            <param name="cancellationToken">An optional cancellation token.</param>
-            <returns><see langword="true"/> if ran to completion. <see langword="false"/> otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the task is unstarted.</exception>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="M:Jcd.Tasks.TaskExtensions.TryWait(System.Threading.Tasks.Task,System.Nullable{System.Int32},System.Nullable{System.Threading.CancellationToken})">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}})">
             <summary>
-            Waits on a running task until it completes, is cancelled, faults or times out.
-            This extension method swallows exceptions. The exception should be available on
-            the Task.Exception property
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-            <param name="task">the task to wait on.</param>
-            <param name="millisecondsTimeout">the amount of time to wait. Must be a value between -1 (infinite) and  <see cref="F:System.Int32.MaxValue"/></param>
-            <param name="cancellationToken">An optional cancellation token.</param>
-            <returns><see langword="true"/> if ran to completion. <see langword="false"/> otherwise.</returns>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="T:Jcd.Tasks.TryStartResult">
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
             <summary>
-            The possible results of calling <see cref="M:Jcd.Tasks.TaskExtensions.TryStart(System.Threading.Tasks.Task,System.Exception@,System.Threading.Tasks.TaskScheduler)"/>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
             </summary>
-        </member>
-        <member name="F:Jcd.Tasks.TryStartResult.SuccessfullyStarted">
-            <summary>
-            Start was called and no exception resulted.
-            </summary>
-        </member>
-        <member name="F:Jcd.Tasks.TryStartResult.AlreadyStarted">
-            <summary>
-            The task was already in a started state. Start was not called.
-            </summary>
-        </member>
-        <member name="F:Jcd.Tasks.TryStartResult.ErrorDuringStart">
-            <summary>
-            An exception occurred during the call to start. 
-            </summary>
-        </member>
-        <member name="T:Jcd.Tasks.UnstartedTask">
-            <summary>
-            A Task factory that wraps the constructor with a tiny bit of logic, simplifying the process
-            of directly creating unstarted <see cref="T:System.Threading.Tasks.Task"/>s.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create(System.Action,System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task"/> as a proxy for an action. Once started the task will execute the action.
-            </summary>
-            <param name="action">The work to execute.</param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task"/> proxy for the action.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create(System.Func{System.Threading.Tasks.Task},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task"/> as a proxy for an asynchronous action. Once started the task will execute the action. 
-            </summary>
-            <param name="action"></param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task"/> proxy for the asynchronous action.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create``1(System.Func{``0},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task`1"/> as a proxy for a function. Once started the task will execute the function.
-            </summary>
-            <param name="function">The function to execute.</param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task`1"/> proxy for the function.</returns>
-            <typeparam name="TResult">The type of the data returned.</typeparam>
-        </member>
-        <member name="M:Jcd.Tasks.UnstartedTask.Create``1(System.Func{System.Threading.Tasks.Task{``0}},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskCreationOptions)">
-            <summary>
-            Creates an unstarted <see cref="T:System.Threading.Tasks.Task`1"/> as a proxy for an asynchronous function. Once started the task will execute the function.
-            </summary>
-            <param name="function"></param>
-            <param name="cancellationToken">The optional cancellation token for the task. The default is <see langword="null"/>.</param>
-            <param name="options">Task <see cref="T:System.Threading.Tasks.TaskCreationOptions"/> for the task. The default is <see cref="F:System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously"/></param>
-            <returns>An unstarted <see cref="T:System.Threading.Tasks.Task`1"/> proxy for the asynchronous function.</returns>
-            <typeparam name="TResult">The type of the data returned.</typeparam>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
     </members>
 </doc>

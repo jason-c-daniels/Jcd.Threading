@@ -2,11 +2,11 @@
 
 ## SynchronizedValue<T> Class
 
-Provides a simple async-safe method of setting, getting, and altering values intended  
-to be shared among tasks and threads.
+Provides a simple async-safe and thread-safe method of setting, getting, acting on,  
+and altering values shared among tasks and threads.
 
 ```csharp
-public class SynchronizedValue<T> :
+public sealed class SynchronizedValue<T> :
 System.IDisposable
 ```
 #### Type parameters
@@ -35,8 +35,8 @@ that in a [SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Ta
   
 As well this implementation uses [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and requires Dispose to be  
 called. Either implement [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') or call it directly at the appropriate  
-time. See the documentation for [ChangeValue(Func&lt;T,T&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValue(System.Func_T,T_).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValue(System.Func<T,T>)') and [ChangeValueAsync(Func&lt;T,T&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValueAsync(System.Func_T,T_).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValueAsync(System.Func<T,T>)')  
-for recursive reentrancy considerations. <i>(don't try it)</i>
+time. See the documentation for [ChangeValue(Func&lt;T,T&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValue(System.Func_T,T_).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValue(System.Func<T,T>)'), [ChangeValueAsync(Func&lt;T,Task&lt;T&gt;&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValueAsync(System.Func_T,System.Threading.Tasks.Task_T__).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValueAsync(System.Func<T,System.Threading.Tasks.Task<T>>)'), [Do(Action&lt;T&gt;)](Jcd.Tasks.SynchronizedValue_T_.Do(System.Action_T_).md 'Jcd.Tasks.SynchronizedValue<T>.Do(System.Action<T>)'), and [DoAsync(Func&lt;T,Task&gt;)](Jcd.Tasks.SynchronizedValue_T_.DoAsync(System.Func_T,System.Threading.Tasks.Task_).md 'Jcd.Tasks.SynchronizedValue<T>.DoAsync(System.Func<T,System.Threading.Tasks.Task>)')  
+for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
 
 | Constructors | |
 | :--- | :--- |
@@ -49,7 +49,9 @@ for recursive reentrancy considerations. <i>(don't try it)</i>
 | Methods | |
 | :--- | :--- |
 | [ChangeValue(Func&lt;T,T&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValue(System.Func_T,T_).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValue(System.Func<T,T>)') | Calls the provided function, passing in the current value, and assigns the result<br/>of the function call, to the current value. <b>This is not recursively reentrant.<br/>see remarks for details.</b> |
-| [ChangeValueAsync(Func&lt;T,T&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValueAsync(System.Func_T,T_).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValueAsync(System.Func<T,T>)') | Calls the provided function, passing in the current value, and assigns the result<br/>of the function call, to the current value. <b>This is not recursively reentrant.<br/>see remarks for details.</b> |
+| [ChangeValueAsync(Func&lt;T,Task&lt;T&gt;&gt;)](Jcd.Tasks.SynchronizedValue_T_.ChangeValueAsync(System.Func_T,System.Threading.Tasks.Task_T__).md 'Jcd.Tasks.SynchronizedValue<T>.ChangeValueAsync(System.Func<T,System.Threading.Tasks.Task<T>>)') | Calls the provided function, passing in the current value, and assigns the result<br/>of the function call, to the current value. <b>This is not recursively reentrant.<br/>see remarks for details.</b> |
+| [Do(Action&lt;T&gt;)](Jcd.Tasks.SynchronizedValue_T_.Do(System.Action_T_).md 'Jcd.Tasks.SynchronizedValue<T>.Do(System.Action<T>)') | Executes an action on the synchronized value after locking it.<br/><b>This is not recursively reentrant. See remarks for details.</b> |
+| [DoAsync(Func&lt;T,Task&gt;)](Jcd.Tasks.SynchronizedValue_T_.DoAsync(System.Func_T,System.Threading.Tasks.Task_).md 'Jcd.Tasks.SynchronizedValue<T>.DoAsync(System.Func<T,System.Threading.Tasks.Task>)') | Executes an asynchronous action on the synchronized value after locking it.<br/><b>This is not recursively reentrant. See remarks for details.</b> |
 | [GetValue()](Jcd.Tasks.SynchronizedValue_T_.GetValue().md 'Jcd.Tasks.SynchronizedValue<T>.GetValue()') | Retrieves the current value. If another thread edits the value, moment later a subsequent<br/>call will yield a different result. |
 | [GetValueAsync()](Jcd.Tasks.SynchronizedValue_T_.GetValueAsync().md 'Jcd.Tasks.SynchronizedValue<T>.GetValueAsync()') | Gets the value in an async friendly manner. |
 | [SetValue(T)](Jcd.Tasks.SynchronizedValue_T_.SetValue(T).md 'Jcd.Tasks.SynchronizedValue<T>.SetValue(T)') | Sets the current value to the provided value. |
