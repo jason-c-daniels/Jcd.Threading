@@ -22,13 +22,13 @@ public class SimpleThreadedTaskSchedulerTests
 
       foreach (var thread in scheduler.Threads)
       {
-         if (OSSupportsThreadingApartmentModel())
+         if (OsSupportsThreadingApartmentModel())
             Assert.Equal(expectedState, thread.GetApartmentState());
          Assert.True(thread.IsAlive);
       }
    }
 
-   private bool OSSupportsThreadingApartmentModel()
+   private static bool OsSupportsThreadingApartmentModel()
    {
       var osVer = Environment.OSVersion;
 
