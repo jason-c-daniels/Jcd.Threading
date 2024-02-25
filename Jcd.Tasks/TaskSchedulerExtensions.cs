@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Jcd.Tasks.TaskSchedulers;
+namespace Jcd.Tasks;
 
 /// <summary>
 /// Adds various `Run` extension for any <see cref="TaskScheduler"/> derived type.
@@ -15,7 +15,7 @@ namespace Jcd.Tasks.TaskSchedulers;
 public static class TaskSchedulerExtensions
 {
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="action">the action to execute.</param>
    /// <param name="scheduler">The scheduler to execute the action with.</param>
@@ -30,7 +30,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="action">the action to execute.</param>
    /// <param name="scheduler">The scheduler to execute the action with.</param>
@@ -46,7 +46,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>
@@ -61,7 +61,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="function">the action to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>
@@ -77,7 +77,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>
@@ -92,7 +92,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>
@@ -112,7 +112,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>
@@ -123,7 +123,7 @@ public static class TaskSchedulerExtensions
    }
 
    /// <summary>
-   /// Schedules work with the current or user provided <see cref="TaskScheduler"/>
+   /// Schedules work with the provided <see cref="TaskScheduler"/>
    /// </summary>
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>

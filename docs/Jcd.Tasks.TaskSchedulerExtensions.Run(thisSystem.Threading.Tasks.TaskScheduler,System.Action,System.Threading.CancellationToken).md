@@ -1,28 +1,28 @@
 #### [Jcd.Tasks](index.md 'index')
-### [Jcd.Tasks.TaskSchedulers](Jcd.Tasks.TaskSchedulers.md 'Jcd.Tasks.TaskSchedulers').[TaskSchedulerExtensions](Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.md 'Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions')
+### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks').[TaskSchedulerExtensions](Jcd.Tasks.TaskSchedulerExtensions.md 'Jcd.Tasks.TaskSchedulerExtensions')
 
 ## TaskSchedulerExtensions.Run(this TaskScheduler, Action, CancellationToken) Method
 
-Schedules work with the current or user provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')
+Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')
 
 ```csharp
 public static System.Threading.Tasks.Task Run(this System.Threading.Tasks.TaskScheduler scheduler, System.Action action, System.Threading.CancellationToken cancellationToken);
 ```
 #### Parameters
 
-<a name='Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).scheduler'></a>
+<a name='Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).scheduler'></a>
 
 `scheduler` [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')
 
 The scheduler to execute the action with.
 
-<a name='Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).action'></a>
+<a name='Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).action'></a>
 
 `action` [System.Action](https://docs.microsoft.com/en-us/dotnet/api/System.Action 'System.Action')
 
 the action to execute.
 
-<a name='Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).cancellationToken'></a>
+<a name='Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).cancellationToken'></a>
 
 `cancellationToken` [System.Threading.CancellationToken](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.CancellationToken 'System.Threading.CancellationToken')
 

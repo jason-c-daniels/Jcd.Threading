@@ -1,0 +1,25 @@
+#### [Jcd.Tasks](index.md 'index')
+### [Jcd.Tasks](Jcd.Tasks.md 'Jcd.Tasks')
+
+## TaskSchedulerExtensions Class
+
+Adds various `Run` extension for any [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') derived type.  
+This allows tasks to be scheduled with the desired [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')  
+in a manner similar to `Task.Run`
+
+```csharp
+public static class TaskSchedulerExtensions
+```
+
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; TaskSchedulerExtensions
+
+| Methods | |
+| :--- | :--- |
+| [Run(this TaskScheduler, Action, CancellationToken)](Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken).md 'Jcd.Tasks.TaskSchedulerExtensions.Run(this System.Threading.Tasks.TaskScheduler, System.Action, System.Threading.CancellationToken)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run(this TaskScheduler, Action)](Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Action).md 'Jcd.Tasks.TaskSchedulerExtensions.Run(this System.Threading.Tasks.TaskScheduler, System.Action)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run(this TaskScheduler, Func&lt;Task&gt;, CancellationToken)](Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Func_System.Threading.Tasks.Task_,System.Threading.CancellationToken).md 'Jcd.Tasks.TaskSchedulerExtensions.Run(this System.Threading.Tasks.TaskScheduler, System.Func<System.Threading.Tasks.Task>, System.Threading.CancellationToken)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run(this TaskScheduler, Func&lt;Task&gt;)](Jcd.Tasks.TaskSchedulerExtensions.Run(thisSystem.Threading.Tasks.TaskScheduler,System.Func_System.Threading.Tasks.Task_).md 'Jcd.Tasks.TaskSchedulerExtensions.Run(this System.Threading.Tasks.TaskScheduler, System.Func<System.Threading.Tasks.Task>)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run&lt;TResult&gt;(this TaskScheduler, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)](Jcd.Tasks.TaskSchedulerExtensions.Run_TResult_(thisSystem.Threading.Tasks.TaskScheduler,System.Func_System.Threading.Tasks.Task_TResult__,System.Threading.CancellationToken).md 'Jcd.Tasks.TaskSchedulerExtensions.Run<TResult>(this System.Threading.Tasks.TaskScheduler, System.Func<System.Threading.Tasks.Task<TResult>>, System.Threading.CancellationToken)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run&lt;TResult&gt;(this TaskScheduler, Func&lt;Task&lt;TResult&gt;&gt;)](Jcd.Tasks.TaskSchedulerExtensions.Run_TResult_(thisSystem.Threading.Tasks.TaskScheduler,System.Func_System.Threading.Tasks.Task_TResult__).md 'Jcd.Tasks.TaskSchedulerExtensions.Run<TResult>(this System.Threading.Tasks.TaskScheduler, System.Func<System.Threading.Tasks.Task<TResult>>)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run&lt;TResult&gt;(this TaskScheduler, Func&lt;TResult&gt;, CancellationToken)](Jcd.Tasks.TaskSchedulerExtensions.Run_TResult_(thisSystem.Threading.Tasks.TaskScheduler,System.Func_TResult_,System.Threading.CancellationToken).md 'Jcd.Tasks.TaskSchedulerExtensions.Run<TResult>(this System.Threading.Tasks.TaskScheduler, System.Func<TResult>, System.Threading.CancellationToken)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |
+| [Run&lt;TResult&gt;(this TaskScheduler, Func&lt;TResult&gt;)](Jcd.Tasks.TaskSchedulerExtensions.Run_TResult_(thisSystem.Threading.Tasks.TaskScheduler,System.Func_TResult_).md 'Jcd.Tasks.TaskSchedulerExtensions.Run<TResult>(this System.Threading.Tasks.TaskScheduler, System.Func<TResult>)') | Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') |

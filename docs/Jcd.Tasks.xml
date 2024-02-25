@@ -431,6 +431,81 @@
              </code>
              </remarks>
         </member>
+        <member name="T:Jcd.Tasks.TaskSchedulerExtensions">
+            <summary>
+            Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
+            This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            in a manner similar to `Task.Run` 
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0})">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
         <member name="T:Jcd.Tasks.TaskSchedulers.DualMtaThreadTaskScheduler">
             <summary>
             A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  MTA threads per CPU to execute
@@ -554,81 +629,6 @@
             Creates an instance of the type.
             </summary>
             <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions">
-            <summary>
-            Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
-            This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            in a manner similar to `Task.Run` 
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="scheduler">The scheduler to execute the action with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="scheduler">The scheduler to execute the action with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the action to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0})">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0},System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
         <member name="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler">
             <summary>
