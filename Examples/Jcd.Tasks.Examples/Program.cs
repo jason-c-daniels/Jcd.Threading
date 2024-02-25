@@ -1,13 +1,18 @@
 ﻿// ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
 
+using Jcd.Tasks;
+using Jcd.Tasks.Examples;
+
 const int count = 10000;
 
 Log(-999, TaskScheduler.Current, "App Started");
 
-await STaskRunner.Run(Main);
+await CustomTaskRunner.Run(Main);
 
-Log(-999, TaskScheduler.Current, "App Ending");
+Log(-999, TaskScheduler.Current, "CustomTaskRunner Ending");
+
+await SynchronizedValueExample.Run();
 
 return;
 
@@ -40,7 +45,7 @@ async Task InnerReportScheduler(int i)
    var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(InnerReportScheduler)}");
    await Task.Delay(250);
-   await STaskRunner.Run(() => FinalInnerReportScheduler(i));
+   await CustomTaskRunner.Run(() => FinalInnerReportScheduler(i));
 }
 
 async Task FinalInnerReportScheduler(int i)

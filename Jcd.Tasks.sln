@@ -7,9 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks", "Jcd.Tasks\Jcd.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Tests", "Jcd.Tasks.Tests\Jcd.Tasks.Tests.csproj", "{0EAE3F51-E477-4996-983F-B3C2B9A51690}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples", "Jcd.Tasks.Examples\Jcd.Tasks.Examples.csproj", "{30064E3A-5581-471D-82A8-2CA0C13FEF4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples", "Examples\Jcd.Tasks.Examples\Jcd.Tasks.Examples.csproj", "{30064E3A-5581-471D-82A8-2CA0C13FEF4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Examples.Wpf.CustomTaskSchedulers", "Jcd.Examples.Wpf.CustomTaskSchedulers\Jcd.Examples.Wpf.CustomTaskSchedulers.csproj", "{8945609F-AC32-4AAB-B15B-76278D5CF237}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers", "Examples\Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers\Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.csproj", "{8945609F-AC32-4AAB-B15B-76278D5CF237}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +38,9 @@ Global
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{30064E3A-5581-471D-82A8-2CA0C13FEF4F} = {0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}
+		{8945609F-AC32-4AAB-B15B-76278D5CF237} = {0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}
 	EndGlobalSection
 EndGlobal

@@ -2,6 +2,7 @@
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable HeapView.ObjectAllocation.Evident
 
 namespace Jcd.Tasks.Examples;
 
@@ -32,25 +33,8 @@ public static class SynchronizedValueExample
       // create a hot-task that reports the value and a timestamp every 100ms
       var reportValueTask = CreateReportValueTask(cts, counter);
 
-      // Now ensure the tasks have completed. The TryAwait(Async) extension method can be used 
-      // if there's any question as to the faulted/canceled state, and your application won't 
-      // care/knows how to recover.
-      //
-      // In this case, since the Task.Delay is using the cancellation token, and we directly 
-      // raise the TaskCanceledException we are expecting the tasks to be cancelled.
-      // And this application is merely reporting statuses on completion.
-      //
-      // NOTE: Only use this method if your application knows how to recover from cancelled or 
-      // faulted tasks.
-      //
-
       // wait for the tasks to finish regardless if their faulted or cancelled status.
-      while (
-         !reportValueTask.IsCompleted
-      || !setTo20Task.IsCompleted
-      || !decBy4Task.IsCompleted
-      || !incrementTask.IsCompleted)
-         await Task.Yield();
+      await Task.WhenAll(reportValueTask, setTo20Task, decBy4Task, incrementTask);
 
       // now report their statuses.
       Console.WriteLine($"reportValue.Status {reportValueTask.Status}");

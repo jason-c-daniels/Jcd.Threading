@@ -12,7 +12,7 @@ namespace Jcd.Tasks;
 /// A <see cref="TaskScheduler"/> bound task runner. It ensures all tasks it creates are registered
 /// with either its own, or a user provided <see cref="TaskScheduler"/>.
 /// </summary>
-public static class SchedulerBoundTaskRunner<TScheduler>
+public static class CustomSchedulerTaskRunner<TScheduler>
    where TScheduler : TaskScheduler, new()
 {
    /// <summary>

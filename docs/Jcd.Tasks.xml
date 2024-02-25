@@ -23,6 +23,25 @@
             <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
             <returns></returns>
         </member>
+        <member name="T:Jcd.Tasks.CustomSchedulerTaskRunner`1">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates are registered
+            with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.CustomSchedulerTaskRunner`1.Scheduler">
+            <summary>
+            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> used to schedule and execute tasks.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            
+            </summary>
+            <param name="action"></param>
+            <param name="scheduler"></param>
+            <returns></returns>
+        </member>
         <member name="T:Jcd.Tasks.DualMtaThreadTaskScheduler">
             <summary>
             A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  MTA threads per CPU to execute
@@ -140,25 +159,6 @@
         </member>
         <member name="M:Jcd.Tasks.QuadStaThreadTaskScheduler.#ctor">
             <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.SchedulerBoundTaskRunner`1">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates are registered
-            with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.SchedulerBoundTaskRunner`1.Scheduler">
-            <summary>
-            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> used to schedule and execute tasks.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.SchedulerBoundTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            
-            </summary>
-            <param name="action"></param>
-            <param name="scheduler"></param>
-            <returns></returns>
         </member>
         <member name="T:Jcd.Tasks.StaThreadTaskScheduler">
             <summary>

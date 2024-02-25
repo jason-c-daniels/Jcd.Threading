@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Jcd.Tasks\Jcd.Tasks.csproj"/>
+        <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj"/>
     </ItemGroup>
 
 </Project>
