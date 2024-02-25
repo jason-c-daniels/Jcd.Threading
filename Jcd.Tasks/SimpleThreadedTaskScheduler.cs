@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,13 @@ public class SimpleThreadedTaskScheduler
          if (!tasks.TryTake(out var task, 50) && !cts.IsCancellationRequested)
             continue;
 
-         TryExecuteTask(task);
+         try
+         {
+            TryExecuteTask(task);
+         }
+         catch (Exception ex)
+         {
+         }
       }
    }
 
