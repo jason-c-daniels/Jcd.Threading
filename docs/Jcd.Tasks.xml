@@ -506,46 +506,6 @@
             <param name="cancellationToken">the token to check for cancellation</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.DualMtaThreadTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.DualMtaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.DualStaThreadTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly two  STA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.DualStaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.FourMtaThreadsPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses four MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.FourMtaThreadsPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.FourStaThreadsPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses four STA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.FourStaThreadsPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
         <member name="T:Jcd.Tasks.TaskSchedulers.MtaThreadTaskScheduler">
             <summary>
             The base type for a <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/> that uses MTA threads. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
@@ -557,66 +517,6 @@
             Creates an instance of the type.
             </summary>
             <param name="threadCount">The number of threads to use for executing <see cref="N:Jcd.Tasks"/> instances. </param>
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerTwoCpusTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one MTA thread for every two CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.OneMtaThreadPerTwoCpusTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.OneStaThreadPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread per CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.OneStaThreadPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.OneStaThreadPerTwoCpusTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses one STA thread for every two CPUs to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. At a minimum one thread is created. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.OneStaThreadPerTwoCpusTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.QuadMtaThreadTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four MTA threads to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.QuadMtaThreadTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.QuadStaThreadTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses exactly four STA threads to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.QuadStaThreadTaskScheduler.#ctor">
-            <inheritdoc />
         </member>
         <member name="T:Jcd.Tasks.TaskSchedulers.StaThreadTaskScheduler">
             <summary>
@@ -678,26 +578,6 @@
             </remarks>
         </member>
         <member name="M:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.TwoMtaThreadsPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses two MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TwoMtaThreadsPerCpuTaskScheduler.#ctor">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.TaskSchedulers.TwoStaThreadsPerCpuTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> that uses two MTA threads per CPU to execute
-            <see cref="T:System.Threading.Tasks.Task"/> instances. Inlining is not honored. See <see cref="T:Jcd.Tasks.TaskSchedulers.ThreadTaskScheduler"/>
-            for details.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulers.TwoStaThreadsPerCpuTaskScheduler.#ctor">
             <inheritdoc />
         </member>
     </members>

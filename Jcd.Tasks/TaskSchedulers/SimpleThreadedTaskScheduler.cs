@@ -18,7 +18,7 @@ namespace Jcd.Tasks.TaskSchedulers;
 /// in a fixed size pool of threads. Inlining is disabled by default to ensure only
 /// the threads managed by this <see cref="TaskScheduler"/> will process the tasks.
 /// </summary>
-public abstract class ThreadTaskScheduler
+public abstract class SimpleThreadedTaskScheduler
    : TaskScheduler
    , IDisposable
 {
@@ -73,7 +73,7 @@ public abstract class ThreadTaskScheduler
    /// </summary>
    /// <param name="threadCount">The number of threads to create.</param>
    /// <param name="state">the thread apartment state setting for all threads.</param>
-   protected ThreadTaskScheduler(int threadCount, ApartmentState state)
+   protected SimpleThreadedTaskScheduler(int threadCount, ApartmentState state)
    {
       if (state       == ApartmentState.Unknown) state = ApartmentState.MTA;
       if (threadCount < 1) threadCount                 = Environment.ProcessorCount;

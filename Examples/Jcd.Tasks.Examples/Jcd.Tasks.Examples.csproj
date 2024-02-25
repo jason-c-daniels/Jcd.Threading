@@ -2,6 +2,7 @@
 
    <ItemGroup>
       <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj"/>
+      <ProjectReference Include="..\Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers\Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.csproj"/>
    </ItemGroup>
 
    <ItemGroup>

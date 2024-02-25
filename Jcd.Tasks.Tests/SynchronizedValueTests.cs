@@ -69,7 +69,7 @@ public class SynchronizedValueTests
    {
       var       expectedValue = MultiplyByTen(value);
       using var sv            = new SynchronizedValue<int>(value);
-      var result = sv.ChangeValue(MultiplyByTen);
+      var       result        = sv.ChangeValue(MultiplyByTen);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
 
@@ -85,7 +85,7 @@ public class SynchronizedValueTests
    {
       var       expectedValue = await MultiplyByTenAsync(value);
       using var sv            = new SynchronizedValue<int>(value);
-      var result = await sv.ChangeValueAsync(MultiplyByTenAsync);
+      var       result        = await sv.ChangeValueAsync(MultiplyByTenAsync);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
 
@@ -93,16 +93,16 @@ public class SynchronizedValueTests
 
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
-   
+
    [Theory]
    [InlineData(1)]
    [InlineData(-1)]
    [InlineData(2)]
    public void Do_Acts_On_The_Provided_Value(int value)
    {
-      var       capturedValue = value + 1;// ensure it's initialized to a different value.
+      var       capturedValue = value + 1; // ensure it's initialized to a different value.
       using var sv            = new SynchronizedValue<int>(value);
-      sv.Do((v)=>{capturedValue = v;});
+      sv.Do((v) => { capturedValue = v; });
       Assert.Equal(value, sv.Value);
       Assert.Equal(value, capturedValue);
    }
@@ -115,13 +115,14 @@ public class SynchronizedValueTests
    {
       var       capturedValue = value + 1; // ensure it's initialized to a different value.
       using var sv            = new SynchronizedValue<int>(value);
-      await sv.DoAsync(v=>
-                 {
-                    capturedValue = v;
-                    return Task.CompletedTask;
-                 });
+      await sv.DoAsync(v =>
+                       {
+                          capturedValue = v;
+
+                          return Task.CompletedTask;
+                       }
+                      );
       Assert.Equal(value, sv.Value);
       Assert.Equal(value, capturedValue);
    }
-   
 }
