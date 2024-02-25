@@ -27,6 +27,7 @@ See [EXAMPLES.md](./EXAMPLES.md) for detailed examples.
 [![GitHub](https://img.shields.io/github/license/jason-c-daniels/Jcd.Tasks)](https://github.com/jason-c-daniels/Jcd.Tasks/blob/main/LICENSE)
 [![Build status](https://ci.appveyor.com/api/projects/status/sbmfvmr1jmcf1pic?svg=true)](https://ci.appveyor.com/project/jason-c-daniels/jcd-tasks)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/jason-c-daniels/Jcd.Tasks)](https://www.codefactor.io/repository/github/jason-c-daniels/Jcd.Tasks)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jason-c-daniels_Jcd.Tasks&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jason-c-daniels_Jcd.Tasks)
 
 [![MyGet](https://img.shields.io/myget/jason-c-daniels/v/Jcd.Tasks?logo=nuget)](https://www.myget.org/feed/jason-c-daniels/package/nuget/Jcd.Tasks)
 [![Nuget](https://img.shields.io/nuget/v/Jcd.Tasks?logo=nuget)](https://www.nuget.org/packages/Jcd.Tasks)
