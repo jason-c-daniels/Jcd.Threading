@@ -144,7 +144,6 @@ public partial class MainWindow //: Window
       {
          tasks.Add(MTAScheduler.Run(async () =>
                                     {
-                                       var       randomWait = new Random().Next() % 7;
                                        using var waiter     = new AutoResetEvent(false);
                                        waiter.WaitOne(1);
                                        var waitSw = Stopwatch.StartNew();
@@ -157,7 +156,6 @@ public partial class MainWindow //: Window
                                        {
                                           z++;
                                           z %= int.MaxValue / 10;
-                                          if (z             % 100 == 0) waiter.WaitOne(randomWait);
                                        }
 
                                        waitSw.Stop();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,7 +53,7 @@ public class SimpleThreadedTaskScheduler
 
             TryExecuteTask(task);
          }
-         catch (Exception ex)
+         catch (Exception)
          {
             // intentionally ignored. 
          }
@@ -109,10 +108,29 @@ public class SimpleThreadedTaskScheduler
    /// </remarks>
    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) { return false; }
 
+   /// <summary>
+   /// Disposes unmanaged resources  
+   /// </summary>
+   /// <param name="disposing">indicates if it's disposing.</param>
+   protected virtual void Dispose(bool disposing)
+   {
+      // Release Unmanaged Resources here if you ever add them.
+      // this change was made to make SonarCloud shut up.
+
+      if (disposing)
+      {
+         Shutdown();
+         tasks.Dispose();
+         cts.Dispose();
+      }
+   }
+
    /// <inheritdoc />
    public void Dispose()
    {
-      Shutdown();
-      tasks.Dispose();
+      Dispose(true);
+      GC.SuppressFinalize(this);
    }
+
+   ~SimpleThreadedTaskScheduler() { Dispose(false); }
 }
