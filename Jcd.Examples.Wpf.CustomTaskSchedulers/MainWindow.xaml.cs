@@ -8,7 +8,7 @@ using System.Windows.Controls;
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Foo;
+namespace Jcd.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

@@ -1,10 +1,8 @@
-﻿using System.Windows;
-
-// WPF Apps need two STA threads, one for event processing and one for rendering.
+﻿// WPF Apps need two STA threads, one for event processing and one for rendering.
 // a Single STA Thread is not sufficient.
 using MainScheduler = Jcd.Tasks.SchedulerBoundTaskRunner<Jcd.Tasks.QuadStaThreadTaskScheduler>;
 
-namespace Foo;
+namespace Jcd.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
 /// Interaction logic for App.xaml

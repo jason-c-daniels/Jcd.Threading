@@ -9,9 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Tests", "Jcd.Task
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples", "Jcd.Tasks.Examples\Jcd.Tasks.Examples.csproj", "{30064E3A-5581-471D-82A8-2CA0C13FEF4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples.BlockingTaskProcessor", "Jcd.Tasks.Examples.BlockingTaskProcessor\Jcd.Tasks.Examples.BlockingTaskProcessor.csproj", "{0B447EAF-4502-46FA-8D5F-D7D39CB5F732}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foo", "Foo\Foo.csproj", "{8945609F-AC32-4AAB-B15B-76278D5CF237}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Examples.Wpf.CustomTaskSchedulers", "Jcd.Examples.Wpf.CustomTaskSchedulers\Jcd.Examples.Wpf.CustomTaskSchedulers.csproj", "{8945609F-AC32-4AAB-B15B-76278D5CF237}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +32,6 @@ Global
 		{30064E3A-5581-471D-82A8-2CA0C13FEF4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30064E3A-5581-471D-82A8-2CA0C13FEF4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30064E3A-5581-471D-82A8-2CA0C13FEF4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B447EAF-4502-46FA-8D5F-D7D39CB5F732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B447EAF-4502-46FA-8D5F-D7D39CB5F732}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B447EAF-4502-46FA-8D5F-D7D39CB5F732}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B447EAF-4502-46FA-8D5F-D7D39CB5F732}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Release|Any CPU.ActiveCfg = Release|Any CPU

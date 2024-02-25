@@ -7,6 +7,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
         <LangVersion>latest</LangVersion>
+        <AssemblyName>Jcd.Examples.Wpf.CustomTaskSchedulers</AssemblyName>
+        <RootNamespace>Jcd.Examples.Wpf.CustomTaskSchedulers</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
