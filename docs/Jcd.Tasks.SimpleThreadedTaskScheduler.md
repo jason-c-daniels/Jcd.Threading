@@ -25,5 +25,6 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 
 | Methods | |
 | :--- | :--- |
+| [Dispose(bool)](Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose(bool).md 'Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose(bool)') | Disposes unmanaged resources |
 | [Shutdown()](Jcd.Tasks.SimpleThreadedTaskScheduler.Shutdown().md 'Jcd.Tasks.SimpleThreadedTaskScheduler.Shutdown()') | Signals the underlying threads that the [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')<br/>is being shutdown (i.e. disposed of). Threads should shortly thereafter. |
 | [TryExecuteTaskInline(Task, bool)](Jcd.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,bool).md 'Jcd.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task, bool)') | The method to attempt executing a Task in the calling thread's context.<br/>This is disabled by default. See remarks for discussion. |

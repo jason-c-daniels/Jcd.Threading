@@ -215,6 +215,12 @@
             dedicated threads.
             </remarks>
         </member>
+        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose(System.Boolean)">
+            <summary>
+            Disposes unmanaged resources  
+            </summary>
+            <param name="disposing">indicates if it's disposing.</param>
+        </member>
         <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose">
             <inheritdoc />
         </member>
