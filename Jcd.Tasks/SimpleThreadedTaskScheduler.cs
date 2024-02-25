@@ -44,18 +44,19 @@ public class SimpleThreadedTaskScheduler
 
       while (true)
       {
-         if (cts.IsCancellationRequested) return;
-         waitHandle.WaitOne(1);
-
-         if (!tasks.TryTake(out var task, 50) && !cts.IsCancellationRequested)
-            continue;
-
          try
          {
+            if (cts.IsCancellationRequested) return;
+            waitHandle.WaitOne(1);
+
+            if (!tasks.TryTake(out var task, 50) && !cts.IsCancellationRequested)
+               continue;
+
             TryExecuteTask(task);
          }
          catch (Exception ex)
          {
+            // intentionally ignored. 
          }
       }
    }

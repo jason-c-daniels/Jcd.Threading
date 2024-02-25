@@ -22,9 +22,17 @@ public class SimpleThreadedTaskSchedulerTests
 
       foreach (var thread in scheduler.Threads)
       {
-         Assert.Equal(expectedState, thread.GetApartmentState());
+         if (OSSupportsThreadingApartmentModel())
+            Assert.Equal(expectedState, thread.GetApartmentState());
          Assert.True(thread.IsAlive);
       }
+   }
+
+   private bool OSSupportsThreadingApartmentModel()
+   {
+      var osVer = Environment.OSVersion;
+
+      return osVer.Platform == PlatformID.Win32NT;
    }
 
    [Fact]
