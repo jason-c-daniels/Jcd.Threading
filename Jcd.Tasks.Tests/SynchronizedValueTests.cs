@@ -1,6 +1,8 @@
 ﻿// ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
+// ReSharper disable HeapView.ClosureAllocation
+
 namespace Jcd.Tasks.Tests;
 
 public class SynchronizedValueTests
@@ -102,7 +104,7 @@ public class SynchronizedValueTests
    {
       var       capturedValue = value + 1; // ensure it's initialized to a different value.
       using var sv            = new SynchronizedValue<int>(value);
-      sv.Do((v) => { capturedValue = v; });
+      sv.Do(v => { capturedValue = v; });
       Assert.Equal(value, sv.Value);
       Assert.Equal(value, capturedValue);
    }

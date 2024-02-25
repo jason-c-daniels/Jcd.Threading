@@ -1,5 +1,7 @@
 using Jcd.Tasks.TaskSchedulers;
 
+// ReSharper disable UnusedType.Global
+
 namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 /// <summary>
@@ -11,9 +13,9 @@ public class OneStaThreadPerTwoCpusTaskScheduler : SimpleStaThreadedTaskSchedule
 {
    /// <inheritdoc />
    public OneStaThreadPerTwoCpusTaskScheduler() : base(Environment.ProcessorCount / 2 == 0
-                                                                  ? 1
-                                                                  : Environment.ProcessorCount / 2
-                                                              )
+                                                          ? 1
+                                                          : Environment.ProcessorCount / 2
+                                                      )
    {
    }
 }

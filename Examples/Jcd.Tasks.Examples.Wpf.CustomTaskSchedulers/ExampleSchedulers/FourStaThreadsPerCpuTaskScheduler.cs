@@ -1,5 +1,7 @@
 ﻿using Jcd.Tasks.TaskSchedulers;
 
+// ReSharper disable UnusedType.Global
+
 namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 /// <summary>

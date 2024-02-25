@@ -1,8 +1,10 @@
-﻿namespace Jcd.Tasks.Tests.Helpers;
+﻿// ReSharper disable HeapView.ObjectAllocation.Evident
+
+namespace Jcd.Tasks.Tests.Helpers;
 
 public class CallingThreadTaskScheduler : TaskScheduler
 {
-   protected override IEnumerable<Task>? GetScheduledTasks() { return new List<Task>(); }
+   protected override IEnumerable<Task> GetScheduledTasks() { return new List<Task>(); }
 
    protected override void QueueTask(Task task) { TryExecuteTask(task); }
 

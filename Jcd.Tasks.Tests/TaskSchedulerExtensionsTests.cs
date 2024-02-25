@@ -1,5 +1,10 @@
 ﻿using Jcd.Tasks.Tests.Helpers;
 
+// ReSharper disable HeapView.ObjectAllocation.Evident
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable MethodSupportsCancellation
+
 namespace Jcd.Tasks.Tests;
 
 public class TaskSchedulerExtensionsTests
@@ -119,5 +124,32 @@ public class TaskSchedulerExtensionsTests
                         , cts.Token
                          );
       Assert.True(ReferenceEquals(scheduler, capturedScheduler));
+   }
+
+   [Fact]
+   public void Run_With_Async_Function_And_Cancelled_CancellationToken_Returns_A_Cancelled_Task()
+   {
+      var       scheduler = new CallingThreadTaskScheduler();
+      using var cts       = new CancellationTokenSource();
+      cts.Cancel();
+      var task = scheduler.Run(() => Task.FromResult(10), cts.Token);
+      Assert.True(task.IsCanceled);
+   }
+
+   [Fact]
+   public async Task Run_With_Null_Function_And_Valid_CancellationToken_Throws_An_ArgumentNullException()
+   {
+      var               scheduler = new CallingThreadTaskScheduler();
+      using var         cts       = new CancellationTokenSource();
+      Func<Task<int>?>? func      = null;
+      await Assert.ThrowsAsync<ArgumentNullException>(async () => await scheduler.Run(func, cts.Token));
+   }
+
+   [Fact]
+   public async Task Run_With_Null_Function_Throws_An_ArgumentNullException()
+   {
+      var               scheduler = new CallingThreadTaskScheduler();
+      Func<Task<int>?>? func      = null;
+      await Assert.ThrowsAsync<ArgumentNullException>(async () => await scheduler.Run(func));
    }
 }
