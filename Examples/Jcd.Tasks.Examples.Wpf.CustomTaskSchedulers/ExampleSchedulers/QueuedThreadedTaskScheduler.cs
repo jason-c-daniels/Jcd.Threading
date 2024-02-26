@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.BoxingAllocation
@@ -11,22 +6,26 @@ using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable HeapView.DelegateAllocation
 
-namespace Jcd.Tasks;
+namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+using TaskQueue = ConcurrentQueue<Task>;
 
 /// <summary>
 /// A <see cref="TaskScheduler"/> derived base type that runs <see cref="Task"/> instances
 /// in a fixed size pool of threads. Inlining is disabled by default to ensure only
 /// the threads managed by this <see cref="TaskScheduler"/> will process the tasks.
 /// </summary>
-public class SimpleThreadedTaskScheduler
+public class QueuedThreadedTaskScheduler
    : TaskScheduler
    , IDisposable
 {
-   private readonly ConcurrentQueue<Task> tasks = new();
-   private readonly CancellationTokenSource  cts   = new();
-
+   private readonly ConcurrentQueue<TaskQueue>         queues = new();
+   private readonly CancellationTokenSource cts   = new();
+   
    /// <inheritdoc />
-   protected override IEnumerable<Task> GetScheduledTasks() { return tasks.ToList().AsReadOnly(); }
+   protected override IEnumerable<Task> GetScheduledTasks()
+   {
+      return queues.SelectMany(q=>q.ToList()).ToList().AsReadOnly();
+   }
 
    private readonly List<Thread> internalThreads = [];
 
@@ -37,7 +36,7 @@ public class SimpleThreadedTaskScheduler
    /// </summary>
    public IReadOnlyList<Thread> Threads => internalThreads;
 
-   private void ThreadProc()
+   private void ThreadProc(TaskQueue queue)
    {
       using var waitHandle = new AutoResetEvent(false);
 
@@ -46,14 +45,11 @@ public class SimpleThreadedTaskScheduler
          try
          {
             if (cts.IsCancellationRequested) return;
-            waitHandle.WaitOne(1);
-            if (cts.IsCancellationRequested) return;
+            waitHandle.WaitOne(13);
 
-            if (!tasks.TryDequeue(out var task))
-            {
-               waitHandle.WaitOne(50);
+            if (cts.IsCancellationRequested) return;
+            if (queue.IsEmpty || !queue.TryDequeue(out var task))
                continue;
-            }
 
             TryExecuteTask(task);
          }
@@ -77,26 +73,47 @@ public class SimpleThreadedTaskScheduler
    /// Constructs an instance of the type.
    /// </summary>
    /// <param name="threadCount">The number of threads to create.</param>
-   /// <param name="state">the thread apartment state setting for all threads.</param>
-   public SimpleThreadedTaskScheduler(int threadCount, ApartmentState state = ApartmentState.Unknown)
+   /// <param name="queueCount">THe number of queues for tasks.</param>
+   /// <param name="apartmentState">the thread apartment state setting for all threads.</param>
+   public QueuedThreadedTaskScheduler(int threadCount = 0, int queueCount = 0, ApartmentState apartmentState = ApartmentState.Unknown)
    {
-      if (state       == ApartmentState.Unknown) state = ApartmentState.MTA;
-      if (threadCount < 1) threadCount                 = Environment.ProcessorCount;
+      if (apartmentState       == ApartmentState.Unknown) apartmentState           = ApartmentState.MTA;
+      if (threadCount < 1) threadCount                           = Environment.ProcessorCount;
+      if (queueCount < 1) queueCount = threadCount / 2;
+      if (queueCount < 1) queueCount = 1;
+      if (queueCount > 1 && queueCount >= threadCount/2) queueCount = threadCount / 2;
+      
+      
+      // first initialize the queues.
+      for(var qn=0;qn<queueCount;qn++)
+         queues.Enqueue(new TaskQueue());
 
+      var queueList = queues.ToList();
+      
       for (var i = 0; i < threadCount; i++)
       {
-         var thread = new Thread(ThreadProc)
+         var thread = new Thread(()=>ThreadProc(queueList[i % queueCount]))
                       {
                          IsBackground = true, Name = $"{GetType().Name}.Threads[{internalThreads.Count:D4}]"
                       };
-         thread.TrySetApartmentState(state);
+         thread.TrySetApartmentState(apartmentState);
          internalThreads.Add(thread);
          thread.Start();
       }
    }
 
    /// <inheritdoc />
-   protected override void QueueTask(Task task) { tasks.Enqueue(task); }
+   protected override void QueueTask(Task task)
+   {
+      // round robin task queuing.
+      TaskQueue queue;
+      while (!queues.TryDequeue(out queue))
+      {
+         // do a sleep here?
+      }
+      queue.Enqueue(task);
+      queues.Enqueue(queue);
+   }
 
    /// <summary>
    /// The method to attempt executing a Task in the calling thread's context.
@@ -124,6 +141,7 @@ public class SimpleThreadedTaskScheduler
       if (disposing)
       {
          Shutdown();
+         //foreach(var q in queues) q.Dispose();
          cts.Dispose();
       }
    }
@@ -134,6 +152,5 @@ public class SimpleThreadedTaskScheduler
       Dispose(true);
       GC.SuppressFinalize(this);
    }
-
-   ~SimpleThreadedTaskScheduler() { Dispose(false); }
+   ~QueuedThreadedTaskScheduler() { Dispose(false); }
 }

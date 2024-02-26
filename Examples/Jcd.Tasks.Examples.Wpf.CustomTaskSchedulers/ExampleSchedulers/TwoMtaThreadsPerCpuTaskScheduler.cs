@@ -2,7 +2,7 @@ using Jcd.Tasks;
 
 // ReSharper disable UnusedType.Global
 
-namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 /// <summary>
 /// A <see cref="TaskScheduler"/> that uses two MTA threads per CPU to execute

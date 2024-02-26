@@ -38,7 +38,8 @@ namespace Jcd.Tasks;
 /// </remarks>
 public sealed class SynchronizedValue<T> : IDisposable
 {
-   private readonly SemaphoreSlim @lock;
+   private readonly SemaphoreSlim editLock =  new (1, 1);
+   private readonly SemaphoreSlim usageLock =  new (1, 1);
    private          T             val;
 
    /// <summary>
@@ -47,12 +48,11 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// <param name="initialValue">The starting value.</param>
    public SynchronizedValue(T initialValue = default!)
    {
-      @lock = new SemaphoreSlim(1, 1);
-      val   = initialValue;
+      val           = initialValue;
    }
 
    /// <inheritdoc />
-   public void Dispose() { @lock.Dispose(); }
+   public void Dispose() { editLock.Dispose(); }
 
    #region properties and accessors
 
@@ -83,7 +83,18 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public Task<T?> GetValueAsync() { return InternalExecuteAsync(null); }
+   public Task<T> GetValueAsync()
+   {
+      var locked = false;
+      if (editLock.CurrentCount == 0)
+      {
+         editLock.Wait();
+         locked = true;
+      }
+      var result = val;
+      if (locked) editLock.Release();
+      return Task.FromResult(result);
+   }
 
    /// <summary>
    /// Sets the current value to the provided value.
@@ -102,7 +113,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public Task<T?> SetValueAsync(T value) { return InternalExecuteAsync(_ => Task.FromResult(value)); }
+   public Task<T?> SetValueAsync(T value) { return InternalEditAsync(_ => Task.FromResult(value)); }
 
    /// <summary>
    /// Retrieves the current value. If another thread edits the value, moment later a subsequent
@@ -118,7 +129,18 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public T GetValue() { return InternalExecute(null); }
+   public T GetValue()
+   {
+      var locked = false;
+      if (editLock.CurrentCount == 0)
+      {
+         editLock.Wait();
+         locked = true;
+      }
+      var result = val;
+      if (locked) editLock.Release();
+      return result;
+   }
 
    /// <summary>
    /// Sets the current value to the provided value.
@@ -137,7 +159,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public T SetValue(T value) { return InternalExecute(_ => value); }
+   public T SetValue(T value) { return InternalEdit(_ => value); }
 
    /// <summary>
    /// Calls the provided function, passing in the current value, and assigns the result
@@ -174,19 +196,8 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// var changedValue = sv.Do(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public T ChangeValue(Func<T, T>? func) { return InternalExecute(func); }
-
-   private T InternalExecute(Func<T, T>? func)
-   {
-      @lock.Wait();
-      var result = val;
-      if (func != null)
-         result = val = func(val);
-      @lock.Release();
-
-      return result;
-   }
-
+   public T ChangeValue(Func<T, T>? func) { return InternalEdit(func); }
+   
    /// <summary>
    /// Calls the provided function, passing in the current value, and assigns the result
    /// of the function call, to the current value. <b>This is not recursively reentrant.
@@ -221,7 +232,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public Task<T?> ChangeValueAsync(Func<T, Task<T>>? func) { return InternalExecuteAsync(func); }
+   public Task<T?> ChangeValueAsync(Func<T, Task<T>>? func) { return InternalEditAsync(func); }
 
    /// <summary>
    /// Executes an action on the synchronized value after locking it.
@@ -258,14 +269,12 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// </remarks>
    public void Do(Action<T>? action)
    {
-      if (action != null)
-         InternalExecute(t =>
-                         {
-                            action(t);
-
-                            return t;
-                         }
-                        );
+      if (action == null) return;
+      editLock.Wait();
+      usageLock.Wait();
+      action(val);
+      usageLock.Release();
+      editLock.Release();
    }
 
    /// <summary>
@@ -304,25 +313,35 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// </remarks>
    public Task DoAsync(Func<T, Task>? asyncAction)
    {
-      return asyncAction == null
-                ? Task.CompletedTask
-                : InternalExecuteAsync(t =>
-                                       {
-                                          asyncAction(t);
-
-                                          return Task.FromResult(t);
-                                       }
-                                      );
+      if (asyncAction == null) return Task.CompletedTask;
+      editLock.WaitAsync();
+      usageLock.WaitAsync();
+      asyncAction(val);
+      usageLock.Release();
+      editLock.Release();
+      return Task.CompletedTask;
    }
 
-   private async Task<T?> InternalExecuteAsync(Func<T, Task<T>>? func)
+   private T InternalEdit(Func<T, T>? func)
    {
-      await @lock.WaitAsync();
+      editLock.Wait();
+      var result = val;
+
+      if (func != null)
+         val = result = func(val);
+
+      editLock.Release();
+      
+      return result;
+   }
+   
+   private async Task<T?> InternalEditAsync(Func<T, Task<T>>? func)
+   {
+      await editLock.WaitAsync();
       var result = val;
       if (func != null)
          result = val = await func(val);
-      @lock.Release();
-
+      editLock.Release();
       return result;
    }
 
