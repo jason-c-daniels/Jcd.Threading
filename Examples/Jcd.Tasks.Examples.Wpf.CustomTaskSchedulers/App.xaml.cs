@@ -1,8 +1,6 @@
 ﻿// WPF Apps need two STA threads, one for event processing and one for rendering.
 // a Single STA Thread is not sufficient.
 
-
-
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
 namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
