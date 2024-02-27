@@ -148,8 +148,6 @@ public class QueuedThreadedTaskScheduler
       if (disposing)
       {
          Shutdown();
-
-         //foreach(var q in queues) q.Dispose();
          cts.Dispose();
       }
    }

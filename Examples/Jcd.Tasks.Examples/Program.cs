@@ -13,7 +13,7 @@ StartBlock("SynchronizedValue Example");
 await SynchronizedValueExample.Run();
 
 StartBlock("CustomTaskRunner Example");
-var scheduler = new SimpleThreadedTaskScheduler(13); //,7);
+var scheduler = new SimpleThreadedTaskScheduler(13);
 
 Log(-999, TaskScheduler.Current, "App Started");
 
@@ -49,7 +49,6 @@ async Task Main()
 async Task ReportScheduler(int i)
 {
    const int baseDelay = 100;
-   var       jitter    = JitteredMs(baseDelay);
    var       ts        = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(ReportScheduler)}");
    await Task.Delay(JitteredMs(200));

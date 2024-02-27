@@ -14,7 +14,7 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 /// </summary>
 public partial class MainWindow //: Window
 {
-   private MainWindowViewModel mainWindowViewModel = new();
+   private readonly MainWindowViewModel mainWindowViewModel = new();
 
    public MainWindow()
    {
@@ -171,6 +171,7 @@ public partial class MainWindow //: Window
                               );
    }
 
+   // ReSharper disable once CognitiveComplexity
    private async Task LongRunningTask(
       string    method
     , UIElement button
