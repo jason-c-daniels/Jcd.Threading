@@ -1,8 +1,6 @@
-using Jcd.Tasks;
-
 // ReSharper disable UnusedType.Global
 
-namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 /// <summary>
 /// A <see cref="TaskScheduler"/> that uses one STA thread per CPUs to execute

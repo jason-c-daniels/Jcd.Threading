@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-
-namespace Jcd.Tasks.Examples;
+﻿namespace Jcd.Tasks.Examples;
 
 public static class TaskSchedulerExtensionsExample
 {

@@ -1,5 +1,9 @@
 ﻿using Jcd.Tasks.Tests.Helpers;
 
+// ReSharper disable HeapView.ObjectAllocation.Evident
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+
 namespace Jcd.Tasks.Tests;
 
 public class SimpleThreadedTaskSchedulerTests

@@ -1,6 +1,4 @@
-using Jcd.Tasks;
-
-namespace Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 /// <summary>
 /// A <see cref="TaskScheduler"/> that uses exactly four MTA threads to execute

@@ -2,9 +2,10 @@
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
+using Jcd.Tasks;
 using Jcd.Tasks.Examples;
 
-const int count = 1000;
+const int count = 5000;
 StartBlock("TaskSchedulerExtensionsExample Example");
 await TaskSchedulerExtensionsExample.Run();
 
@@ -12,10 +13,11 @@ StartBlock("SynchronizedValue Example");
 await SynchronizedValueExample.Run();
 
 StartBlock("CustomTaskRunner Example");
+var scheduler = new SimpleThreadedTaskScheduler(13);
 
 Log(-999, TaskScheduler.Current, "App Started");
 
-await CustomTaskRunner.Run(Main);
+await scheduler.Run(Main);
 
 Log(-999, TaskScheduler.Current, "CustomTaskRunner Ending");
 
@@ -48,16 +50,18 @@ async Task ReportScheduler(int i)
 {
    var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(ReportScheduler)}");
-   await Task.Delay(100);
+   await Task.Delay(JitteredMs(200));
    await InnerReportScheduler(i);
 }
+
+int JitteredMs(int baseDelay) { return Random.Shared.Next(baseDelay * 11) * 7 % (baseDelay / 2) + baseDelay; }
 
 // ReSharper disable once HeapView.ClosureAllocation
 async Task InnerReportScheduler(int i)
 {
    var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(InnerReportScheduler)}");
-   await Task.Delay(50);
+   await Task.Delay(JitteredMs(150));
    await CustomTaskRunner.Run(() => FinalInnerReportScheduler(i));
 }
 
@@ -65,7 +69,7 @@ async Task FinalInnerReportScheduler(int i)
 {
    var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(FinalInnerReportScheduler)}");
-   await Task.Delay(10);
+   await Task.Delay(JitteredMs(75));
 }
 
 Task LogAsync(int i, TaskScheduler ts, string text)

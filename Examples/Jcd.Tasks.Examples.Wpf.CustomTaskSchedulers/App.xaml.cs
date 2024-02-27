@@ -1,13 +1,9 @@
 ﻿// WPF Apps need two STA threads, one for event processing and one for rendering.
 // a Single STA Thread is not sufficient.
 
-using MainScheduler =
-   Jcd.Tasks.CustomSchedulerTaskRunner<
-      Jcd.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.QuadStaThreadTaskScheduler>;
-
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Jcd.Examples.Wpf.CustomTaskSchedulers;
+namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
 /// Interaction logic for App.xaml
@@ -15,7 +11,14 @@ namespace Jcd.Examples.Wpf.CustomTaskSchedulers;
 public partial class App //: Application
 {
    [STAThread]
-   public static int Main() { return MainScheduler.Run(AsyncMain).Result; }
+   public static int Main()
+   {
+      Thread.CurrentThread.Name = "Main Thread";
+      using var scheduler = new MainTaskScheduler();
+      ThreadPool.SetMaxThreads(1, 1);
+
+      return scheduler.Run(AsyncMain).Result;
+   }
 
    [STAThread]
    private static Task<int> AsyncMain()

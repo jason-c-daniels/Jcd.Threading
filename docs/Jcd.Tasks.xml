@@ -274,40 +274,6 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValueAsync">
-            <summary>
-            Gets the value in an async friendly manner.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;(15);
-            
-            // get the value
-            await setValue = sv.GetValueAsync(20);
-            
-            </code>
-            </example>
-        </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValueAsync(`0)">
-            <summary>
-            Sets the current value to the provided value.
-            </summary>
-            <param name="value">The provided value.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;();
-            
-            // set the value to 10.
-            await setValue = sv.SetValueAsync(10);
-            
-            // set the value to 20.
-            await setValue = sv.SetValueAsync(20);
-            
-            </code>
-            </example>
-        </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValue">
             <summary>
             Retrieves the current value. If another thread edits the value, moment later a subsequent
@@ -320,6 +286,21 @@
             
             // get the value
             setValue = sv.GetValue(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValueAsync">
+            <summary>
+            Gets the value in an async friendly manner.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;(15);
+            
+            // get the value
+            await setValue = sv.GetValueAsync(20);
             
             </code>
             </example>
@@ -339,6 +320,25 @@
             
             // set the value to 20.
             setValue = sv.SetValue(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValueAsync(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
+            <example>
+            <code>
+            var sv = new SynchronizedValue&lt;int&gt;();
+            
+            // set the value to 10.
+            await setValue = sv.SetValueAsync(10);
+            
+            // set the value to 20.
+            await setValue = sv.SetValueAsync(20);
             
             </code>
             </example>
