@@ -20,7 +20,8 @@ public partial class App //: Application
    {
       Thread.CurrentThread.Name = "Main Thread";
       using var scheduler = new MainTaskScheduler();
-      ThreadPool.SetMaxThreads(1,1);
+      ThreadPool.SetMaxThreads(1, 1);
+
       return scheduler.Run(AsyncMain).Result;
    }
 
@@ -36,9 +37,7 @@ public partial class App //: Application
    }
 }
 
-class MainTaskScheduler : QueuedThreadedTaskScheduler
+internal class MainTaskScheduler : QueuedThreadedTaskScheduler
 {
-   public MainTaskScheduler() : base(apartmentState: ApartmentState.STA)
-   {
-   }
+   public MainTaskScheduler() : base(apartmentState: ApartmentState.STA) { }
 }

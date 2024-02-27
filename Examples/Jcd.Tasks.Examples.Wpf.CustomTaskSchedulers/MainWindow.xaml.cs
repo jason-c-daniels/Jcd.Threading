@@ -14,13 +14,12 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 /// </summary>
 public partial class MainWindow //: Window
 {
+   private MainWindowViewModel mainWindowViewModel = new();
 
-
-   private MainWindowViewModel mainWindowViewModel = new ();
    public MainWindow()
    {
       InitializeComponent();
-      DataContext   = mainWindowViewModel;
+      DataContext = mainWindowViewModel;
    }
 
    private async void RunWithMTA_OnClick(object sender, RoutedEventArgs e)
@@ -37,13 +36,13 @@ public partial class MainWindow //: Window
    private Task ReportSchedulerName(
       string                                   method
     , UIElement                                button
-    , Stopwatch sw
+    , Stopwatch                                sw
     , string                                   message
     , (TaskScheduler scheduler, Thread thread) ts
    )
    {
       var scheduler = TaskScheduler.Current;
-      Ui.Invoke(()=>
+      Ui.Invoke(() =>
                 {
                    sw.Stop();
                    mainWindowViewModel.Results
@@ -90,22 +89,22 @@ public partial class MainWindow //: Window
    {
       RunWithCurrent.IsEnabled = false;
       await ReportSchedulerName(nameof(RunWithCurrent_OnClick)
-                        , RunWithCurrent
-                        , Stopwatch.StartNew()
-                        , "Executed"
-                        , await CurrentScheduler.Run(GetExecutingSchedulerAndThreadInfo)
-                         );
+                              , RunWithCurrent
+                              , Stopwatch.StartNew()
+                              , "Executed"
+                              , await CurrentScheduler.Run(GetExecutingSchedulerAndThreadInfo)
+                               );
    }
 
    private async void STAViaMTA_OnClick(object sender, RoutedEventArgs e)
    {
       StaViaMta.IsEnabled = false;
       await ReportSchedulerName(nameof(STAViaMTA_OnClick)
-                        , StaViaMta
-                        , Stopwatch.StartNew()
-                        , "Executed"
-                        , await BackgroundTask.Run(() => STAScheduler.Run(GetExecutingSchedulerAndThreadInfo))
-                         );
+                              , StaViaMta
+                              , Stopwatch.StartNew()
+                              , "Executed"
+                              , await BackgroundTask.Run(() => STAScheduler.Run(GetExecutingSchedulerAndThreadInfo))
+                               );
    }
 
    private async void UiViaMTA_OnClick(object sender, RoutedEventArgs e)
@@ -152,14 +151,13 @@ public partial class MainWindow //: Window
       var button = RunWithTaskRun;
       button.IsEnabled = false;
       await Task.Run(() => Ui.Invoke(() => ReportSchedulerName(nameof(RunWithTaskRun_OnClick)
-                                                                     , button
-                                                                     , Stopwatch.StartNew()
-                                                                     , "Executed"
-                                                                     , GetExecutingSchedulerAndThreadInfo()
-                                                                      )
-                                            )
-                            );
-
+                                                             , button
+                                                             , Stopwatch.StartNew()
+                                                             , "Executed"
+                                                             , GetExecutingSchedulerAndThreadInfo()
+                                                              )
+                                    )
+                    );
    }
 
    private async void LongRunningMTATask_OnClick(object sender, RoutedEventArgs e)
@@ -186,9 +184,10 @@ public partial class MainWindow //: Window
       var tasks  = new List<Task>();
 
       var scheduler = TaskScheduler.Current;
+
       for (var i = 0; i < taskCount; i++)
       {
-         var xxx       = i;
+         var xxx = i;
          tasks.Add(BackgroundTask.Run(async () =>
                                       {
                                          using var waiter = new AutoResetEvent(false);
@@ -267,5 +266,4 @@ public partial class MainWindow //: Window
       mainWindowViewModel.Items.Clear();
       mainWindowViewModel.Results.Clear();
    }
-
 }

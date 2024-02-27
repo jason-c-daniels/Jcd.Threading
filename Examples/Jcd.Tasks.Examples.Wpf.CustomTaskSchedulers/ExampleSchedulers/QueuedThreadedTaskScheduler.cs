@@ -7,6 +7,7 @@
 // ReSharper disable HeapView.DelegateAllocation
 
 namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+
 using TaskQueue = ConcurrentQueue<Task>;
 
 /// <summary>
@@ -18,13 +19,13 @@ public class QueuedThreadedTaskScheduler
    : TaskScheduler
    , IDisposable
 {
-   private readonly ConcurrentQueue<TaskQueue>         queues = new();
-   private readonly CancellationTokenSource cts   = new();
-   
+   private readonly ConcurrentQueue<TaskQueue> queues = new();
+   private readonly CancellationTokenSource    cts    = new();
+
    /// <inheritdoc />
    protected override IEnumerable<Task> GetScheduledTasks()
    {
-      return queues.SelectMany(q=>q.ToList()).ToList().AsReadOnly();
+      return queues.SelectMany(q => q.ToList()).ToList().AsReadOnly();
    }
 
    private readonly List<Thread> internalThreads = [];
@@ -48,6 +49,7 @@ public class QueuedThreadedTaskScheduler
             waitHandle.WaitOne(13);
 
             if (cts.IsCancellationRequested) return;
+
             if (queue.IsEmpty || !queue.TryDequeue(out var task))
                continue;
 
@@ -75,24 +77,27 @@ public class QueuedThreadedTaskScheduler
    /// <param name="threadCount">The number of threads to create.</param>
    /// <param name="queueCount">THe number of queues for tasks.</param>
    /// <param name="apartmentState">the thread apartment state setting for all threads.</param>
-   public QueuedThreadedTaskScheduler(int threadCount = 0, int queueCount = 0, ApartmentState apartmentState = ApartmentState.Unknown)
+   public QueuedThreadedTaskScheduler(
+      int            threadCount    = 0
+    , int            queueCount     = 0
+    , ApartmentState apartmentState = ApartmentState.Unknown
+   )
    {
-      if (apartmentState       == ApartmentState.Unknown) apartmentState           = ApartmentState.MTA;
-      if (threadCount < 1) threadCount                           = Environment.ProcessorCount;
-      if (queueCount < 1) queueCount = threadCount / 2;
-      if (queueCount < 1) queueCount = 1;
-      if (queueCount > 1 && queueCount >= threadCount/2) queueCount = threadCount / 2;
-      
-      
+      if (apartmentState == ApartmentState.Unknown) apartmentState    = ApartmentState.MTA;
+      if (threadCount    < 1) threadCount                             = Environment.ProcessorCount;
+      if (queueCount     < 1) queueCount                              = threadCount / 2;
+      if (queueCount     < 1) queueCount                              = 1;
+      if (queueCount > 1 && queueCount >= threadCount / 2) queueCount = threadCount / 2;
+
       // first initialize the queues.
-      for(var qn=0;qn<queueCount;qn++)
+      for (var qn = 0; qn < queueCount; qn++)
          queues.Enqueue(new TaskQueue());
 
       var queueList = queues.ToList();
-      
+
       for (var i = 0; i < threadCount; i++)
       {
-         var thread = new Thread(()=>ThreadProc(queueList[i % queueCount]))
+         var thread = new Thread(() => ThreadProc(queueList[i % queueCount]))
                       {
                          IsBackground = true, Name = $"{GetType().Name}.Threads[{internalThreads.Count:D4}]"
                       };
@@ -107,10 +112,12 @@ public class QueuedThreadedTaskScheduler
    {
       // round robin task queuing.
       TaskQueue queue;
+
       while (!queues.TryDequeue(out queue))
       {
          // do a sleep here?
       }
+
       queue.Enqueue(task);
       queues.Enqueue(queue);
    }
@@ -141,6 +148,7 @@ public class QueuedThreadedTaskScheduler
       if (disposing)
       {
          Shutdown();
+
          //foreach(var q in queues) q.Dispose();
          cts.Dispose();
       }
@@ -152,5 +160,6 @@ public class QueuedThreadedTaskScheduler
       Dispose(true);
       GC.SuppressFinalize(this);
    }
+
    ~QueuedThreadedTaskScheduler() { Dispose(false); }
 }

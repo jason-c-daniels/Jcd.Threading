@@ -22,8 +22,8 @@ public class SimpleThreadedTaskScheduler
    : TaskScheduler
    , IDisposable
 {
-   private readonly ConcurrentQueue<Task> tasks = new();
-   private readonly CancellationTokenSource  cts   = new();
+   private readonly ConcurrentQueue<Task>   tasks = new();
+   private readonly CancellationTokenSource cts   = new();
 
    /// <inheritdoc />
    protected override IEnumerable<Task> GetScheduledTasks() { return tasks.ToList().AsReadOnly(); }
@@ -47,11 +47,13 @@ public class SimpleThreadedTaskScheduler
          {
             if (cts.IsCancellationRequested) return;
             waitHandle.WaitOne(1);
+
             if (cts.IsCancellationRequested) return;
 
             if (!tasks.TryDequeue(out var task))
             {
                waitHandle.WaitOne(50);
+
                continue;
             }
 

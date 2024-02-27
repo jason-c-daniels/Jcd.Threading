@@ -10,5 +10,10 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 public class OneStaThreadPerCpuTaskScheduler : QueuedThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public OneStaThreadPerCpuTaskScheduler() : base(Environment.ProcessorCount, Environment.ProcessorCount, ApartmentState.STA) { }
+   public OneStaThreadPerCpuTaskScheduler() : base(Environment.ProcessorCount
+                                                 , Environment.ProcessorCount
+                                                 , ApartmentState.STA
+                                                  )
+   {
+   }
 }

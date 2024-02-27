@@ -12,5 +12,5 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 public class FourStaThreadsPerCpuTaskScheduler : QueuedThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public FourStaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 4,0, ApartmentState.STA) { }
+   public FourStaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 4, 0, ApartmentState.STA) { }
 }

@@ -11,8 +11,8 @@
         Title="MainWindow" MinHeight="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel.Resources>
@@ -79,15 +79,15 @@
                         <Setter Property="Padding" Value="5" />
                     </Style>
                 </StackPanel.Resources>
-                <Button x:Name="Clear" Click="Clear_OnClick" >Clear</Button>
+                <Button x:Name="Clear" Click="Clear_OnClick">Clear</Button>
             </StackPanel>
         </StackPanel>
-        <Grid Grid.Row="1" >
+        <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="200"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="200" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Margin="15 0 15 0" FontSize="14" FontFamily="Comic Sans MS">Results</TextBlock>
             <ListBox Grid.Row="1" x:Name="ResultsList"
@@ -95,8 +95,8 @@
                      ItemsSource="{Binding Path=Results }"
                      FontSize="14"
                      FontFamily="Comic Sans MS"
-                     BorderBrush="Black" 
-                     BorderThickness="1" 
+                     BorderBrush="Black"
+                     BorderThickness="1"
                      Margin="15 5 15 15 " />
             <TextBlock Grid.Row="2" FontSize="14" Margin="15 0 15 0" FontFamily="Comic Sans MS">Items</TextBlock>
             <ListBox Grid.Row="3" x:Name="ItemsList"
@@ -104,11 +104,11 @@
                      ItemsSource="{Binding Path=Items }"
                      FontSize="14"
                      FontFamily="Comic Sans MS"
-                     BorderBrush="Black" 
-                     BorderThickness="1" 
-                     MinHeight="200" 
+                     BorderBrush="Black"
+                     BorderThickness="1"
+                     MinHeight="200"
                      Margin="15 5 15 15 " />
-                <!--
+            <!--
                 <ListBox.ItemTemplate> 
                     <DataTemplate> 
                         <StackPanel Orientation="Horizontal"> 
@@ -117,7 +117,7 @@
                     </DataTemplate> 
                 </ListBox.ItemTemplate> 
                 -->
-            
+
         </Grid>
     </Grid>
 </Window>

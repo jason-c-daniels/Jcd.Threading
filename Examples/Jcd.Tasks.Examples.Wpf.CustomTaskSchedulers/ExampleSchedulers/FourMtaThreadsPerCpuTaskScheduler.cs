@@ -10,7 +10,7 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 public class FourMtaThreadsPerCpuTaskScheduler : QueuedThreadedTaskScheduler
 {
    /// <inheritdoc />
-   public FourMtaThreadsPerCpuTaskScheduler() : base(1000,100)
+   public FourMtaThreadsPerCpuTaskScheduler() : base(1000, 100)
    {
       // intentionally empty.
    }

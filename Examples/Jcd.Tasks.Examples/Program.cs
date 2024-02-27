@@ -13,7 +13,7 @@ StartBlock("SynchronizedValue Example");
 await SynchronizedValueExample.Run();
 
 StartBlock("CustomTaskRunner Example");
-var scheduler      = new SimpleThreadedTaskScheduler(13);//,7);
+var scheduler = new SimpleThreadedTaskScheduler(13); //,7);
 
 Log(-999, TaskScheduler.Current, "App Started");
 
@@ -48,7 +48,7 @@ async Task Main()
 
 async Task ReportScheduler(int i)
 {
-   const int baseDelay = 100; 
+   const int baseDelay = 100;
    var       jitter    = JitteredMs(baseDelay);
    var       ts        = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(ReportScheduler)}");
@@ -56,13 +56,12 @@ async Task ReportScheduler(int i)
    await InnerReportScheduler(i);
 }
 
-int JitteredMs(int baseDelay) => 
-   Random.Shared.Next(baseDelay * 11) * 7 % (baseDelay / 2) + baseDelay;
+int JitteredMs(int baseDelay) { return Random.Shared.Next(baseDelay * 11) * 7 % (baseDelay / 2) + baseDelay; }
 
 // ReSharper disable once HeapView.ClosureAllocation
 async Task InnerReportScheduler(int i)
 {
-   var ts          = TaskScheduler.Current;
+   var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(InnerReportScheduler)}");
    await Task.Delay(JitteredMs(150));
    await CustomTaskRunner.Run(() => FinalInnerReportScheduler(i));
