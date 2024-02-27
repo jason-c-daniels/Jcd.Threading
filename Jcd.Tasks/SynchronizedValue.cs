@@ -39,7 +39,6 @@ namespace Jcd.Tasks;
 public sealed class SynchronizedValue<T> : IDisposable
 {
    private readonly SemaphoreSlim editLock =  new (1, 1);
-   private readonly SemaphoreSlim usageLock =  new (1, 1);
    private          T             val;
 
    /// <summary>
@@ -271,9 +270,7 @@ public sealed class SynchronizedValue<T> : IDisposable
    {
       if (action == null) return;
       editLock.Wait();
-      usageLock.Wait();
       action(val);
-      usageLock.Release();
       editLock.Release();
    }
 
@@ -315,11 +312,9 @@ public sealed class SynchronizedValue<T> : IDisposable
    {
       if (asyncAction == null) return Task.CompletedTask;
       editLock.WaitAsync();
-      usageLock.WaitAsync();
-      asyncAction(val);
-      usageLock.Release();
+      var result = asyncAction(val);
       editLock.Release();
-      return Task.CompletedTask;
+      return result;
    }
 
    private T InternalEdit(Func<T, T>? func)
