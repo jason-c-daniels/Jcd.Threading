@@ -130,14 +130,9 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// </example>
    public T GetValue()
    {
-      var locked = false;
-      if (editLock.CurrentCount == 0)
-      {
-         editLock.Wait();
-         locked = true;
-      }
+      editLock.Wait();
       var result = val;
-      if (locked) editLock.Release();
+      editLock.Release();
       return result;
    }
 
