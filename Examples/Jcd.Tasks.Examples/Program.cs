@@ -48,7 +48,6 @@ async Task Main()
 
 async Task ReportScheduler(int i)
 {
-   const int baseDelay = 100;
    var       ts        = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(ReportScheduler)}");
    await Task.Delay(JitteredMs(200));
