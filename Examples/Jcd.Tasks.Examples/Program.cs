@@ -48,7 +48,7 @@ async Task Main()
 
 async Task ReportScheduler(int i)
 {
-   var       ts        = TaskScheduler.Current;
+   var ts = TaskScheduler.Current;
    await LogAsync(i, ts, $"{nameof(ReportScheduler)}");
    await Task.Delay(JitteredMs(200));
    await InnerReportScheduler(i);

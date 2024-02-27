@@ -1,5 +1,3 @@
-using Jcd.Tasks;
-
 namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 /// <summary>

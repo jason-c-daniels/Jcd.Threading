@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+// ReSharper disable VirtualMemberNeverOverridden.Global
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -123,11 +124,9 @@ public class SimpleThreadedTaskScheduler
       // Release Unmanaged Resources here if you ever add them.
       // this change was made to make SonarCloud shut up.
 
-      if (disposing)
-      {
-         Shutdown();
-         cts.Dispose();
-      }
+      if (!disposing) return;
+      Shutdown();
+      cts.Dispose();
    }
 
    /// <inheritdoc />
