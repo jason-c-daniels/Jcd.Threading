@@ -49,6 +49,7 @@
 
    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <DocumentationFile>..\docs\Jcd.Tasks.xml</DocumentationFile>
+      <PlatformTarget>AnyCPU</PlatformTarget>
    </PropertyGroup>
 
 </Project>

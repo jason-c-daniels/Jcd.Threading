@@ -40,11 +40,11 @@ for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
 
 | Constructors | |
 | :--- | :--- |
-| [SynchronizedValue(T)](Jcd.Tasks.SynchronizedValue_T_.SynchronizedValue(T).md 'Jcd.Tasks.SynchronizedValue<T>.SynchronizedValue(T)') | Constructs an [SynchronizedValue&lt;T&gt;](Jcd.Tasks.SynchronizedValue_T_.md 'Jcd.Tasks.SynchronizedValue<T>') instance. |
+| [SynchronizedValue(T)](Jcd.Tasks.SynchronizedValue_T_.SynchronizedValue(T).md 'Jcd.Tasks.SynchronizedValue<T>.SynchronizedValue(T)') | Provides a simple async-safe and thread-safe method of setting, getting, acting on,<br/>and altering values shared among tasks and threads. |
 
 | Properties | |
 | :--- | :--- |
-| [Value](Jcd.Tasks.SynchronizedValue_T_.Value.md 'Jcd.Tasks.SynchronizedValue<T>.Value') | Get the synchronized value. |
+| [Value](Jcd.Tasks.SynchronizedValue_T_.Value.md 'Jcd.Tasks.SynchronizedValue<T>.Value') | Get or sets the synchronized value. |
 
 | Methods | |
 | :--- | :--- |

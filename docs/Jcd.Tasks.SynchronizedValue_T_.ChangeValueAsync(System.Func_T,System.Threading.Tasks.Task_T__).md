@@ -7,7 +7,7 @@ of the function call, to the current value. <b>This is not recursively reentrant
 see remarks for details.</b>
 
 ```csharp
-public System.Threading.Tasks.Task<T?> ChangeValueAsync(System.Func<T,System.Threading.Tasks.Task<T>>? func);
+public System.Threading.Tasks.Task<T> ChangeValueAsync(System.Func<T,System.Threading.Tasks.Task<T>>? func);
 ```
 #### Parameters
 

@@ -5,8 +5,4 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class QuadMtaThreadTaskScheduler : SimpleThreadedTaskScheduler
-{
-   /// <inheritdoc />
-   public QuadMtaThreadTaskScheduler() : base(4) { }
-}
+public class QuadMtaThreadTaskScheduler() : IdleTaskScheduler(4);

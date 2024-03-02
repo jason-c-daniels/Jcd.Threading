@@ -176,59 +176,62 @@ public partial class MainWindow //: Window
       string    method
     , UIElement button
     , Stopwatch scheduledStopwatch
-    , int       taskCount    = 80
+    , int       taskCount    = 0
     , int       durationInMs = 4000
     , int       delay        = 1
    )
    {
-      var taskSw = Stopwatch.StartNew();
-      var tasks  = new List<Task>();
+      if (taskCount == 0) taskCount = Environment.ProcessorCount * 8;
+      var taskSw                    = Stopwatch.StartNew();
+      var tasks                     = new List<Task>();
 
       var scheduler = TaskScheduler.Current;
-
+      Debug.WriteLine($"Starting to enqueue tasks on Scheduler {TaskScheduler.Current.GetType().Name}");
       for (var i = 0; i < taskCount; i++)
       {
          var xxx = i;
-         tasks.Add(BackgroundTask.Run(async () =>
-                                      {
-                                         using var waiter = new AutoResetEvent(false);
-                                         waiter.WaitOne(1);
-                                         var waitSw = Stopwatch.StartNew();
-                                         var z      = 0L;
+         tasks.Add(scheduler.Run(async () =>
+                                 {
+                                    using var waiter = new AutoResetEvent(false);
+                                    waiter.WaitOne(1);
+                                    var waitSw = Stopwatch.StartNew();
+                                    var z      = 0L;
 
-                                         // do some CPU intensive busywork, yielding every 100 times
-                                         // We modify a and return value outside the loop to prevent the compiler
-                                         // from optimizing out the operations.
-                                         while (waitSw.ElapsedMilliseconds < durationInMs)
-                                         {
-                                            z++;
+                                    // do some CPU intensive busywork, yielding every 100 times
+                                    // We modify a and return value outside the loop to prevent the compiler
+                                    // from optimizing out the operations.
+                                    while (waitSw.ElapsedMilliseconds < durationInMs)
+                                    {
+                                       z++;
 
-                                            if (z % 5731 == 0) waiter.WaitOne(1);
+                                       if (z % 5731 == 0) waiter.WaitOne(1);
 
-                                            if (z % 57310 == 0)
-                                            {
-                                               var t           = Thread.CurrentThread;
-                                               var elapsed     = waitSw.ElapsedMilliseconds;
-                                               var taskElapsed = taskSw.ElapsedMilliseconds;
-                                               Ui.Invoke(() =>
-                                                         {
-                                                            mainWindowViewModel.Items
-                                                                               .Add($"[{scheduler.Id}:{scheduler.GetType().Name}] Thread Name:{t.Name}({t.ManagedThreadId}; {t.GetApartmentState()}) - Task[{xxx}] task @ {taskElapsed} ms; loop @ {elapsed} ms"
-                                                                                   );
-                                                         }
-                                                        );
-                                            }
-                                         }
+                                       if (z % 57310 == 0)
+                                       {
+                                          var t           = Thread.CurrentThread;
+                                          var elapsed     = waitSw.ElapsedMilliseconds;
+                                          var taskElapsed = taskSw.ElapsedMilliseconds;
+                                          Ui.Invoke(() =>
+                                                    {
+                                                       var ct = Thread.CurrentThread;
+                                                       mainWindowViewModel.Items
+                                                                          .Add($"[{scheduler.Id}:{scheduler.GetType().Name}] Executing Thread:{t.Name}({t.ManagedThreadId}; {t.GetApartmentState()}); UI Thread:{ct.Name}({ct.ManagedThreadId}; {ct.GetApartmentState()}); - Task[{xxx}] task @ {taskElapsed} ms; loop @ {elapsed} ms"
+                                                                              );
+                                                    }
+                                                   );
+                                       }
+                                    }
 
-                                         waitSw.Stop();
-                                         await Task.Delay(delay);
+                                    waitSw.Stop();
+                                    await Task.Delay(delay);
 
-                                         return z;
-                                      }
-                                     )
+                                    return z;
+                                 }
+                                )
                   );
       }
-
+      Debug.WriteLine($"Finished enqueuing tasks on Scheduler {TaskScheduler.Current.GetType().Name}");
+         
       await Task.WhenAll(tasks);
       taskSw.Stop();
       scheduledStopwatch.Stop();

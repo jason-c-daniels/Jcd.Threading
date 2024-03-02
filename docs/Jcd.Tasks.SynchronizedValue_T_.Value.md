@@ -2,10 +2,10 @@
 
 ## SynchronizedValue<T>.Value Property
 
-Get the synchronized value.
+Get or sets the synchronized value.
 
 ```csharp
-public T Value { get; }
+public T Value { get; set; }
 ```
 
 #### Property Value
@@ -17,5 +17,8 @@ public T Value { get; }
 var sv = new SynchronizedValue<int>(15);  
   
 // get the value  
-setValue = sv.Value;  
+var theValue = sv.Value;  
+  
+// set the value  
+sv.Value = theValue + 10;  
 ```

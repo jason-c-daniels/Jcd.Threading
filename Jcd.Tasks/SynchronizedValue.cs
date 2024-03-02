@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace Jcd.Tasks;
 /// Provides a simple async-safe and thread-safe method of setting, getting, acting on,
 /// and altering values shared among tasks and threads.
 /// </summary>
+/// <param name="val">The value to initialize this to</param>
 /// <typeparam name="T">The data type to synchronize access to.</typeparam>
 /// <remarks>
 /// <para>
@@ -36,35 +38,40 @@ namespace Jcd.Tasks;
 /// for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
 /// </para>
 /// </remarks>
-public sealed class SynchronizedValue<T> : IDisposable
-{
-   private readonly SemaphoreSlim editLock = new(1, 1);
-   private          T             val;
+public sealed class SynchronizedValue<T>
+(
 
-   /// <summary>
-   /// Constructs an <see cref="SynchronizedValue{T}"/> instance.
-   /// </summary>
-   /// <param name="initialValue">The starting value.</param>
-   public SynchronizedValue(T initialValue = default!) { val = initialValue; }
+   // ReSharper disable once NullableWarningSuppressionIsUsed
+   T val = default!
+) : IDisposable
+{
+   private readonly ReaderWriterLockSlim rwls = new (LockRecursionPolicy.NoRecursion);
 
    /// <inheritdoc />
-   public void Dispose() { editLock.Dispose(); }
+   public void Dispose() { rwls.Dispose(); }
 
    #region properties and accessors
 
    /// <summary>
-   /// Get the synchronized value.
+   /// Get or sets the synchronized value.
    /// </summary>
    /// <example>
    /// <code>
    /// var sv = new SynchronizedValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// setValue = sv.Value;
+   /// var theValue = sv.Value;
+   ///
+   /// // set the value
+   /// sv.Value = theValue + 10;
    /// 
    /// </code>
    /// </example>
-   public T Value => GetValue();
+   public T Value
+   {
+      get => GetValue();
+      set => SetValue(value);
+   }
 
    /// <summary>
    /// Retrieves the current value. If another thread edits the value, moment later a subsequent
@@ -80,13 +87,16 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public T GetValue()
    {
-      editLock.Wait();
-      var result = val;
-      editLock.Release();
-
-      return result;
+      try
+      {
+         rwls.EnterReadLock();
+         var result = val;
+         return result;
+      }
+      finally{ rwls.ExitReadLock();}
    }
 
    /// <summary>
@@ -102,20 +112,16 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public Task<T> GetValueAsync()
    {
-      var locked = false;
-
-      if (editLock.CurrentCount == 0)
+      try
       {
-         editLock.Wait();
-         locked = true;
+         rwls.EnterReadLock();
+         var result = val;
+         return Task.FromResult(result);
       }
-
-      var result = val;
-      if (locked) editLock.Release();
-
-      return Task.FromResult(result);
+      finally{ rwls.ExitReadLock();}
    }
 
    /// <summary>
@@ -135,7 +141,16 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public T SetValue(T value) { return InternalEdit(_ => value); }
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public T SetValue(T value)
+   {
+      try
+      {
+         rwls.EnterReadLock();
+         return val=value;
+      }
+      finally{ rwls.ExitReadLock();}
+   }
 
    /// <summary>
    /// Sets the current value to the provided value.
@@ -154,7 +169,16 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// 
    /// </code>
    /// </example>
-   public Task<T?> SetValueAsync(T value) { return InternalEditAsync(_ => Task.FromResult(value)); }
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public Task<T> SetValueAsync(T value)
+   {
+      try
+      {
+         rwls.EnterWriteLock();
+         return Task.FromResult(val = value);
+      }
+      finally{ rwls.ExitWriteLock();}
+   }
 
    /// <summary>
    /// Calls the provided function, passing in the current value, and assigns the result
@@ -191,7 +215,18 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// var changedValue = sv.Do(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public T ChangeValue(Func<T, T>? func) { return InternalEdit(func); }
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public T ChangeValue(Func<T, T>? func)
+   {
+      if (func == null) return Value;
+      try
+      {
+         rwls.EnterWriteLock();
+         var result = val = func(val);
+         return result;
+      }
+      finally{ rwls.ExitWriteLock();}
+   }
 
    /// <summary>
    /// Calls the provided function, passing in the current value, and assigns the result
@@ -227,7 +262,18 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public Task<T?> ChangeValueAsync(Func<T, Task<T>>? func) { return InternalEditAsync(func); }
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public async Task<T> ChangeValueAsync(Func<T, Task<T>>? func)
+   {
+      if (func == null) return Value;
+      try
+      {
+         rwls.EnterWriteLock();
+         var result= val = await func(val);
+         return result;
+      }
+      finally{ rwls.ExitWriteLock();}
+   }
 
    /// <summary>
    /// Executes an action on the synchronized value after locking it.
@@ -262,12 +308,12 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// sv.Do(x=>sv.Value+10);
    /// </code>
    /// </remarks>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void Do(Action<T>? action)
    {
       if (action == null) return;
-      editLock.Wait();
-      action(val);
-      editLock.Release();
+      using (rwls.Read())
+         action(val);
    }
 
    /// <summary>
@@ -304,38 +350,12 @@ public sealed class SynchronizedValue<T> : IDisposable
    /// await sv.DoAsync(x=>sv.Value+10);
    /// </code>
    /// </remarks>
-   public Task DoAsync(Func<T, Task>? asyncAction)
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public async Task DoAsync(Func<T, Task>? asyncAction)
    {
-      if (asyncAction == null) return Task.CompletedTask;
-      editLock.WaitAsync();
-      var result = asyncAction(val);
-      editLock.Release();
-
-      return result;
-   }
-
-   private T InternalEdit(Func<T, T>? func)
-   {
-      editLock.Wait();
-      var result = val;
-
-      if (func != null)
-         val = result = func(val);
-
-      editLock.Release();
-
-      return result;
-   }
-
-   private async Task<T?> InternalEditAsync(Func<T, Task<T>>? func)
-   {
-      await editLock.WaitAsync();
-      var result = val;
-      if (func != null)
-         result = val = await func(val);
-      editLock.Release();
-
-      return result;
+      if (asyncAction == null) return;
+      using (await rwls.ReadAsync())
+         await asyncAction(val);
    }
 
    #endregion

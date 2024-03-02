@@ -7,8 +7,4 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 /// <see cref="Task"/> instances. Inlining is not honored. See <see cref="SimpleThreadedTaskScheduler"/>
 /// for details.
 /// </summary>
-public class TwoMtaThreadsPerCpuTaskScheduler : SimpleThreadedTaskScheduler
-{
-   /// <inheritdoc />
-   public TwoMtaThreadsPerCpuTaskScheduler() : base(Environment.ProcessorCount * 2) { }
-}
+public class TwoMtaThreadsPerCpuTaskScheduler() : IdleTaskScheduler(Environment.ProcessorCount * 2);

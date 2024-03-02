@@ -162,11 +162,145 @@
             <param name="scheduler">The optional scheduler to execute the function with.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
         </member>
+        <member name="T:Jcd.Tasks.ItemProcessor`1">
+            <summary>
+            An item processor that calls a delegate on each item enqueued with it. 
+            </summary>
+            <remarks>
+            You must ensure all shared resources owned by the enqueued items have their access
+            synchronized appropriately. This type only synchronizes access to internal data.
+            </remarks>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.Thread">
+            <summary>
+            Provides direct access to the underlying thread.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.Items">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.Count">
+            <summary>
+            The number of items in the internal queue.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.HasItems">
+            <summary>
+            Gets a flag indicating if there are any pending items.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.IsStarted">
+            <summary>
+            Gets a flag indicating if the item processing loop has started.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.IsPaused">
+            <summary>
+            Gets a flag indicating if the item processing is currently paused.
+            </summary>
+        </member>
+        <member name="P:Jcd.Tasks.ItemProcessor`1.IsIdle">
+            <summary>
+            Gets a flag indicating if the item processing is currently paused.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.#ctor(System.Action{`0},System.Boolean,System.String,System.Boolean,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
+            <summary>
+            Constructs a <see cref="T:Jcd.Tasks.ItemProcessor`1"/>
+            </summary>
+            <param name="action">The action to execute on each item.</param>
+            <param name="name">The name of this ItemProcessor, propagated to the underlying thread.</param>
+            <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
+            <param name="autoStart">Indicates if the thread should be automatically started.</param>
+            <param name="priority">The priority to start the processing thread at.</param>
+            <param name="apartmentState">The apartment state for the underlying thread.</param>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.Enqueue(`0)">
+            <summary>
+            Enqueues a <see cref="!:TItem"/>. This is a "fire and forget" method. Control is immediately
+            returned to the caller.
+            </summary>
+            <param name="item">The action to enqueue.</param>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.Pause">
+            <summary>
+            Pauses the retrieval and processing of queued items. 
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.Resume">
+            <summary>
+            Resumes item processing.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.PauseAsync">
+            <summary>
+            Pauses the retrieval and execution of queued items.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.ResumeAsync">
+            <summary>
+            Resumes item processing.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.Start">
+            <summary>
+            Starts the processing of queued items.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.ItemProcessor`1.Dispose">
+            <inheritdoc />
+        </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
             Provides types and extension methods to assist with the creation, execution, and
             management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
+        </member>
+        <member name="T:Jcd.Tasks.ReaderWriterLockSlimExtensions">
+            <summary>
+            A set of extension methods to simplify using a <see cref="T:System.Threading.ReaderWriterLockSlim"/>
+            to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,
+            and EnterWrite+ExitWrite are called.
+            </summary>
+        </member>
+        <member name="T:Jcd.Tasks.SemaphoreSlimExtensions">
+            <summary>
+            A set of extension methods to simplify using a <see cref="T:System.Threading.SemaphoreSlim"/>
+            to ensure that Release is called for every Wait or WaitAsync. Useful for
+            ensuring synchronized access to data for short lived operations.
+            </summary>
+        </member>
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Use(System.Threading.SemaphoreSlim)">
+            <summary>
+            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Use(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
+            <summary>
+            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <param name="token">A cancellation token to use during the wait.</param>
+            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.UseAsync(System.Threading.SemaphoreSlim)">
+            <summary>
+            Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.UseAsync(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <param name="token">A cancellation token to use during the wait.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="T:Jcd.Tasks.SimpleThreadedTaskScheduler">
             <summary>
@@ -229,6 +363,7 @@
             Provides a simple async-safe and thread-safe method of setting, getting, acting on,
             and altering values shared among tasks and threads.
             </summary>
+            <param name="val">The value to initialize this to</param>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
             <remarks>
             <para>
@@ -253,26 +388,51 @@
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.#ctor(`0)">
             <summary>
-            Constructs an <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instance.
+            Provides a simple async-safe and thread-safe method of setting, getting, acting on,
+            and altering values shared among tasks and threads.
             </summary>
-            <param name="initialValue">The starting value.</param>
+            <param name="val">The value to initialize this to</param>
+            <typeparam name="T">The data type to synchronize access to.</typeparam>
+            <remarks>
+            <para>
+            While this provides a method of easily ensuring any one shared value is appropriately
+            locked during setting or getting, you still need to thoroughly understand your
+            use case. For example, having two <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instances accessed
+            by two different threads, in rapid succession, in different orders can cause
+            potentially unexpected results.
+            </para>
+            <para>
+            In cases where the pair/tuple must be consistent at all times across all accesses,
+            consider creating a struct containing the necessary fields/properties and wrapping
+            that in a <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instead of each individual field/property.
+            </para>
+            <para>
+            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
+            called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
+            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})"/>, and <see cref="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
+            for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.Dispose">
             <inheritdoc />
         </member>
         <member name="P:Jcd.Tasks.SynchronizedValue`1.Value">
-            <summary>
-            Get the synchronized value.
-            </summary>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;(15);
+             <summary>
+             Get or sets the synchronized value.
+             </summary>
+             <example>
+             <code>
+             var sv = new SynchronizedValue&lt;int&gt;(15);
+             
+             // get the value
+             var theValue = sv.Value;
             
-            // get the value
-            setValue = sv.Value;
-            
-            </code>
-            </example>
+             // set the value
+             sv.Value = theValue + 10;
+             
+             </code>
+             </example>
         </member>
         <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValue">
             <summary>

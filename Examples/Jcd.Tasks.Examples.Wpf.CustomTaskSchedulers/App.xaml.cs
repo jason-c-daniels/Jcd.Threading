@@ -3,6 +3,8 @@
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
+using System.Windows;
+
 namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
@@ -14,8 +16,7 @@ public partial class App //: Application
    public static int Main()
    {
       Thread.CurrentThread.Name = "Main Thread";
-      using var scheduler = new MainTaskScheduler();
-      ThreadPool.SetMaxThreads(1, 1);
+      using var scheduler = new UiScheduler();
 
       return scheduler.Run(AsyncMain).Result;
    }
@@ -23,6 +24,8 @@ public partial class App //: Application
    [STAThread]
    private static Task<int> AsyncMain()
    {
+      // var uiT          = Current.Dispatcher?.Thread;
+      var uiT        = Thread.CurrentThread;
       var mainWindow = new MainWindow();
       var app        = new App();
 
