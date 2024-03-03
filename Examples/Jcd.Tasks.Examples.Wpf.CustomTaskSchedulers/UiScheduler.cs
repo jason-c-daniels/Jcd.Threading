@@ -2,4 +2,4 @@
 
 namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 
-internal class UiScheduler() : IdleTaskScheduler(2, ApartmentState.STA);
+internal class UiScheduler() : IdleTaskScheduler(4, ApartmentState.STA);

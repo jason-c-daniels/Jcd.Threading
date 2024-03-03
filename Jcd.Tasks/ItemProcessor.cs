@@ -23,16 +23,15 @@ namespace Jcd.Tasks;
 public sealed class ItemProcessor<TItem> : IDisposable
 {
    private readonly CancellationTokenSource itemProcessingCancellation = new();
-
+   
    private readonly Queue<TItem> itemQueue = new();
 
    private readonly SemaphoreSlim queueSem = new(1, 1);
    private readonly SemaphoreSlim pauseSem = new(1, 1);
    private readonly SemaphoreSlim idleSem  = new(1, 1);
 
-   private readonly SynchronizedValue<bool>   isPausedSync  = new();
-   private readonly SynchronizedValue<bool>   isStartedSync = new();
-   private readonly SynchronizedValue<Thread> threadSync    = new();
+   private readonly SingleWriterMultipleReaderValue<bool>   isStarted  = new();
+   private readonly SingleWriterMultipleReaderValue<Thread> threadSync = new();
    
    private readonly Action<TItem?>            action;
    private readonly ApartmentState            apartmentState;
@@ -87,12 +86,12 @@ public sealed class ItemProcessor<TItem> : IDisposable
    /// <summary>
    /// Gets a flag indicating if the item processing loop has started.
    /// </summary>
-   public bool IsStarted => isStartedSync.Value;
+   public bool IsStarted => isStarted.Value;
 
    /// <summary>
    /// Gets a flag indicating if the item processing is currently paused.
    /// </summary>
-   public bool IsPaused => isPausedSync.Value;
+   public bool IsPaused => pauseSem.CurrentCount == 0;
 
    /// <summary>
    /// Gets a flag indicating if the item processing is currently paused.
@@ -149,7 +148,7 @@ public sealed class ItemProcessor<TItem> : IDisposable
    {
       try
       {
-         isStartedSync.SetValue(true);
+         isStarted.SetValue(true);
 
          using var waitEvent = new AutoResetEvent(false);
          var       counter   = 0;
@@ -173,7 +172,7 @@ public sealed class ItemProcessor<TItem> : IDisposable
       }
       finally
       {
-         isStartedSync.SetValue(false);
+         isStarted.SetValue(false);
          Resume();
          Debug.WriteLine($"Exiting {nameof(ItemProcessingLoop)}");
          Debug.Flush();
@@ -274,14 +273,8 @@ public sealed class ItemProcessor<TItem> : IDisposable
    /// </summary>
    public void Pause()
    {
-      isPausedSync.ChangeValue(currentValue =>
-                               {
-                                  if (currentValue) return true;
-                                  pauseSem.Wait(itemProcessingCancellation.Token);
-
-                                  return true;
-                               }
-                              );
+          if (IsPaused) return;
+          pauseSem.Wait(itemProcessingCancellation.Token);
    }
 
    /// <summary>
@@ -289,14 +282,8 @@ public sealed class ItemProcessor<TItem> : IDisposable
    /// </summary>
    public void Resume()
    {
-      isPausedSync.ChangeValue(currentValue =>
-                               {
-                                  if (!currentValue) return false;
-                                  pauseSem.Release();
-
-                                  return false;
-                               }
-                              );
+       if (!IsPaused) return;
+       pauseSem.Release();
    }
 
    /// <summary>
@@ -304,29 +291,19 @@ public sealed class ItemProcessor<TItem> : IDisposable
    /// </summary>
    public async Task PauseAsync()
    {
-      await isPausedSync.ChangeValueAsync(async currentValue =>
-                                          {
-                                             if (currentValue) return true;
-                                             await pauseSem.WaitAsync(itemProcessingCancellation.Token);
-
-                                             return true;
-                                          }
-                                         );
+      if (IsPaused) return;
+      await pauseSem.WaitAsync(itemProcessingCancellation.Token);
    }
 
    /// <summary>
    /// Resumes item processing.
    /// </summary>
-   public async Task ResumeAsync()
+   public Task ResumeAsync()
    {
-      await isPausedSync.ChangeValueAsync(currentValue =>
-                                          {
-                                             if (!currentValue) return Task.FromResult(false);
-                                             pauseSem.Release();
+      if (!IsPaused) return Task.CompletedTask;
+      pauseSem.Release();
 
-                                             return Task.FromResult(false);
-                                          }
-                                         );
+      return Task.CompletedTask;
    }
 
    /// <summary>
@@ -400,7 +377,6 @@ public sealed class ItemProcessor<TItem> : IDisposable
       pauseSem.Dispose();
       idleSem.Dispose();
       queueSem.Dispose();
-      isPausedSync.Dispose();
       threadSync.Dispose();
    }
 

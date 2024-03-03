@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ClosureAllocation
@@ -15,13 +18,47 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 public partial class MainWindow //: Window
 {
    private readonly MainWindowViewModel mainWindowViewModel = new();
+   DispatcherTimer                      scrollResultsTimer  = new ();
+   DispatcherTimer                      scrollItemsTimer  = new ();
 
    public MainWindow()
    {
       InitializeComponent();
-      DataContext = mainWindowViewModel;
+      DataContext                 =  mainWindowViewModel;
+      scrollItemsTimer.Tick       += ScrollItemsTimerOnTick;
+      scrollItemsTimer.Interval   =  TimeSpan.FromMilliseconds(250);
+      scrollResultsTimer.Tick     += ScrollResultsTimerOnTick;
+      scrollResultsTimer.Interval =  TimeSpan.FromMilliseconds(250);
+      scrollItemsTimer.Start();
+      scrollResultsTimer.Start();
    }
 
+   private int lastResultCount = 0;
+   private void ScrollResultsTimerOnTick(object sender, EventArgs e)
+   {
+      if (lastResultCount == ResultsList.Items.Count) return;
+      lastResultCount = ScrollToEnd(ResultsList);
+   }
+
+   private int lastItemCount = 0;
+   private void ScrollItemsTimerOnTick(object sender, EventArgs e)
+   {
+      if (lastItemCount == ItemsList.Items.Count) return;
+      lastItemCount = ScrollToEnd(ItemsList);
+   }
+
+   private static int ScrollToEnd(ListBox list)
+   {
+      if (list.Items.Count > 0)
+      {
+         var border = (Border)VisualTreeHelper.GetChild(list, 0);
+         var scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
+         scrollViewer.ScrollToEnd();
+      }
+
+      return list.Items.Count;
+   }
+   
    private async void RunWithMTA_OnClick(object sender, RoutedEventArgs e)
    {
       RunWithMta.IsEnabled = false;
@@ -45,9 +82,11 @@ public partial class MainWindow //: Window
       Ui.Invoke(() =>
                 {
                    sw.Stop();
+                   var item =
+                      $"[{sw.ElapsedMilliseconds:D8}][{scheduler.Id}:{scheduler.GetType().Name}] {method} - Thread Name: {ts.thread.Name}({ts.thread.ManagedThreadId}; {ts.thread.GetApartmentState()}) : {message}";
                    mainWindowViewModel.Results
-                                      .Add($"[{sw.ElapsedMilliseconds:D8}][{scheduler.Id}:{scheduler.GetType().Name}] {method} - Thread Name: {ts.thread.Name}({ts.thread.ManagedThreadId}; {ts.thread.GetApartmentState()}) : {message};"
-                                          );
+                                      .Add(item);
+                   ResultsList.SelectedItem = item;
                 }
                );
       Ui.Invoke(() => button.IsEnabled = true);
@@ -187,6 +226,7 @@ public partial class MainWindow //: Window
 
       var scheduler = TaskScheduler.Current;
       Debug.WriteLine($"Starting to enqueue tasks on Scheduler {TaskScheduler.Current.GetType().Name}");
+
       for (var i = 0; i < taskCount; i++)
       {
          var xxx = i;
@@ -204,7 +244,10 @@ public partial class MainWindow //: Window
                                     {
                                        z++;
 
-                                       if (z % 5731 == 0) waiter.WaitOne(1);
+                                       if (z % 5731 == 0)
+                                       {
+                                          waiter.WaitOne(5);
+                                       }
 
                                        if (z % 57310 == 0)
                                        {
@@ -214,9 +257,10 @@ public partial class MainWindow //: Window
                                           Ui.Invoke(() =>
                                                     {
                                                        var ct = Thread.CurrentThread;
-                                                       mainWindowViewModel.Items
-                                                                          .Add($"[{scheduler.Id}:{scheduler.GetType().Name}] Executing Thread:{t.Name}({t.ManagedThreadId}; {t.GetApartmentState()}); UI Thread:{ct.Name}({ct.ManagedThreadId}; {ct.GetApartmentState()}); - Task[{xxx}] task @ {taskElapsed} ms; loop @ {elapsed} ms"
-                                                                              );
+                                                       var item =
+                                                          $"[{scheduler.Id}:{scheduler.GetType().Name}] Executing Thread:{t.Name}({t.ManagedThreadId}; {t.GetApartmentState()}); UI Thread:{ct.Name}({ct.ManagedThreadId}; {ct.GetApartmentState()}); - Task[{xxx}] task @ {taskElapsed} ms; loop @ {elapsed} ms";
+                                                       mainWindowViewModel.Items.Add(item);
+                                                       ItemsList.SelectedItem = item;
                                                     }
                                                    );
                                        }
@@ -230,20 +274,25 @@ public partial class MainWindow //: Window
                                 )
                   );
       }
+
       Debug.WriteLine($"Finished enqueuing tasks on Scheduler {TaskScheduler.Current.GetType().Name}");
-         
+
       await Task.WhenAll(tasks);
       taskSw.Stop();
       scheduledStopwatch.Stop();
       var elapsedMs     = taskSw.ElapsedMilliseconds;
       var scheduleDelay = scheduledStopwatch.ElapsedMilliseconds - elapsedMs;
       var ts            = GetExecutingSchedulerAndThreadInfo();
-      await Ui.Invoke(() => ReportSchedulerName(method
-                                              , button
-                                              , Stopwatch.StartNew()
-                                              , $"Executed in {elapsedMs} ms after a {scheduleDelay} ms delay"
-                                              , ts
-                                               )
+      await Ui.Invoke(async () =>
+                      {
+                         var result = $"Executed in {elapsedMs} ms after a {scheduleDelay} ms delay";
+                         await ReportSchedulerName(method
+                                                 , button
+                                                 , Stopwatch.StartNew()
+                                                 , result
+                                                 , ts
+                                                  );
+                      }
                      );
    }
 

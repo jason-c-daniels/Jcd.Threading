@@ -11,6 +11,7 @@ using Jcd.Tasks.Examples;
 
 using Nito.AsyncEx;
 
+var mre = new ManualResetEventSlim(true);
 var                    sv         = new SynchronizedValue<int>(10);
 const int              iterations = 10_000_000;
 var                    syncRoot   = new object();
@@ -312,7 +313,92 @@ await TimeItAsync("RWLSExt GetAsync"
 
 x += sv.Value;
 
+if (!mre.IsSet) mre.Set();
+TimeIt("MRES Set"
+     ,  () =>
+       {
+          for (var i = 0; i < iterations; i++)
+          {
+             mre.Wait();
+             mre.Reset();
+             t = i;
+             mre.Set();
+          }
+       }
+      );
+x += sv.Value;
+
+if (!mre.IsSet) mre.Set();
+TimeIt("MRES Get"
+     , () =>
+       {
+          var r = 0;
+
+          for (var i = 0; i < iterations; i++)
+          {
+             mre.Wait();
+             r = t;
+          }
+       }
+      );
+
+x += sv.Value;
+
+var swmr = new SingleWriterMultipleReaderValue<int>(15);
+
+TimeIt("SWMR Set"
+     , () =>
+       {
+          for (var i = 0; i < iterations; i++)
+          {
+             swmr.Value = i;
+          }
+       }
+      );
+x += sv.Value;
+
+TimeIt("SWMR Get"
+     , () =>
+       {
+          var r = 0;
+
+          for (var i = 0; i < iterations; i++)
+          {
+             r = swmr.Value;
+          }
+       }
+      );
+
+x += sv.Value;
+
+await TimeItAsync("SWMR SetAsync"
+     , async () =>
+       {
+          for (var i = 0; i < iterations; i++)
+          {
+             await swmr.SetValueAsync(i);
+          }
+       }
+      );
+x += sv.Value;
+
+await TimeItAsync("SWMR GetAsync"
+          , async () =>
+            {
+               var r = 0;
+
+               for (var i = 0; i < iterations; i++)
+               {
+                  r = await swmr.GetValueAsync();
+               }
+            }
+           );
+
+x += sv.Value;
+
 Console.WriteLine($"x={x}");
+
+
 
 void TimeIt(string name, Action action)
 {

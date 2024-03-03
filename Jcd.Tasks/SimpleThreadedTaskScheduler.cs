@@ -53,7 +53,7 @@ public class SimpleThreadedTaskScheduler
 
             if (!tasks.TryDequeue(out var task))
             {
-               waitHandle.WaitOne(50);
+               waitHandle.WaitOne(15);
 
                continue;
             }
