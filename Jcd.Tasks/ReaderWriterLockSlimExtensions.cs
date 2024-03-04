@@ -29,17 +29,17 @@ public static class ReaderWriterLockSlimExtensions
 
    private sealed class ReadLock : LockBase
    {
-      internal ReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.EnterReadLock(); }
+      internal ReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.TryEnterReadLock(-1); }
    }
 
    private sealed class UpgradeableReadLock : LockBase
    {
-      internal UpgradeableReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.EnterUpgradeableReadLock(); }
+      internal UpgradeableReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.TryEnterUpgradeableReadLock(-1); }
    }
 
    private sealed class WriteLock : LockBase
    {
-      internal WriteLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.EnterUpgradeableReadLock(); }
+      internal WriteLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.TryEnterWriteLock(-1); }
    }
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]

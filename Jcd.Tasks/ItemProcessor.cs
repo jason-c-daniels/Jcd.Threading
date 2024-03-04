@@ -30,8 +30,8 @@ public sealed class ItemProcessor<TItem> : IDisposable
    private readonly SemaphoreSlim pauseSem = new(1, 1);
    private readonly SemaphoreSlim idleSem  = new(1, 1);
 
-   private readonly MutexValue<bool>   isStarted  = new();
-   private readonly MutexValue<Thread> threadSync = new();
+   private readonly TicketLockedValue<bool>   isStarted  = new();
+   private readonly TicketLockedValue<Thread> threadSync = new();
    
    private readonly Action<TItem?>            action;
    private readonly ApartmentState            apartmentState;

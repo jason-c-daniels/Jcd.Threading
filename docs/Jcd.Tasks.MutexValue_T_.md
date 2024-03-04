@@ -3,7 +3,7 @@
 ## MutexValue<T> Class
 
 A value wrapper for a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') to block access during reads and writes.  
-This results in singler writer or single reader access to the data.
+This results in single writer or single reader access to the data.
 
 ```csharp
 public sealed class MutexValue<T> :

@@ -4,10 +4,23 @@ namespace Jcd.Tasks.Examples.Benchmark.SynchronizedOperations;
 
 public class ReaderWriterLockSlimOperations : IDisposable
 {
-   private readonly ReaderWriterLockSlim rwls = new();
-   private readonly NonStarvingSynchronizedValue<int> nssv = new (17);
-   public           int RawValue = 14;
+   private readonly ReaderWriterLockSlim   rwls     = new();
+   private readonly TicketLockedValue<int> nssv     = new (17);
+   public           int                    RawValue = 14;
 
+   [Benchmark]
+   public int UsingNonStarvingSynchronizedValue_ReadValue()
+   {
+      return nssv.Value;
+   }
+
+   [Benchmark]
+   public int UsingNonStarvingSynchronizedValue_WriteValue()
+   {
+      nssv.Value = RawValue;
+      return RawValue;
+   }
+   
    [Benchmark(Baseline = true)]
    public int DirectCalls_ReadValue()
    {
@@ -77,19 +90,6 @@ public class ReaderWriterLockSlimOperations : IDisposable
    {
       sv.Value = RawValue;
 
-      return RawValue;
-   }
-
-   [Benchmark]
-   public int UsingNonStarvingSynchronizedValue_ReadValue()
-   {
-      return nssv.Value;
-   }
-
-   [Benchmark]
-   public int UsingNonStarvingSynchronizedValue_WriteValue()
-   {
-      nssv.Value = RawValue;
       return RawValue;
    }
 

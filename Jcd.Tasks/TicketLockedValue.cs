@@ -6,30 +6,27 @@ using System.Threading.Tasks;
 namespace Jcd.Tasks;
 
 /// <summary>
-/// A value wrapper for a <see cref="SemaphoreSlim"/> to block access during reads and writes.
-/// This results in single writer or single reader access to the data.  
+/// A value wrapper for a <see cref="SemaphoreSlim"/> to block access during reads
+/// and writes. It guarantees in order execution of reads and writes.
 /// </summary>
 /// <typeparam name="T">The data type to synchronize access to.</typeparam>
-public sealed class MutexValue<T>: IDisposable
+public sealed class TicketLockedValue<T> : IDisposable
 {
-   private readonly SemaphoreSlim mutex=new (1,1);
-   private          T                    val;
+   private readonly TicketLock mutex = new();
+   private          T          val;
 
    // ReSharper disable once NullableWarningSuppressionIsUsed
    /// <summary>
    /// Constructs an instance of <see cref="MutexValue{T}"/>
    /// </summary>
    /// <param name="value"the initial value to store></param>
-   public MutexValue(T value = default!)
-   {
-      val   = value;
-   }
+   public TicketLockedValue(T value = default!) { val = value; }
 
    /// <inheritdoc />
    public void Dispose() { mutex.Dispose(); }
 
    #region properties and accessors
-   
+
    public T Value
    {
       get => GetValue();
@@ -53,23 +50,14 @@ public sealed class MutexValue<T>: IDisposable
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public T GetValue()
    {
-      try
-      {
-         mutex.Wait();
-         var result = val;
-
-         return result;
-      }
-      finally
-      {
-         mutex.Release();
-      }
+      using (mutex.Lock())
+         return val;
    }
 
    /// <summary>
    /// Gets the value in an async friendly manner.
    /// </summary>
-   /// <returns>A <see cref="Task{T}"/> containing the retrieved value.</returns>
+   /// <returns>A <see cref="Task"/> containing the retrieved value.</returns>
    /// <example>
    /// <code>
    /// var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
@@ -82,17 +70,8 @@ public sealed class MutexValue<T>: IDisposable
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public Task<T> GetValueAsync()
    {
-      try
-      {
-         mutex.Wait();
-         var result = val;
-
-         return Task.FromResult(result);
-      }
-      finally
-      {
-         mutex.Release();
-      }
+      using (mutex.Lock())
+         return Task.FromResult(val);
    }
 
    /// <summary>
@@ -115,17 +94,8 @@ public sealed class MutexValue<T>: IDisposable
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public T SetValue(T value)
    {
-      try
-      {
-         mutex.Wait();
-         var result = val = value;
-
-         return result;
-      }
-      finally
-      {
-         mutex.Release();
-      }
+      using (mutex.Lock())
+         return val = value;
    }
 
    /// <summary>
@@ -148,20 +118,9 @@ public sealed class MutexValue<T>: IDisposable
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public Task<T> SetValueAsync(T value)
    {
-      try
-      {
-         mutex.Wait();
-         var result = val = value;
-
-         return Task.FromResult(result);
-      }
-      finally
-      {
-         mutex.Release();
-      }
+      using (mutex.Lock())
+         return Task.FromResult(val = value);
    }
 
-  
-   
    #endregion
 }
