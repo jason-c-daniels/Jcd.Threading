@@ -1,0 +1,4 @@
+﻿#!/bin/bash
+
+mkdir -p ./benchmarks/out
+dotnet run -c Release -f net8.0 -- -a ./benchmarks/out -e GitHub --warmupCount 1 --minIterationCount 5 --maxIterationCount 10 --runtimes net8.0 net462 --filter "$*"  

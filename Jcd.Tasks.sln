@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples.Wpf.Cust
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jcd.Tasks.Examples.Benchmark", "Examples\Jcd.Tasks.Examples.Benchmark\Jcd.Tasks.Examples.Benchmark.csproj", "{2CFC3461-2AED-44BC-8787-89FC7D935C5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,9 +40,14 @@ Global
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8945609F-AC32-4AAB-B15B-76278D5CF237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CFC3461-2AED-44BC-8787-89FC7D935C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CFC3461-2AED-44BC-8787-89FC7D935C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CFC3461-2AED-44BC-8787-89FC7D935C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CFC3461-2AED-44BC-8787-89FC7D935C5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{30064E3A-5581-471D-82A8-2CA0C13FEF4F} = {0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}
 		{8945609F-AC32-4AAB-B15B-76278D5CF237} = {0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}
+		{2CFC3461-2AED-44BC-8787-89FC7D935C5D} = {0E463D73-9CCA-4DE2-83E1-7BAA7C64DAC5}
 	EndGlobalSection
 EndGlobal

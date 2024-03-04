@@ -12,70 +12,63 @@ namespace Jcd.Tasks;
 /// </summary>
 public static class ReaderWriterLockSlimExtensions
 {
-
-   private sealed class ReadLock : IDisposable
+   private abstract class LockBase(ReaderWriterLockSlim @lock) : IDisposable
    {
-      private readonly ReaderWriterLockSlim rwls;
+      protected readonly ReaderWriterLockSlim Lock = @lock;
 
-      internal ReadLock(ReaderWriterLockSlim rwls)
+      public void Dispose()
       {
-         this.rwls = rwls;
-         this.rwls.EnterReadLock();
+         if (Lock.IsWriteLockHeld)
+            Lock.ExitWriteLock();
+         else if (Lock.IsUpgradeableReadLockHeld)
+            Lock.ExitUpgradeableReadLock();
+         else if (Lock.IsReadLockHeld)
+            Lock.ExitReadLock();
       }
-
-      public void Dispose() => rwls.ExitReadLock();
    }
 
-   private sealed class UpgradeableReadLock : IDisposable
+   private sealed class ReadLock : LockBase
    {
-      private readonly ReaderWriterLockSlim rwls;
-
-      internal UpgradeableReadLock(ReaderWriterLockSlim rwls)
-      {
-         this.rwls = rwls;
-         this.rwls.EnterUpgradeableReadLock();
-      }
-
-      public void Dispose() => rwls.ExitUpgradeableReadLock();
+      internal ReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.EnterReadLock(); }
    }
 
-   private sealed class WriteLock : IDisposable
+   private sealed class UpgradeableReadLock : LockBase
    {
-      private readonly ReaderWriterLockSlim rwls;
+      internal UpgradeableReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.EnterUpgradeableReadLock(); }
+   }
 
-      internal WriteLock(ReaderWriterLockSlim rwls)
-      {
-         this.rwls = rwls;
-         this.rwls.EnterUpgradeableReadLock();
-      }
-
-      public void Dispose() => rwls.ExitUpgradeableReadLock();
+   private sealed class WriteLock : LockBase
+   {
+      internal WriteLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.EnterUpgradeableReadLock(); }
    }
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static IDisposable Read(this ReaderWriterLockSlim rwls, bool isUpgradeable = false)
+   public static IDisposable Lock(this ReaderWriterLockSlim @lock, ReaderWriterLockSlimIntent intent=ReaderWriterLockSlimIntent.Read)
    {
-      if (isUpgradeable)
-         return new UpgradeableReadLock(rwls);
-
-      return new ReadLock(rwls);
+      return intent switch
+             {
+                ReaderWriterLockSlimIntent.UpgradeableRead => new UpgradeableReadLock(@lock)
+              , ReaderWriterLockSlimIntent.Write           => new WriteLock(@lock)
+              , _                                          => new ReadLock(@lock)
+             };
    }
-
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static IDisposable Write(this ReaderWriterLockSlim rwls) { return new WriteLock(rwls); }
    
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static Task<IDisposable> ReadAsync(this ReaderWriterLockSlim rwls, bool isUpgradeable = false)
+   public static Task<IDisposable> LockAsync(this ReaderWriterLockSlim @lock, ReaderWriterLockSlimIntent intent=ReaderWriterLockSlimIntent.Read)
    {
-      if (isUpgradeable)
-         return Task.FromResult<IDisposable>(new UpgradeableReadLock(rwls));
-
-      return Task.FromResult<IDisposable>(new ReadLock(rwls)); 
+      return Task.FromResult<IDisposable>(intent switch
+                                          {
+                                             ReaderWriterLockSlimIntent.UpgradeableRead => new UpgradeableReadLock(@lock)
+                                           , ReaderWriterLockSlimIntent.Write           => new WriteLock(@lock)
+                                           , _                                          => new ReadLock(@lock)
+                                          });
    }
 
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static Task<IDisposable> WriteAsync(this ReaderWriterLockSlim rwls)
-   {
-      return Task.FromResult<IDisposable>(new WriteLock(rwls)); 
-   }   
+}
+
+public enum ReaderWriterLockSlimIntent
+{
+   Read,
+   UpgradeableRead,
+   Write
 }

@@ -9,3 +9,7 @@ namespace Jcd.Tasks;
 /// management of unstarted <see cref="Task"/> instances.
 /// </summary>
 internal class NamespaceDoc;
+
+// some .cs file included in your project
+
+

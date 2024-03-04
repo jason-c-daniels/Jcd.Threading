@@ -45,10 +45,10 @@ public sealed class SynchronizedValue<T>
    T val = default!
 ) : IDisposable
 {
-   private readonly ReaderWriterLockSlim rwls = new (LockRecursionPolicy.NoRecursion);
+   private readonly ReaderWriterLockSlim @lock = new (LockRecursionPolicy.NoRecursion);
 
    /// <inheritdoc />
-   public void Dispose() { rwls.Dispose(); }
+   public void Dispose() { @lock.Dispose(); }
 
    #region properties and accessors
 
@@ -92,11 +92,11 @@ public sealed class SynchronizedValue<T>
    {
       try
       {
-         rwls.EnterReadLock();
+         @lock.EnterReadLock();
          var result = val;
          return result;
       }
-      finally{ rwls.ExitReadLock();}
+      finally{ @lock.ExitReadLock();}
    }
 
    /// <summary>
@@ -117,11 +117,11 @@ public sealed class SynchronizedValue<T>
    {
       try
       {
-         rwls.EnterReadLock();
+         @lock.EnterReadLock();
          var result = val;
          return Task.FromResult(result);
       }
-      finally{ rwls.ExitReadLock();}
+      finally{ @lock.ExitReadLock();}
    }
 
    /// <summary>
@@ -146,10 +146,10 @@ public sealed class SynchronizedValue<T>
    {
       try
       {
-         rwls.EnterReadLock();
+         @lock.EnterReadLock();
          return val=value;
       }
-      finally{ rwls.ExitReadLock();}
+      finally{ @lock.ExitReadLock();}
    }
 
    /// <summary>
@@ -174,10 +174,10 @@ public sealed class SynchronizedValue<T>
    {
       try
       {
-         rwls.EnterWriteLock();
+         @lock.EnterWriteLock();
          return Task.FromResult(val = value);
       }
-      finally{ rwls.ExitWriteLock();}
+      finally{ @lock.ExitWriteLock();}
    }
 
    /// <summary>
@@ -221,11 +221,11 @@ public sealed class SynchronizedValue<T>
       if (func == null) return Value;
       try
       {
-         rwls.EnterWriteLock();
+         @lock.EnterWriteLock();
          var result = val = func(val);
          return result;
       }
-      finally{ rwls.ExitWriteLock();}
+      finally{ @lock.ExitWriteLock();}
    }
 
    /// <summary>
@@ -268,94 +268,11 @@ public sealed class SynchronizedValue<T>
       if (func == null) return Value;
       try
       {
-         rwls.EnterWriteLock();
+         @lock.EnterWriteLock();
          var result= val = await func(val);
          return result;
       }
-      finally{ rwls.ExitWriteLock();}
-   }
-
-   /// <summary>
-   /// Executes an action on the synchronized value after locking it.
-   /// <b>This is not recursively reentrant. See remarks for details.</b>
-   /// </summary>
-   /// <param name="action">The function to call.</param>
-   /// <example>
-   /// Standard usage: pass in an asynchronous action to action the current value.
-   /// <code>
-   /// var sv = new SynchronizedValue&lt;int&gt;();
-   /// 
-   /// // increment the value by one and discard the result.
-   /// sv.Do(x => x + 1);
-   /// 
-   /// // increment the value by two and discard the result.
-   /// sv.Do(x => x + 2);
-   /// 
-   /// // Perform some other operation that requires the value to
-   /// remain unchanged during the operation.
-   /// sv.Do(x => DoSomething(x));
-   /// </code>
-   /// </example>
-   /// <remarks>
-   /// <para>
-   /// <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
-   /// the following.
-   /// </para>
-   /// <code>
-   /// var sv=new SynchronizedValue&lt;int&gt;(10);
-   ///
-   /// // deadlock yourself in a single line of code!
-   /// sv.Do(x=>sv.Value+10);
-   /// </code>
-   /// </remarks>
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public void Do(Action<T>? action)
-   {
-      if (action == null) return;
-      using (rwls.Read())
-         action(val);
-   }
-
-   /// <summary>
-   /// Executes an asynchronous action on the synchronized value after locking it.
-   /// <b>This is not recursively reentrant. See remarks for details.</b>
-   /// </summary>
-   /// <param name="asyncAction">The function to call.</param>
-   /// <returns>A <see cref="Task"/> for the action.</returns>
-   /// <example>
-   /// Standard usage: pass in an asynchronous action to action the current value.
-   /// <code>
-   /// var sv = new SynchronizedValue&lt;int&gt;();
-   /// 
-   /// // increment the value by one and discard the result.
-   /// var changedValue = await sv.DoAsync(x => x + 1);
-   /// 
-   /// // increment the value by two and discard the result.
-   /// await sv.DoAsync(x => x + 2);
-   /// 
-   /// // Perform some other operation that requires the value to
-   /// remain unchanged during the operation.
-   /// await sv.DoAsync(x => DoSomething(x));
-   /// </code>
-   /// </example>
-   /// <remarks>
-   /// <para>
-   /// <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
-   /// the following.
-   /// </para>
-   /// <code>
-   /// var sv=new SynchronizedValue&lt;int&gt;(10);
-   ///
-   /// // deadlock yourself in a single line of code!
-   /// await sv.DoAsync(x=>sv.Value+10);
-   /// </code>
-   /// </remarks>
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public async Task DoAsync(Func<T, Task>? asyncAction)
-   {
-      if (asyncAction == null) return;
-      using (await rwls.ReadAsync())
-         await asyncAction(val);
+      finally{ @lock.ExitWriteLock();}
    }
 
    #endregion

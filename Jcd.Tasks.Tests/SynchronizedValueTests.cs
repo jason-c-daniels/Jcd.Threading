@@ -95,36 +95,4 @@ public class SynchronizedValueTests
 
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
-
-   [Theory]
-   [InlineData(1)]
-   [InlineData(-1)]
-   [InlineData(2)]
-   public void Do_Acts_On_The_Provided_Value(int value)
-   {
-      var       capturedValue = value + 1; // ensure it's initialized to a different value.
-      using var sv            = new SynchronizedValue<int>(value);
-      sv.Do(v => { capturedValue = v; });
-      Assert.Equal(value, sv.Value);
-      Assert.Equal(value, capturedValue);
-   }
-
-   [Theory]
-   [InlineData(1)]
-   [InlineData(-1)]
-   [InlineData(2)]
-   public async void DoAsync_Acts_On_The_Provided_Value(int value)
-   {
-      var       capturedValue = value + 1; // ensure it's initialized to a different value.
-      using var sv            = new SynchronizedValue<int>(value);
-      await sv.DoAsync(v =>
-                       {
-                          capturedValue = v;
-
-                          return Task.CompletedTask;
-                       }
-                      );
-      Assert.Equal(value, sv.Value);
-      Assert.Equal(value, capturedValue);
-   }
 }

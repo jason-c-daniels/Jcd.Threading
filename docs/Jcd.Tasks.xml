@@ -252,6 +252,86 @@
         <member name="M:Jcd.Tasks.ItemProcessor`1.Dispose">
             <inheritdoc />
         </member>
+        <member name="T:Jcd.Tasks.MutexValue`1">
+            <summary>
+            A value wrapper for a <see cref="T:System.Threading.SemaphoreSlim"/> to block access during reads and writes.
+            This results in singler writer or single reader access to the data.  
+            </summary>
+            <typeparam name="T">The data type to synchronize access to.</typeparam>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Jcd.Tasks.MutexValue`1.#ctor(`0)" -->
+        <member name="M:Jcd.Tasks.MutexValue`1.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Tasks.MutexValue`1.GetValue">
+            <summary>
+            Retrieves the current value. If another thread edits the value, moment later a subsequent
+            call will yield a different result. 
+            </summary>
+            <returns>The current value as of establishing the lock.</returns>
+            <example>
+            <code>
+            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
+            
+            // get the value
+            setValue = swmr.GetValue(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Tasks.MutexValue`1.GetValueAsync">
+            <summary>
+            Gets the value in an async friendly manner.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
+            <example>
+            <code>
+            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
+            
+            // get the value
+            await setValue = swmr.GetValueAsync(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Tasks.MutexValue`1.SetValue(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>The provided value.</returns>
+            <example>
+            <code>
+            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
+            
+            // set the value to 10.
+            setValue = swmr.SetValue(10);
+            
+            // set the value to 20.
+            setValue = swmr.SetValue(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Tasks.MutexValue`1.SetValueAsync(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
+            <example>
+            <code>
+            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
+            
+            // set the value to 10.
+            await setValue = swmr.SetValueAsync(10);
+            
+            // set the value to 20.
+            await setValue = swmr.SetValueAsync(20);
+            
+            </code>
+            </example>
+        </member>
         <member name="T:Jcd.Tasks.NamespaceDoc">
             <summary>
             Provides types and extension methods to assist with the creation, execution, and
@@ -272,14 +352,14 @@
             ensuring synchronized access to data for short lived operations.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Use(System.Threading.SemaphoreSlim)">
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim)">
             <summary>
             Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Use(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
             <summary>
             Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
@@ -287,14 +367,22 @@
             <param name="token">A cancellation token to use during the wait.</param>
             <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.UseAsync(System.Threading.SemaphoreSlim)">
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Action)">
+            <summary>
+            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <param name="token">A cancellation token to use during the wait.</param>
+            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim)">
             <summary>
             Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.UseAsync(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
+        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
             <summary>
             Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
@@ -358,179 +446,44 @@
         <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose">
             <inheritdoc />
         </member>
-        <member name="T:Jcd.Tasks.SingleWriterMultipleReaderValue`1">
+        <member name="T:Jcd.Tasks.SpinLockedValue`1">
             <summary>
-            A value wrapper for a <see cref="T:System.Threading.ManualResetEventSlim"/> to block read access while
-            the sole owning thread is updating the value. Otherwise reads are not blocked.
+            Provides synchronization to an underlying value through a <see cref="T:System.Threading.SpinLock"/>.
             </summary>
-            <remarks>
-            It is the consumers responsibility to use this class as intended.
-            Multiple writes are not blocked. Unpredictable behavior may result if multiple
-            threads set the value at the same time.
-            </remarks>
-            <typeparam name="T">The data type to synchronize access to.</typeparam>
+            <typeparam name="T">The type of the data being stored.</typeparam>
         </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="P:Jcd.Tasks.SingleWriterMultipleReaderValue`1.Value">
-             <summary>
-             Get or sets the synchronized value.
-             </summary>
-             <example>
-             <code>
-             var sv = new SynchronizedValue&lt;int&gt;(15);
-             
-             // get the value
-             var theValue = sv.Value;
-            
-             // set the value
-             sv.Value = theValue + 10;
-             
-             </code>
-             </example>
-        </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.GetValue">
+        <member name="M:Jcd.Tasks.SpinLockedValue`1.#ctor(`0,System.Boolean)">
             <summary>
-            Retrieves the current value. If another thread edits the value, moment later a subsequent
-            call will yield a different result. 
+            Creates an instance of a <see cref="T:Jcd.Tasks.SpinLockedValue`1"/>
             </summary>
-            <returns>The current value as of establishing the lock.</returns>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;(15);
-            
-            // get the value
-            setValue = sv.GetValue(20);
-            
-            </code>
-            </example>
+            <param name="initialValue">The initial value</param>
+            <param name="useMemoryBarrier">Indicates if the call to Exit should use a memory barrier to notify other threads the lock has been freed(much slower!).</param>
         </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.GetValueAsync">
+        <member name="P:Jcd.Tasks.SpinLockedValue`1.Value">
             <summary>
-            Gets the value in an async friendly manner.
+            Sets or gets the value. This may block.
             </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;(15);
-            
-            // get the value
-            await setValue = sv.GetValueAsync(20);
-            
-            </code>
-            </example>
         </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.SetValue(`0)">
+        <member name="T:Jcd.Tasks.SpinLockExtensions">
             <summary>
-            Sets the current value to the provided value.
+            Provides extension methods to aid in working with SpinLocks
             </summary>
-            <param name="value">The provided value.</param>
-            <returns>The provided value.</returns>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;();
-            
-            // set the value to 10.
-            setValue = sv.SetValue(10);
-            
-            // set the value to 20.
-            setValue = sv.SetValue(20);
-            
-            </code>
-            </example>
         </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.SetValueAsync(`0)">
+        <member name="M:Jcd.Tasks.SpinLockExtensions.Lock(System.Threading.SpinLock@,System.Action,System.Boolean)">
             <summary>
-            Sets the current value to the provided value.
+            Acquires exclusive access to the spinLock and executes the provided action.
             </summary>
-            <param name="value">The provided value.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
-            <example>
-            <code>
-            var sv = new SynchronizedValue&lt;int&gt;();
-            
-            // set the value to 10.
-            await setValue = sv.SetValueAsync(10);
-            
-            // set the value to 20.
-            await setValue = sv.SetValueAsync(20);
-            
-            </code>
-            </example>
+            <param name="spinLock">The <see cref="T:System.Threading.SpinLock"/> to use for locking.</param>
+            <param name="action">The action to perform</param>
+            <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
         </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.ChangeValue(System.Func{`0,`0})">
-             <summary>
-             Calls the provided function, passing in the current value, and assigns the result
-             of the function call, to the current value. <b>This is not recursively reentrant.
-             see remarks for details.</b>
-             </summary>
-             <param name="func">
-             A function to call which receives the current value, modifies it, and returns the
-             modified result.
-             </param>
-             <returns>The modified value.</returns>
-             <example>
-             Standard usage: pass in a function to manipulate the current value.
-             <code>
-             var sv = new SynchronizedValue&lt;int&gt;();
-             
-             // increment the value by one.
-             var changedValue = sv.Do(x => x + 1);
-             
-             // increment the value by two.
-             changedValue = sv.Do(x => x + 2);
-             
-             </code>
-             </example>
-             <remarks>
-             <para>
-             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
-             the following.
-             </para>
-             <code>
-             var sv=new SynchronizedValue&lt;int&gt;(10);
-            
-             // deadlock yourself in a single line of code!
-             var changedValue = sv.Do(x=>sv.Value+10);
-             </code>
-             </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.SingleWriterMultipleReaderValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
-             <summary>
-             Calls the provided function, passing in the current value, and assigns the result
-             of the function call, to the current value. <b>This is not recursively reentrant.
-             see remarks for details.</b>
-             </summary>
-             <param name="func">The function to call.</param>
-             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the modified value.</returns>
-             <example>
-             Standard usage: pass in a function to manipulate the current value.
-             <code>
-             var sv = new SynchronizedValue&lt;int&gt;();
-             
-             // increment the value by one.
-             var changedValue = await sv.ChangeValueAsync(x => x + 1);
-             
-             // increment the value by two.
-             changedValue = await sv.ChangeValueAsync(x => x + 2);
-             
-             // Perform some operation that requires the value to remain unchanged during the operation.
-             var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});
-             </code>
-             </example>
-             <remarks>
-             <para>
-             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
-             the following.
-             </para>
-             <code>
-             var sv=new SynchronizedValue&lt;int&gt;(10);
-            
-             // deadlock yourself in a single line of code!
-             var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
-             </code>
-             </remarks>
+        <member name="M:Jcd.Tasks.SpinLockExtensions.LockAsync(System.Threading.SpinLock@,System.Action,System.Boolean)">
+            <summary>
+            Acquires exclusive access to the spinLock and executes the provided action.
+            </summary>
+            <param name="spinLock">The <see cref="T:System.Threading.SpinLock"/> to use for locking.</param>
+            <param name="action">The action to perform</param>
+            <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
         </member>
         <member name="T:Jcd.Tasks.SynchronizedValue`1">
             <summary>
@@ -555,7 +508,7 @@
             <para>
             As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
-            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})"/>, and <see cref="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
+            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="!:Do"/>, and <see cref="!:DoAsync"/>
             for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
             </para>
             </remarks>
@@ -583,7 +536,7 @@
             <para>
             As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
-            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})"/>, and <see cref="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
+            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="!:Do"/>, and <see cref="!:DoAsync"/>
             for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
             </para>
             </remarks>
@@ -747,77 +700,6 @@
             
              // deadlock yourself in a single line of code!
              var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
-             </code>
-             </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.Do(System.Action{`0})">
-             <summary>
-             Executes an action on the synchronized value after locking it.
-             <b>This is not recursively reentrant. See remarks for details.</b>
-             </summary>
-             <param name="action">The function to call.</param>
-             <example>
-             Standard usage: pass in an asynchronous action to action the current value.
-             <code>
-             var sv = new SynchronizedValue&lt;int&gt;();
-             
-             // increment the value by one and discard the result.
-             sv.Do(x => x + 1);
-             
-             // increment the value by two and discard the result.
-             sv.Do(x => x + 2);
-             
-             // Perform some other operation that requires the value to
-             remain unchanged during the operation.
-             sv.Do(x => DoSomething(x));
-             </code>
-             </example>
-             <remarks>
-             <para>
-             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
-             the following.
-             </para>
-             <code>
-             var sv=new SynchronizedValue&lt;int&gt;(10);
-            
-             // deadlock yourself in a single line of code!
-             sv.Do(x=>sv.Value+10);
-             </code>
-             </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.DoAsync(System.Func{`0,System.Threading.Tasks.Task})">
-             <summary>
-             Executes an asynchronous action on the synchronized value after locking it.
-             <b>This is not recursively reentrant. See remarks for details.</b>
-             </summary>
-             <param name="asyncAction">The function to call.</param>
-             <returns>A <see cref="T:System.Threading.Tasks.Task"/> for the action.</returns>
-             <example>
-             Standard usage: pass in an asynchronous action to action the current value.
-             <code>
-             var sv = new SynchronizedValue&lt;int&gt;();
-             
-             // increment the value by one and discard the result.
-             var changedValue = await sv.DoAsync(x => x + 1);
-             
-             // increment the value by two and discard the result.
-             await sv.DoAsync(x => x + 2);
-             
-             // Perform some other operation that requires the value to
-             remain unchanged during the operation.
-             await sv.DoAsync(x => DoSomething(x));
-             </code>
-             </example>
-             <remarks>
-             <para>
-             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
-             the following.
-             </para>
-             <code>
-             var sv=new SynchronizedValue&lt;int&gt;(10);
-            
-             // deadlock yourself in a single line of code!
-             await sv.DoAsync(x=>sv.Value+10);
              </code>
              </remarks>
         </member>

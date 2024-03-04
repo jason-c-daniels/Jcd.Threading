@@ -83,7 +83,7 @@ public abstract class IdleTaskScheduler : TaskScheduler, IDisposable
          Log($"Task queued from a {Current.GetType().Name}{Environment.NewLine}{t}{Environment.NewLine}{Thread.CurrentThread.Name}");
          Log("");
       }      
-      using (taskQueueSem.Use())
+      using (taskQueueSem.Lock())
          taskQueuer.Enqueue(task);
    }
 

@@ -9,9 +9,8 @@ using Hardware.Info;
 using Jcd.Tasks;
 using Jcd.Tasks.Examples;
 
-using Nito.AsyncEx;
 
-var mre = new ManualResetEventSlim(true);
+var mres = new ManualResetEventSlim(true);
 var                    sv         = new SynchronizedValue<int>(10);
 const int              iterations = 10_000_000;
 var                    syncRoot   = new object();
@@ -30,8 +29,9 @@ for (var i=0;i<1000;i++)
    for (var j = 0; j < iterations; j++)
       d *= 1.001;
    d     /= 1.01;
-   cpuHz =  Math.Max(cpuHz, cpu.CurrentClockSpeed);
 }
+cpuHz = Math.Max(cpuHz, cpu.CurrentClockSpeed);
+var dz = cpuHz;
 
 cpuHz *= 1_000_000;
 
@@ -60,7 +60,7 @@ x   += t;
 var rwls = new ReaderWriterLockSlim();
 TimeIt("RWLSExt Set", () => { for (var i = 0; i < iterations; i++)
                          {
-                            using (rwls.Write())
+                            using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
                             {
                                t = i;
                             }
@@ -74,7 +74,7 @@ TimeIt("RWLSExt Get"
           var r = 0;
           for (var i = 0; i < iterations; i++)
           {
-             using (rwls.Read())
+             using (rwls.Lock())
              {
                 r = t;
              }
@@ -112,7 +112,7 @@ x += t;
 var sem = new SemaphoreSlim(1, 1);
 TimeIt("SemSlimExt Synchronized Set", () => { for (var i = 0; i < iterations; i++)
 {
-   using (sem.Use())
+   using (sem.Lock())
       t = i;
 }});
 x += t;
@@ -124,7 +124,7 @@ TimeIt("SemSlimExt Synchronized Get"
 
           for (var i = 0; i < iterations; i++)
           {
-             using (sem.Use())
+             using (sem.Lock())
              {
                 r = t;
              }
@@ -162,29 +162,27 @@ TimeIt("SemSlim Synchronized Get"
 
 TimeIt("Nito.AsyncEx.AsyncLock Set", () => { for (var i = 0; i < iterations; i++)
 {
-   using(asyncLock.Lock())
+   using(Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
       t = i;
 }});
 x += t;
 
-TimeIt("Nito.AsyncEx.AsyncLock Get", () =>
+TimeItAsync("Nito.AsyncEx.AsyncLock Get", async () =>
                                    {
                                       var r = 0;
                                       for (var i = 0; i < iterations; i++)
                                       {
-                                         using (sem.Lock())
+                                         using (await Nito.AsyncEx.SemaphoreSlimExtensions.LockAsync(sem))
                                          {
                                             r = t;
                                          }
                                       }
-
-                                      //var x = r;
                                    }
       );
 
 TimeIt("Nito.AsyncEx.SemaphoreSlimExtensions.Lock Set", () => { for (var i = 0; i < iterations; i++)
 {
-   using(sem.Lock())
+   using(Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
       t = i;
 }});
 x += t;
@@ -196,7 +194,7 @@ TimeIt("Nito.AsyncEx.SemaphoreSlimExtensions.Lock Get"
 
           for (var i = 0; i < iterations; i++)
           {
-             using (sem.Lock())
+             using (Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
              {
                 r = t;
              }
@@ -287,7 +285,7 @@ await TimeItAsync("RWLSExt SetAsync"
                   {
                      for (var i = 0; i < iterations; i++)
                      {
-                        using (await rwls.WriteAsync())
+                        using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
                         {
                            t = i;
                         }
@@ -303,7 +301,7 @@ await TimeItAsync("RWLSExt GetAsync"
 
                      for (var i = 0; i < iterations; i++)
                      {
-                        using (await rwls.ReadAsync())
+                        using (await rwls.LockAsync())
                         {
                            r = t;
                         }
@@ -313,22 +311,22 @@ await TimeItAsync("RWLSExt GetAsync"
 
 x += sv.Value;
 
-if (!mre.IsSet) mre.Set();
+if (!mres.IsSet) mres.Set();
 TimeIt("MRES Set"
      ,  () =>
        {
           for (var i = 0; i < iterations; i++)
           {
-             mre.Wait();
-             mre.Reset();
+             mres.Wait();
+             mres.Reset();
              t = i;
-             mre.Set();
+             mres.Set();
           }
        }
       );
 x += sv.Value;
 
-if (!mre.IsSet) mre.Set();
+if (!mres.IsSet) mres.Set();
 TimeIt("MRES Get"
      , () =>
        {
@@ -336,7 +334,7 @@ TimeIt("MRES Get"
 
           for (var i = 0; i < iterations; i++)
           {
-             mre.Wait();
+             mres.Wait();
              r = t;
           }
        }
@@ -344,7 +342,7 @@ TimeIt("MRES Get"
 
 x += sv.Value;
 
-var swmr = new SingleWriterMultipleReaderValue<int>(15);
+var swmr = new MutexValue<int>(15);
 
 TimeIt("SWMR Set"
      , () =>
@@ -396,9 +394,40 @@ await TimeItAsync("SWMR GetAsync"
 
 x += sv.Value;
 
+var cde = new CountdownEvent(0);
+ 
+TimeIt("Presignaled CDE with RWLS Set"
+                , () =>
+                  {
+                     for (var i = 0; i < iterations; i++)
+                     {
+                        cde.Reset(1);
+                        rwls.EnterWriteLock(); 
+                        t = i;
+                        rwls.ExitWriteLock();
+                        cde.Signal();
+                     }
+                  }
+                 );
+x += sv.Value;
+// ensure its unsignaled.
+//cde.Reset(0);
+TimeIt("Presignaled CDE Get"
+     ,  () =>
+       {
+          var r = 0;
+
+          for (var i = 0; i < iterations; i++)
+          {
+             cde.Wait();
+             r = t;
+          }
+       }
+      );
+
+x += sv.Value;
+
 Console.WriteLine($"x={x}");
-
-
 
 void TimeIt(string name, Action action)
 {

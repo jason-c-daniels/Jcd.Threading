@@ -30,8 +30,8 @@ public sealed class ItemProcessor<TItem> : IDisposable
    private readonly SemaphoreSlim pauseSem = new(1, 1);
    private readonly SemaphoreSlim idleSem  = new(1, 1);
 
-   private readonly SingleWriterMultipleReaderValue<bool>   isStarted  = new();
-   private readonly SingleWriterMultipleReaderValue<Thread> threadSync = new();
+   private readonly MutexValue<bool>   isStarted  = new();
+   private readonly MutexValue<Thread> threadSync = new();
    
    private readonly Action<TItem?>            action;
    private readonly ApartmentState            apartmentState;
@@ -70,12 +70,12 @@ public sealed class ItemProcessor<TItem> : IDisposable
 
    private IDisposable GetQueueLock()
    {
-      return queueSem.Use(itemProcessingCancellation.Token);
+      return queueSem.Lock(itemProcessingCancellation.Token);
    }
 
    private Task<IDisposable> GetQueueLockAsync()
    {
-      return queueSem.UseAsync(itemProcessingCancellation.Token);
+      return queueSem.LockAsync(itemProcessingCancellation.Token);
    }
 
    /// <summary>
@@ -148,7 +148,7 @@ public sealed class ItemProcessor<TItem> : IDisposable
    {
       try
       {
-         isStarted.SetValue(true);
+         isStarted.Value=true;
 
          using var waitEvent = new AutoResetEvent(false);
          var       counter   = 0;
