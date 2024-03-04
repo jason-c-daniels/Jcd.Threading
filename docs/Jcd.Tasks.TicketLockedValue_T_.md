@@ -2,12 +2,11 @@
 
 ## TicketLockedValue<T> Class
 
-A value wrapper for a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') to block access during reads  
-and writes. It guarantees in order execution of reads and writes.
+A value wrapper for a [Jcd.Tasks.TicketLock](https://docs.microsoft.com/en-us/dotnet/api/Jcd.Tasks.TicketLock 'Jcd.Tasks.TicketLock') to block access during reads  
+and writes. It guarantees FIFO order of execution.
 
 ```csharp
-public sealed class TicketLockedValue<T> :
-System.IDisposable
+public sealed class TicketLockedValue<T>
 ```
 #### Type parameters
 
@@ -18,8 +17,6 @@ System.IDisposable
 The data type to synchronize access to.
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; TicketLockedValue<T>
-
-Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')
 
 | Methods | |
 | :--- | :--- |

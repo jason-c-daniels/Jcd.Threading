@@ -377,7 +377,6 @@ public sealed class ItemProcessor<TItem> : IDisposable
       pauseSem.Dispose();
       idleSem.Dispose();
       queueSem.Dispose();
-      threadSync.Dispose();
    }
 
    /// <inheritdoc />

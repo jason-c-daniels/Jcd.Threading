@@ -780,13 +780,13 @@
         </member>
         <member name="T:Jcd.Tasks.TicketLockedValue`1">
             <summary>
-            A value wrapper for a <see cref="T:System.Threading.SemaphoreSlim"/> to block access during reads
-            and writes. It guarantees in order execution of reads and writes.
+            A value wrapper for a <see cref="T:Jcd.Tasks.TicketLock"/> to block access during reads
+            and writes. It guarantees FIFO order of execution.
             </summary>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Jcd.Tasks.TicketLockedValue`1.#ctor(`0)" -->
-        <member name="M:Jcd.Tasks.TicketLockedValue`1.Dispose">
+        <member name="P:Jcd.Tasks.TicketLockedValue`1.Value">
             <inheritdoc />
         </member>
         <member name="M:Jcd.Tasks.TicketLockedValue`1.GetValue">
@@ -797,7 +797,7 @@
             <returns>The current value as of establishing the lock.</returns>
             <example>
             <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
+            var sv = new TicketLockedValue&lt;int&gt;(15);
             
             // get the value
             setValue = swmr.GetValue(20);
@@ -812,7 +812,7 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> containing the retrieved value.</returns>
             <example>
             <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
+            var sv = new TicketLockedValue&lt;int&gt;(15);
             
             // get the value
             await setValue = swmr.GetValueAsync(20);
@@ -847,7 +847,7 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
             <example>
             <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
+            var sv = new TicketLockedValue&lt;int&gt;();
             
             // set the value to 10.
             await setValue = swmr.SetValueAsync(10);

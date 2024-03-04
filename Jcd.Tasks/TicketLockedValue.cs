@@ -6,24 +6,23 @@ using System.Threading.Tasks;
 namespace Jcd.Tasks;
 
 /// <summary>
-/// A value wrapper for a <see cref="SemaphoreSlim"/> to block access during reads
-/// and writes. It guarantees in order execution of reads and writes.
+/// A value wrapper for a <see cref="TicketLock"/> to block access during reads
+/// and writes. It guarantees FIFO order of execution.
 /// </summary>
 /// <typeparam name="T">The data type to synchronize access to.</typeparam>
-public sealed class TicketLockedValue<T> : IDisposable
+public sealed class TicketLockedValue<T> 
 {
    private readonly TicketLock mutex = new();
    private          T          val;
 
    // ReSharper disable once NullableWarningSuppressionIsUsed
    /// <summary>
-   /// Constructs an instance of <see cref="MutexValue{T}"/>
+   /// Constructs an instance of <see cref="TicketLockedValue{T}"/>
    /// </summary>
-   /// <param name="value"the initial value to store></param>
-   public TicketLockedValue(T value = default!) { val = value; }
+   /// <param name="initialValue"the initial value to store></param>
+   public TicketLockedValue(T initialValue = default!) { val = initialValue; }
 
    /// <inheritdoc />
-   public void Dispose() { mutex.Dispose(); }
 
    #region properties and accessors
 
@@ -40,7 +39,7 @@ public sealed class TicketLockedValue<T> : IDisposable
    /// <returns>The current value as of establishing the lock.</returns>
    /// <example>
    /// <code>
-   /// var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
+   /// var sv = new TicketLockedValue&lt;int&gt;(15);
    /// 
    /// // get the value
    /// setValue = swmr.GetValue(20);
@@ -60,7 +59,7 @@ public sealed class TicketLockedValue<T> : IDisposable
    /// <returns>A <see cref="Task"/> containing the retrieved value.</returns>
    /// <example>
    /// <code>
-   /// var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
+   /// var sv = new TicketLockedValue&lt;int&gt;(15);
    /// 
    /// // get the value
    /// await setValue = swmr.GetValueAsync(20);
@@ -68,10 +67,10 @@ public sealed class TicketLockedValue<T> : IDisposable
    /// </code>
    /// </example>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public Task<T> GetValueAsync()
+   public async Task<T> GetValueAsync()
    {
-      using (mutex.Lock())
-         return Task.FromResult(val);
+      using (await mutex.LockAsync())
+         return val;
    }
 
    /// <summary>
@@ -105,7 +104,7 @@ public sealed class TicketLockedValue<T> : IDisposable
    /// <returns>A <see cref="Task{T}"/> containing the provided value.</returns>
    /// <example>
    /// <code>
-   /// var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
+   /// var sv = new TicketLockedValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
    /// await setValue = swmr.SetValueAsync(10);
@@ -116,10 +115,10 @@ public sealed class TicketLockedValue<T> : IDisposable
    /// </code>
    /// </example>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public Task<T> SetValueAsync(T value)
+   public async Task<T> SetValueAsync(T value)
    {
-      using (mutex.Lock())
-         return Task.FromResult(val = value);
+      using (await mutex.LockAsync())
+         return val = value;
    }
 
    #endregion

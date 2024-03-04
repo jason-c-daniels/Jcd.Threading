@@ -53,28 +53,35 @@ public class SemaphoreSlimOperations : IDisposable
       return RawValue;
    }
 
-   [Benchmark]
-   public int UsingExtensions_ReadValueToClosureVariable()
-   {
-      int foo=12;
-      sem.Lock(() =>
-              {
-                  foo = RawValue;
-              }
-             );
-
-      return foo;
-   }
    
    [Benchmark]
-   public int UsingExtensions_WriteValueFromClosureVariable()
+   public async Task<int> UsingSemaphoreDirectly_ReadValueAsync()
    {
-      int foo =131;
-      sem.Lock(() =>
-               {
-                  RawValue = foo;
-               }
-              );
+      try
+      {
+         await sem.WaitAsync();
+
+         return RawValue;
+      }
+      finally
+      {
+         sem.Release();
+      }
+   }
+
+   [Benchmark]
+   public async Task<int> UsingSemaphoreDirectly_WriteValueAsync()
+   {
+      try
+      {
+         await sem.WaitAsync();
+
+         RawValue = 171;
+      }
+      finally
+      {
+         sem.Release();
+      }
 
       return RawValue;
    }
@@ -91,6 +98,48 @@ public class SemaphoreSlimOperations : IDisposable
    {
       using (sem.Lock())
          RawValue = 311;
+
+      return RawValue;
+   }
+
+   [Benchmark]
+   public async Task<int> UsingExtensions_ReadValueAsync()
+   {
+      using (await sem.LockAsync())
+         return RawValue;
+   }
+   
+   [Benchmark]
+   public async Task<int> UsingExtensions_WriteValueAsync()
+   {
+      using (await sem.LockAsync())
+         RawValue = 311;
+
+      return RawValue;
+   }
+   
+   [Benchmark]
+   public int UsingExtensions_ReadValueToClosureVariable()
+   {
+      int foo =12;
+      sem.Lock(() =>
+               {
+                  foo = RawValue;
+               }
+              );
+
+      return foo;
+   }
+   
+   [Benchmark]
+   public int UsingExtensions_WriteValueFromClosureVariable()
+   {
+      int foo =131;
+      sem.Lock(() =>
+               {
+                  RawValue = foo;
+               }
+              );
 
       return RawValue;
    }

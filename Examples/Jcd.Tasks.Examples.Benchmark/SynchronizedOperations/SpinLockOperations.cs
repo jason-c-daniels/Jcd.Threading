@@ -16,6 +16,7 @@ public class SpinLockOperations
 
       try
       {
+         sl.Enter(ref lockTaken);
          return ReadMe;
       }
       finally
@@ -32,6 +33,7 @@ public class SpinLockOperations
 
       try
       {
+         sl.Enter(ref lockTaken);
          return ReadMe = 999;
       }
       finally
@@ -48,6 +50,7 @@ public class SpinLockOperations
 
       try
       {
+         sl.Enter(ref lockTaken);
          return ReadMe;
       }
       finally
@@ -64,6 +67,7 @@ public class SpinLockOperations
 
       try
       {
+         sl.Enter(ref lockTaken);
          return ReadMe = 999;
       }
       finally

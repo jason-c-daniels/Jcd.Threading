@@ -17,4 +17,8 @@
       <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="benchmarks\out\results\" />
+    </ItemGroup>
+
 </Project>

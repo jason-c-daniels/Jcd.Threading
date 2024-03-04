@@ -4,23 +4,10 @@ namespace Jcd.Tasks.Examples.Benchmark.SynchronizedOperations;
 
 public class ReaderWriterLockSlimOperations : IDisposable
 {
-   private readonly ReaderWriterLockSlim   rwls     = new();
-   private readonly TicketLockedValue<int> nssv     = new (17);
-   public           int                    RawValue = 14;
-
-   [Benchmark]
-   public int UsingNonStarvingSynchronizedValue_ReadValue()
-   {
-      return nssv.Value;
-   }
-
-   [Benchmark]
-   public int UsingNonStarvingSynchronizedValue_WriteValue()
-   {
-      nssv.Value = RawValue;
-      return RawValue;
-   }
+   private readonly ReaderWriterLockSlim rwls     = new();
    
+   public           int                  RawValue = 14;
+
    [Benchmark(Baseline = true)]
    public int DirectCalls_ReadValue()
    {
@@ -74,7 +61,29 @@ public class ReaderWriterLockSlimOperations : IDisposable
 
       return foo;
    }
-   
+
+   [Benchmark]
+   public async Task<int> UsingExtensions_ReadValueAsync()
+   {
+      int foo;
+
+      using (await rwls.LockAsync())
+         foo = RawValue;
+
+      return foo;
+   }
+
+   [Benchmark]
+   public async Task<int> UsingExtensions_WriteValueAsync()
+   {
+      int foo;
+
+      using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
+         foo = RawValue;
+
+      return foo;
+   }
+
    private SynchronizedValue<int> sv = new(11);
 
    [Benchmark]
@@ -93,10 +102,15 @@ public class ReaderWriterLockSlimOperations : IDisposable
       return RawValue;
    }
 
+   [Benchmark]
+   public Task<int> UsingSynchronizedValue_ReadValueAsync() { return sv.GetValueAsync(); }
+
+   [Benchmark]
+   public Task<int> UsingSynchronizedValue_WriteValueAsync() { return sv.SetValueAsync(RawValue); }
+
    public void Dispose()
    {
       rwls.Dispose();
       sv.Dispose();
-      nssv.Dispose();
    }
 }

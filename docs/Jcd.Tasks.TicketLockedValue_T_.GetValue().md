@@ -16,7 +16,7 @@ The current value as of establishing the lock.
 ### Example
   
 ```csharp  
-var sv = new SingleWriterMultipleReaderValue<int>(15);  
+var sv = new TicketLockedValue<int>(15);  
   
 // get the value  
 setValue = swmr.GetValue(20);  

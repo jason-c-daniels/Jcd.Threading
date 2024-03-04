@@ -22,7 +22,7 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 ### Example
   
 ```csharp  
-var sv = new SingleWriterMultipleReaderValue<int>();  
+var sv = new TicketLockedValue<int>();  
   
 // set the value to 10.  
 await setValue = swmr.SetValueAsync(10);  
