@@ -1,9 +1,7 @@
 ﻿// for readability we alias the various custom TaskScheduler based task runners
 
-global using BackgroundTask =
-   Jcd.Tasks.CustomSchedulerTaskRunner<
-      Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.FourMtaThreadsPerCpuTaskScheduler>;
-global using STAScheduler =
-   Jcd.Tasks.CustomSchedulerTaskRunner<
-      Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.FourStaThreadsPerCpuTaskScheduler>;
-global using CurrentScheduler = Jcd.Tasks.CurrentSchedulerTaskRunner;
+global using BackgroundTask = Jcd.Threading.Tasks.CustomSchedulerTaskRunner<
+   Jcd.Threading.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.DefaultMtaTaskScheduler>;
+global using STAScheduler = Jcd.Threading.Tasks.CustomSchedulerTaskRunner<
+   Jcd.Threading.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers.DefaultStaTaskScheduler>;
+global using CurrentScheduler = Jcd.Threading.Tasks.CurrentSchedulerTaskRunner;

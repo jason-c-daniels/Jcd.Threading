@@ -1,41 +1,47 @@
-﻿// ReSharper disable once HeapView.ObjectAllocation.Evident
+﻿using Jcd.Threading;
 
+// ReSharper disable once HeapView.ObjectAllocation.Evident
 using System.Diagnostics;
 
-namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
-public abstract class IdleTaskScheduler : TaskScheduler, IDisposable
+public abstract class IdleTaskScheduler
+   : TaskScheduler
+   , IDisposable
 {
    private readonly ApartmentState            apartmentState;
    private readonly List<ItemProcessor<Task>> processorList;
    private readonly ItemProcessor<Task>       taskQueuer;
-   private readonly SemaphoreSlim             taskQueueSem = new (1,1);
-      
+   private readonly SemaphoreSlim             taskQueueSem = new(1, 1);
+
    protected IdleTaskScheduler(int threadCount = 0, ApartmentState apartmentState = ApartmentState.Unknown)
    {
-      if (threadCount < 1) threadCount = Environment.ProcessorCount * 4;
+      if (threadCount < 1) threadCount = Environment.ProcessorCount - 2;
+      if (threadCount < 1) threadCount = 2;
       this.apartmentState = apartmentState;
       processorList       = new List<ItemProcessor<Task>>(threadCount);
-      taskQueuer          = CreateProcessor(TaskQueuerProc, $"{GetType().Name}_TaskQueuer");
+      taskQueuer          = CreateTaskProcessor(TaskQueuerProc, $"{GetType().Name}_TaskQueuer");
       foreach (var i in Enumerable.Range(0, threadCount))
-         processorList.Add(CreateProcessor(i));
-   }
-      
-   private ItemProcessor<Task> CreateProcessor(int i)
-   {
-      return CreateProcessor(t =>
-                             {
-                                if (t != null)
-                                   TryExecuteTask(t);
-                             }
-                           , name: $"{GetType().Name}[{i}]"
-                            );
+         processorList.Add(CreateTaskProcessor(i));
    }
 
-   private ItemProcessor<Task> CreateProcessor(Action<Task?> action, string name)
+   private ItemProcessor<Task> CreateTaskProcessor(int i)
+   {
+      return CreateTaskProcessor(t =>
+                                 {
+                                    if (t != null)
+                                       TryExecuteTask(t);
+                                 }
+                               , $"{GetType().Name}[{i}]"
+                                );
+   }
+
+   private ItemProcessor<Task> CreateTaskProcessor(Action<Task?> action, string name)
    {
       return new ItemProcessor<Task>(action
                                    , name: name
+                                   , yieldEachCpuCycle: true
+                                   , timeToYieldInMs: 15
                                    , apartmentState: apartmentState
                                     );
    }
@@ -79,10 +85,12 @@ public abstract class IdleTaskScheduler : TaskScheduler, IDisposable
    {
       if (Current is not IdleTaskScheduler)
       {
-         StackTrace t =new();
-         Log($"Task queued from a {Current.GetType().Name}{Environment.NewLine}{t}{Environment.NewLine}{Thread.CurrentThread.Name}");
+         StackTrace t = new();
+         Log($"Task queued from a {Current.GetType().Name}{Environment.NewLine}{t}{Environment.NewLine}{Thread.CurrentThread.Name}"
+            );
          Log("");
-      }      
+      }
+
       using (taskQueueSem.Lock())
          taskQueuer.Enqueue(task);
    }
@@ -94,15 +102,12 @@ public abstract class IdleTaskScheduler : TaskScheduler, IDisposable
    }
 
    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) { return false; }
-   
+
    private void Dispose(bool disposing)
    {
       if (!disposing) return;
 
-      foreach (var processor in processorList)
-      {
-         processor.Dispose();
-      }
+      foreach (var processor in processorList) processor.Dispose();
       taskQueuer.Dispose();
       taskQueueSem.Dispose();
    }

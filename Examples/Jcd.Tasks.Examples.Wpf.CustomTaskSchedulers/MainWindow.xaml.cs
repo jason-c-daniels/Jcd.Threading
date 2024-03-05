@@ -4,13 +4,15 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
+using Jcd.Threading.Tasks;
+
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
+namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -18,8 +20,8 @@ namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 public partial class MainWindow //: Window
 {
    private readonly MainWindowViewModel mainWindowViewModel = new();
-   DispatcherTimer                      scrollResultsTimer  = new ();
-   DispatcherTimer                      scrollItemsTimer  = new ();
+   private          DispatcherTimer     scrollResultsTimer  = new();
+   private          DispatcherTimer     scrollItemsTimer    = new();
 
    public MainWindow()
    {
@@ -34,6 +36,7 @@ public partial class MainWindow //: Window
    }
 
    private int lastResultCount = 0;
+
    private void ScrollResultsTimerOnTick(object sender, EventArgs e)
    {
       if (lastResultCount == ResultsList.Items.Count) return;
@@ -41,6 +44,7 @@ public partial class MainWindow //: Window
    }
 
    private int lastItemCount = 0;
+
    private void ScrollItemsTimerOnTick(object sender, EventArgs e)
    {
       if (lastItemCount == ItemsList.Items.Count) return;
@@ -51,14 +55,14 @@ public partial class MainWindow //: Window
    {
       if (list.Items.Count > 0)
       {
-         var border = (Border)VisualTreeHelper.GetChild(list, 0);
-         var scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
+         var border       = (Border) VisualTreeHelper.GetChild(list,         0);
+         var scrollViewer = (ScrollViewer) VisualTreeHelper.GetChild(border, 0);
          scrollViewer.ScrollToEnd();
       }
 
       return list.Items.Count;
    }
-   
+
    private async void RunWithMTA_OnClick(object sender, RoutedEventArgs e)
    {
       RunWithMta.IsEnabled = false;
@@ -244,10 +248,7 @@ public partial class MainWindow //: Window
                                     {
                                        z++;
 
-                                       if (z % 5731 == 0)
-                                       {
-                                          waiter.WaitOne(5);
-                                       }
+                                       if (z % 5731 == 0) waiter.WaitOne(5);
 
                                        if (z % 57310 == 0)
                                        {

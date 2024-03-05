@@ -1,12 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace Jcd.Tasks.Examples.Benchmark.SynchronizedOperations;
+using Jcd.Threading;
+
+namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
 public class ReaderWriterLockSlimOperations : IDisposable
 {
-   private readonly ReaderWriterLockSlim rwls     = new();
-   
-   public           int                  RawValue = 14;
+   private readonly ReaderWriterLockSlim rwls = new();
+
+   public int RawValue = 14;
 
    [Benchmark]
    public int DirectCalls_ReadValue()
@@ -84,33 +86,5 @@ public class ReaderWriterLockSlimOperations : IDisposable
       return foo;
    }
 
-   private SynchronizedValue<int> sv = new(11);
-
-   [Benchmark]
-   public int UsingSynchronizedValue_ReadValue()
-   {
-      int foo = sv.Value;
-
-      return foo;
-   }
-
-   [Benchmark]
-   public int UsingSynchronizedValue_WriteValue()
-   {
-      sv.Value = RawValue;
-
-      return RawValue;
-   }
-
-   [Benchmark]
-   public Task<int> UsingSynchronizedValue_ReadValueAsync() { return sv.GetValueAsync(); }
-
-   [Benchmark]
-   public Task<int> UsingSynchronizedValue_WriteValueAsync() { return sv.SetValueAsync(RawValue); }
-
-   public void Dispose()
-   {
-      rwls.Dispose();
-      sv.Dispose();
-   }
+   public void Dispose() { rwls.Dispose(); }
 }

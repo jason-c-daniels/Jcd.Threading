@@ -1,4 +1,6 @@
-﻿namespace Jcd.Tasks.Tests.Helpers;
+﻿using Jcd.Threading.Tasks;
+
+namespace Jcd.Threading.Tests.Helpers;
 
 public class SimpleThreadedTaskSchedulerHarness : SimpleThreadedTaskScheduler
 {

@@ -6,7 +6,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable HeapView.DelegateAllocation
 
-namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
 using TaskQueue = ConcurrentQueue<Task>;
 

@@ -1,2 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
-[assembly:InternalsVisibleTo("Jcd.Tasks.Examples.Benchmark")]
+
+[assembly: InternalsVisibleTo("Jcd.Threading.Examples.Benchmark")]

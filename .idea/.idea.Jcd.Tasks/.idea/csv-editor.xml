@@ -3,13 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\Examples\Jcd.Tasks.Examples.Benchmark\benchmarks\out\results\BenchmarkRun-joined-2024-03-04-13-29-51-report.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\Examples\Jcd.Tasks.Examples.Benchmark\benchmarks\out\results\Jcd.Tasks.Examples.Benchmark.SynchronizedOperations.NitoAsyncOperations-report.csv">
           <value>
             <Attribute>

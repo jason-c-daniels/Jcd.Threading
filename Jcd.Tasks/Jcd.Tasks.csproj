@@ -4,6 +4,8 @@
       <TargetFramework>netstandard2.0</TargetFramework>
       <LangVersion>latest</LangVersion>
       <Nullable>enable</Nullable>
+      <AssemblyName>Jcd.Threading</AssemblyName>
+      <RootNamespace>Jcd.Threading</RootNamespace>
    </PropertyGroup>
 
    <ItemGroup>
@@ -13,8 +15,8 @@
       </PackageReference>
       <PackageReference Include="Jcd.Validations" Version="1.1.7"/>
       <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.3">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+         <PrivateAssets>all</PrivateAssets>
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
    </ItemGroup>
 

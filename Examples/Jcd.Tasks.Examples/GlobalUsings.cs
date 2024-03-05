@@ -1,2 +1,2 @@
 ﻿global using CustomTaskRunner =
-   Jcd.Tasks.CurrentSchedulerTaskRunner;
+   Jcd.Threading.Tasks.CurrentSchedulerTaskRunner;

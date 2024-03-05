@@ -3,7 +3,9 @@
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
+using Jcd.Threading.Tasks;
+
+namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
 /// Interaction logic for App.xaml

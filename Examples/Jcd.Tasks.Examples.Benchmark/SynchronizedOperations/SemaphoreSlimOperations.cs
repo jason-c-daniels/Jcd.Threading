@@ -1,23 +1,23 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace Jcd.Tasks.Examples.Benchmark.SynchronizedOperations;
+using Jcd.Threading.SynchronizedValues;
+
+namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
 public class SemaphoreSlimOperations : IDisposable
 {
-   private MutexValue<int> mv       = new(12);
-   private SemaphoreSlim   sem      = new(1, 1);
-   public int             RawValue = 13;
+   private SemaphoreSlimValue<int> mv       = new(12);
+   private SemaphoreSlim           sem      = new(1, 1);
+   public  int                     RawValue = 13;
 
    [Benchmark]
-   public int UsingMutexValue_ReadValue()
-   {
-      return mv.Value;
-   }
-   
+   public int UsingMutexValue_ReadValue() { return mv.Value; }
+
    [Benchmark]
    public int UsingMutexValue_WriteValue()
    {
       mv.Value = RawValue;
+
       return RawValue;
    }
 
@@ -43,7 +43,7 @@ public class SemaphoreSlimOperations : IDisposable
       {
          sem.Wait();
 
-         RawValue= 171;
+         RawValue = 171;
       }
       finally
       {
@@ -53,7 +53,6 @@ public class SemaphoreSlimOperations : IDisposable
       return RawValue;
    }
 
-   
    [Benchmark]
    public async Task<int> UsingSemaphoreDirectly_ReadValueAsync()
    {
@@ -92,7 +91,7 @@ public class SemaphoreSlimOperations : IDisposable
       using (sem.Lock())
          return RawValue;
    }
-   
+
    [Benchmark]
    public int UsingExtensions_WriteValue()
    {
@@ -108,7 +107,7 @@ public class SemaphoreSlimOperations : IDisposable
       using (await sem.LockAsync())
          return RawValue;
    }
-   
+
    [Benchmark]
    public async Task<int> UsingExtensions_WriteValueAsync()
    {
@@ -117,29 +116,21 @@ public class SemaphoreSlimOperations : IDisposable
 
       return RawValue;
    }
-   
+
    [Benchmark]
    public int UsingExtensions_ReadValueToClosureVariable()
    {
-      int foo =12;
-      sem.Lock(() =>
-               {
-                  foo = RawValue;
-               }
-              );
+      var foo = 12;
+      sem.Lock(() => { foo = RawValue; });
 
       return foo;
    }
-   
+
    [Benchmark]
    public int UsingExtensions_WriteValueFromClosureVariable()
    {
-      int foo =131;
-      sem.Lock(() =>
-               {
-                  RawValue = foo;
-               }
-              );
+      var foo = 131;
+      sem.Lock(() => { RawValue = foo; });
 
       return RawValue;
    }

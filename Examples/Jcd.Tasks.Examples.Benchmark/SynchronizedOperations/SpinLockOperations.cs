@@ -1,22 +1,25 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace Jcd.Tasks.Examples.Benchmark.SynchronizedOperations;
+using Jcd.Threading.SynchronizedValues;
+
+namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
 public class SpinLockOperations
 {
    public int ReadMe = 10;
 
-   private readonly SpinLockedValue<int> spinLockValue = new(17);
-   private          SpinLock             sl;
+   private readonly SpinLockValue<int> spinLockValue = new(17);
+   private          SpinLock           sl;
 
    [Benchmark]
    public int DirectSpinLockCalls_ReadValue_NoMemoryBarrier()
    {
-      bool lockTaken = false;
+      var lockTaken = false;
 
       try
       {
          sl.Enter(ref lockTaken);
+
          return ReadMe;
       }
       finally
@@ -29,11 +32,12 @@ public class SpinLockOperations
    [Benchmark]
    public int DirectSpinLockCalls_WriteValue_NoMemoryBarrier()
    {
-      bool lockTaken = false;
+      var lockTaken = false;
 
       try
       {
          sl.Enter(ref lockTaken);
+
          return ReadMe = 999;
       }
       finally
@@ -46,11 +50,12 @@ public class SpinLockOperations
    [Benchmark]
    public int DirectSpinLockCalls_ReadValue_WithMemoryBarrier()
    {
-      bool lockTaken = false;
+      var lockTaken = false;
 
       try
       {
          sl.Enter(ref lockTaken);
+
          return ReadMe;
       }
       finally
@@ -63,11 +68,12 @@ public class SpinLockOperations
    [Benchmark]
    public int DirectSpinLockCalls_WriteValue_WithMemoryBarrier()
    {
-      bool lockTaken = false;
+      var lockTaken = false;
 
       try
       {
          sl.Enter(ref lockTaken);
+
          return ReadMe = 999;
       }
       finally
@@ -81,14 +87,16 @@ public class SpinLockOperations
    public int UsingExtensions_ReadValue()
    {
       var result = 0;
-      sl.Lock(() => { result=ReadMe;});
+      sl.Lock(() => { result = ReadMe; });
+
       return result;
    }
 
    [Benchmark]
    public int UsingExtensions_WriteValue()
    {
-      sl.Lock(() => { ReadMe = 9991;});
+      sl.Lock(() => { ReadMe = 9991; });
+
       return ReadMe;
    }
 

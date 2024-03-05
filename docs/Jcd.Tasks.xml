@@ -1,168 +1,10 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Jcd.Tasks</name>
+        <name>Jcd.Threading</name>
     </assembly>
     <members>
-        <member name="T:Jcd.Tasks.CurrentSchedulerTaskRunner">
-            <summary>
-            A static class that schedules tasks on the current <see cref="T:System.Threading.Tasks.TaskScheduler"/> or
-            a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/> if null is passed in or none is specified.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.CurrentSchedulerTaskRunner.Scheduler">
-            <summary>
-            The current <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="action">the action to run</param>
-            <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
-            <returns></returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="cancellationToken">the token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the action with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="cancellationToken">the token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="cancellationToken">the token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="cancellationToken">the token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="T:Jcd.Tasks.CustomSchedulerTaskRunner`1">
-            <summary>
-            A singleton <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates
-            are registered with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.CustomSchedulerTaskRunner`1.Scheduler">
-            <summary>
-            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> used to schedule and execute tasks.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the action with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="cancellationToken">The token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the action with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="asyncAction">the function to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="asyncAction">the action to execute.</param>
-            <param name="cancellationToken">The token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the action with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="cancellationToken">The token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
-            <summary>
-            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="cancellationToken">The token to check for cancellation.</param>
-            <param name="scheduler">The optional scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="T:Jcd.Tasks.ItemProcessor`1">
+        <member name="T:Jcd.Threading.ItemProcessor`1">
             <summary>
             An item processor that calls a delegate on each item enqueued with it. 
             </summary>
@@ -171,203 +13,225 @@
             synchronized appropriately. This type only synchronizes access to internal data.
             </remarks>
         </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.Thread">
+        <member name="M:Jcd.Threading.ItemProcessor`1.#ctor(System.Action{`0},System.Boolean,System.String,System.Boolean,System.Boolean,System.Int32,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
             <summary>
-            Provides direct access to the underlying thread.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.Items">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.Count">
-            <summary>
-            The number of items in the internal queue.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.HasItems">
-            <summary>
-            Gets a flag indicating if there are any pending items.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.IsStarted">
-            <summary>
-            Gets a flag indicating if the item processing loop has started.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.IsPaused">
-            <summary>
-            Gets a flag indicating if the item processing is currently paused.
-            </summary>
-        </member>
-        <member name="P:Jcd.Tasks.ItemProcessor`1.IsIdle">
-            <summary>
-            Gets a flag indicating if the item processing is currently paused.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.#ctor(System.Action{`0},System.Boolean,System.String,System.Boolean,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
-            <summary>
-            Constructs a <see cref="T:Jcd.Tasks.ItemProcessor`1"/>
+            Constructs a <see cref="T:Jcd.Threading.ItemProcessor`1"/>
             </summary>
             <param name="action">The action to execute on each item.</param>
             <param name="name">The name of this ItemProcessor, propagated to the underlying thread.</param>
             <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
             <param name="autoStart">Indicates if the thread should be automatically started.</param>
+            <param name="timeToYieldInMs">Indicates the amount of time to yiel when yielded each pas through the main loop.</param>
             <param name="priority">The priority to start the processing thread at.</param>
             <param name="apartmentState">The apartment state for the underlying thread.</param>
+            <param name="yieldEachCpuCycle">Indicates if CPU time will be yielded each pass through the main loop.</param>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.Enqueue(`0)">
+        <member name="M:Jcd.Threading.ItemProcessor`1.PerformWork(System.Threading.CancellationToken)">
             <summary>
-            Enqueues a <see cref="!:TItem"/>. This is a "fire and forget" method. Control is immediately
+            Grabs the first item in the queue and performs the user provided action on it.
+            </summary>
+            <param name="token">The token to inspect for cancellation.</param>
+            <returns>True if there are pending items after the work is performed.</returns>
+        </member>
+        <member name="P:Jcd.Threading.ItemProcessor`1.Items">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ItemProcessor`1.Count">
+            <summary>
+            The number of items in the internal queue.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ItemProcessor`1.HasItems">
+            <summary>
+            Gets a flag indicating if there are any pending items.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ItemProcessor`1.Clear">
+            <summary>
+            Clears all items out of the queue. USE AT YOUR OWN RISK!
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ItemProcessor`1.ClearAsync">
+            <summary>
+            Asynchronously clears all items out of the queue. USE AT YOUR OWN RISK!
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ItemProcessor`1.Enqueue(`0)">
+            <summary>
+            Enqueues an item. Control is immediately
             returned to the caller.
             </summary>
             <param name="item">The action to enqueue.</param>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.Pause">
+        <member name="M:Jcd.Threading.ItemProcessor`1.EnqueueAsync(`0)">
             <summary>
-            Pauses the retrieval and processing of queued items. 
+            Enqueues an item asynchronously. Control is immediately
+            returned to the caller.
+            </summary>
+            <param name="item">The action to enqueue.</param>
+        </member>
+        <member name="M:Jcd.Threading.ItemProcessor`1.Dispose(System.Boolean)">
+            <summary>
+            Cleans up other disposables.
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="T:Jcd.Threading.ITicket">
+            <summary>
+            The supported interface guaranteed to be returned from
+            the appropriate methods of <see cref="T:Jcd.Threading.TicketLock"/>
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.Resume">
+        <member name="P:Jcd.Threading.ITicket.TicketId">
             <summary>
-            Resumes item processing.
+            The ID for the ticket. These are issued out sequentially.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.PauseAsync">
+        <member name="P:Jcd.Threading.ITicket.IsCanceled">
             <summary>
-            Pauses the retrieval and execution of queued items.
+            Indicates if the ticket was cancelled.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.ResumeAsync">
+        <member name="M:Jcd.Threading.ITicket.Wait">
             <summary>
-            Resumes item processing.
+            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.ITicket.Wait(System.Threading.CancellationToken)">
+            <summary>
+            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <param name="token">the token to observe for cancellation.</param>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.ITicket.WaitAsync">
+            <summary>
+            Asynchronously Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.ITicket.WaitAsync(System.Threading.CancellationToken)">
+            <summary>
+            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <param name="token">the token to observe for cancellation.</param>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.ITicket.Cancel">
+            <summary>
+            Cancels the ticket. This will register a background thread to do cleanup.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.Start">
+        <member name="M:Jcd.Threading.ITicket.Release">
             <summary>
-            Starts the processing of queued items.
+            Releases the lock, if acquired.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.ItemProcessor`1.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.MutexValue`1">
-            <summary>
-            A value wrapper for a <see cref="T:System.Threading.SemaphoreSlim"/> to block access during reads and writes.
-            This results in single writer or single reader access to the data.  
-            </summary>
-            <typeparam name="T">The data type to synchronize access to.</typeparam>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:Jcd.Tasks.MutexValue`1.#ctor(`0)" -->
-        <member name="M:Jcd.Tasks.MutexValue`1.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="M:Jcd.Tasks.MutexValue`1.GetValue">
-            <summary>
-            Retrieves the current value. If another thread edits the value, moment later a subsequent
-            call will yield a different result. 
-            </summary>
-            <returns>The current value as of establishing the lock.</returns>
-            <example>
-            <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
-            
-            // get the value
-            setValue = swmr.GetValue(20);
-            
-            </code>
-            </example>
-        </member>
-        <member name="M:Jcd.Tasks.MutexValue`1.GetValueAsync">
-            <summary>
-            Gets the value in an async friendly manner.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
-            <example>
-            <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;(15);
-            
-            // get the value
-            await setValue = swmr.GetValueAsync(20);
-            
-            </code>
-            </example>
-        </member>
-        <member name="M:Jcd.Tasks.MutexValue`1.SetValue(`0)">
-            <summary>
-            Sets the current value to the provided value.
-            </summary>
-            <param name="value">The provided value.</param>
-            <returns>The provided value.</returns>
-            <example>
-            <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
-            
-            // set the value to 10.
-            setValue = swmr.SetValue(10);
-            
-            // set the value to 20.
-            setValue = swmr.SetValue(20);
-            
-            </code>
-            </example>
-        </member>
-        <member name="M:Jcd.Tasks.MutexValue`1.SetValueAsync(`0)">
-            <summary>
-            Sets the current value to the provided value.
-            </summary>
-            <param name="value">The provided value.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
-            <example>
-            <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
-            
-            // set the value to 10.
-            await setValue = swmr.SetValueAsync(10);
-            
-            // set the value to 20.
-            await setValue = swmr.SetValueAsync(20);
-            
-            </code>
-            </example>
-        </member>
-        <member name="T:Jcd.Tasks.NamespaceDoc">
+        <member name="T:Jcd.Threading.NamespaceDoc">
             <summary>
             Provides types and extension methods to assist with the creation, execution, and
             management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
             </summary>
         </member>
-        <member name="T:Jcd.Tasks.ReaderWriterLockSlimExtensions">
+        <member name="T:Jcd.Threading.ReaderWriterLockSlimExtensions">
             <summary>
             A set of extension methods to simplify using a <see cref="T:System.Threading.ReaderWriterLockSlim"/>
             to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,
             and EnterWrite+ExitWrite are called.
             </summary>
         </member>
-        <member name="T:Jcd.Tasks.SemaphoreSlimExtensions">
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
+             <summary>
+             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+             calls the appropriate exit method on the lock during disposal. 
+             </summary>
+             <param name="lock">The lock to acquire and release.</param>
+             <param name="intent">The type of lock being acquired. By default this is a Read</param>
+             <returns>the IDisposable to release the resources.</returns>
+             <remarks>
+             <para>
+             This method is intended to be used with a using block.
+             There is little value in using it otherwise.
+             </para>
+             <code>
+             // example usage.
+             var rwls = new ReaderWriterLockSlim();
+            
+             using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
+             {
+                // write to a critical set of values here.
+                // ..
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
+             <summary>
+             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+             calls the appropriate exit method on the lock during disposal. 
+             </summary>
+             <param name="lock">The lock to acquire and release.</param>
+             <param name="intent">The type of lock being acquired. By default this is a Read</param>
+             <returns>the IDisposable to release the resources.</returns>
+             <remarks>
+             <para>
+             This method is intended to be used with a using block.
+             There is little value in using it otherwise.
+             </para>
+             <code>
+             // example usage.
+             var rwls = new ReaderWriterLockSlim();
+            
+             using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
+             {
+                // write to a critical set of values here.
+                // ..
+             }
+             </code>
+             </remarks>
+        </member>
+        <member name="T:Jcd.Threading.ReaderWriterLockSlimIntent">
+            <summary>
+            Indicates the intent of a call to ReaderWriterLockSLimExtensions.Lock.
+            </summary>
+        </member>
+        <member name="F:Jcd.Threading.ReaderWriterLockSlimIntent.Read">
+            <summary>
+            The lock is being used to read data.
+            </summary>
+        </member>
+        <member name="F:Jcd.Threading.ReaderWriterLockSlimIntent.UpgradeableRead">
+            <summary>
+            The lock is being used to read, at first, but can be upgraded to a write.
+            </summary>
+        </member>
+        <member name="F:Jcd.Threading.ReaderWriterLockSlimIntent.Write">
+            <summary>
+            The lock is being used for writing.
+            </summary>
+        </member>
+        <member name="T:Jcd.Threading.SemaphoreSlimExtensions">
             <summary>
             A set of extension methods to simplify using a <see cref="T:System.Threading.SemaphoreSlim"/>
             to ensure that Release is called for every Wait or WaitAsync. Useful for
             ensuring synchronized access to data for short lived operations.
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim)">
+        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim)">
             <summary>
             Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
-            <summary>
-            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
-            </summary>
-            <param name="sem">the semaphore to use.</param>
-            <param name="token">A cancellation token to use during the wait.</param>
-            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Action)">
+        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
             <summary>
             Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
@@ -375,14 +239,22 @@
             <param name="token">A cancellation token to use during the wait.</param>
             <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim)">
+        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Action)">
+            <summary>
+            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <param name="action">the action to execute</param>
+            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim)">
             <summary>
             Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Tasks.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
+        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
             <summary>
             Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
             </summary>
@@ -390,86 +262,12 @@
             <param name="token">A cancellation token to use during the wait.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="T:Jcd.Tasks.SimpleThreadedTaskScheduler">
-            <summary>
-            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived base type that runs <see cref="T:System.Threading.Tasks.Task"/> instances
-            in a fixed size pool of threads. Inlining is disabled by default to ensure only
-            the threads managed by this <see cref="T:System.Threading.Tasks.TaskScheduler"/> will process the tasks.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.GetScheduledTasks">
-            <inheritdoc />
-        </member>
-        <member name="P:Jcd.Tasks.SimpleThreadedTaskScheduler.Threads">
-            <summary>
-            The set of threads that will process Tasks. This is provided for
-            advanced use cases where an action needs to be taken on the entire
-            pool of threads.
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Shutdown">
-            <summary>
-            Signals the underlying threads that the <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            is being shutdown (i.e. disposed of). Threads should shortly thereafter. 
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
-            <summary>
-            Constructs an instance of the type.
-            </summary>
-            <param name="threadCount">The number of threads to create.</param>
-            <param name="state">the thread apartment state setting for all threads.</param>
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
-            <inheritdoc />
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <summary>
-            The method to attempt executing a Task in the calling thread's context.
-            This is disabled by default. See remarks for discussion. 
-            </summary>
-            <param name="task">the task to try inlining</param>
-            <param name="taskWasPreviouslyQueued">indicates if it was previously queued with this scheduler</param>
-            <returns>false, by default, may be overridden in a derived type.</returns>
-            <remarks>
-            The default implementation for this scheduler guarantees only its threads are processing tasks, so we cannot
-            inline operations as inlining executes the task on the ThreadPool, which may not meet the same requirements as our
-            dedicated threads.
-            </remarks>
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose(System.Boolean)">
-            <summary>
-            Disposes unmanaged resources  
-            </summary>
-            <param name="disposing">indicates if it's disposing.</param>
-        </member>
-        <member name="M:Jcd.Tasks.SimpleThreadedTaskScheduler.Dispose">
-            <inheritdoc />
-        </member>
-        <member name="T:Jcd.Tasks.SpinLockedValue`1">
-            <summary>
-            Provides synchronization to an underlying value through a <see cref="T:System.Threading.SpinLock"/>.
-            </summary>
-            <typeparam name="T">The type of the data being stored.</typeparam>
-        </member>
-        <member name="M:Jcd.Tasks.SpinLockedValue`1.#ctor(`0,System.Boolean)">
-            <summary>
-            Creates an instance of a <see cref="T:Jcd.Tasks.SpinLockedValue`1"/>
-            </summary>
-            <param name="initialValue">The initial value</param>
-            <param name="useMemoryBarrier">Indicates if the call to Exit should use a memory barrier to notify other threads the lock has been freed(much slower!).</param>
-        </member>
-        <member name="P:Jcd.Tasks.SpinLockedValue`1.Value">
-            <summary>
-            Sets or gets the value. This may block.
-            </summary>
-        </member>
-        <member name="T:Jcd.Tasks.SpinLockExtensions">
+        <member name="T:Jcd.Threading.SpinLockExtensions">
             <summary>
             Provides extension methods to aid in working with SpinLocks
             </summary>
         </member>
-        <member name="M:Jcd.Tasks.SpinLockExtensions.Lock(System.Threading.SpinLock@,System.Action,System.Boolean)">
+        <member name="M:Jcd.Threading.SpinLockExtensions.Lock(System.Threading.SpinLock@,System.Action,System.Boolean)">
             <summary>
             Acquires exclusive access to the spinLock and executes the provided action.
             </summary>
@@ -477,7 +275,7 @@
             <param name="action">The action to perform</param>
             <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
         </member>
-        <member name="M:Jcd.Tasks.SpinLockExtensions.LockAsync(System.Threading.SpinLock@,System.Action,System.Boolean)">
+        <member name="M:Jcd.Threading.SpinLockExtensions.LockAsync(System.Threading.SpinLock@,System.Action,System.Boolean)">
             <summary>
             Acquires exclusive access to the spinLock and executes the provided action.
             </summary>
@@ -485,7 +283,7 @@
             <param name="action">The action to perform</param>
             <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
         </member>
-        <member name="T:Jcd.Tasks.SynchronizedValue`1">
+        <member name="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1">
             <summary>
             Provides a simple async-safe and thread-safe method of setting, getting, acting on,
             and altering values shared among tasks and threads.
@@ -496,24 +294,24 @@
             <para>
             While this provides a method of easily ensuring any one shared value is appropriately
             locked during setting or getting, you still need to thoroughly understand your
-            use case. For example, having two <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instances accessed
+            use case. For example, having two <see cref="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1"/> instances accessed
             by two different threads, in rapid succession, in different orders can cause
             potentially unexpected results.
             </para>
             <para>
             In cases where the pair/tuple must be consistent at all times across all accesses,
             consider creating a struct containing the necessary fields/properties and wrapping
-            that in a <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instead of each individual field/property.
+            that in a <see cref="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1"/> instead of each individual field/property.
             </para>
             <para>
             As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
-            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="!:Do"/>, and <see cref="!:DoAsync"/>
+            time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
             for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
             </para>
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.#ctor(`0)">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.#ctor(`0)">
             <summary>
             Provides a simple async-safe and thread-safe method of setting, getting, acting on,
             and altering values shared among tasks and threads.
@@ -524,33 +322,33 @@
             <para>
             While this provides a method of easily ensuring any one shared value is appropriately
             locked during setting or getting, you still need to thoroughly understand your
-            use case. For example, having two <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instances accessed
+            use case. For example, having two <see cref="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1"/> instances accessed
             by two different threads, in rapid succession, in different orders can cause
             potentially unexpected results.
             </para>
             <para>
             In cases where the pair/tuple must be consistent at all times across all accesses,
             consider creating a struct containing the necessary fields/properties and wrapping
-            that in a <see cref="T:Jcd.Tasks.SynchronizedValue`1"/> instead of each individual field/property.
+            that in a <see cref="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1"/> instead of each individual field/property.
             </para>
             <para>
             As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
-            time. See the documentation for <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>, <see cref="!:Do"/>, and <see cref="!:DoAsync"/>
+            time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
             for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
             </para>
             </remarks>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.Dispose">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.Dispose">
             <inheritdoc />
         </member>
-        <member name="P:Jcd.Tasks.SynchronizedValue`1.Value">
+        <member name="P:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.Value">
              <summary>
              Get or sets the synchronized value.
              </summary>
              <example>
              <code>
-             var sv = new SynchronizedValue&lt;int&gt;(15);
+             var sv = new ReaderWriterLockSlimValue&lt;int&gt;(15);
              
              // get the value
              var theValue = sv.Value;
@@ -561,7 +359,7 @@
              </code>
              </example>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValue">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.GetValue">
             <summary>
             Retrieves the current value. If another thread edits the value, moment later a subsequent
             call will yield a different result. 
@@ -569,7 +367,7 @@
             <returns>The current value as of establishing the lock.</returns>
             <example>
             <code>
-            var sv = new SynchronizedValue&lt;int&gt;(15);
+            var sv = new ReaderWriterLockSlimValue&lt;int&gt;(15);
             
             // get the value
             setValue = sv.GetValue(20);
@@ -577,14 +375,14 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.GetValueAsync">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.GetValueAsync">
             <summary>
             Gets the value in an async friendly manner.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
             <example>
             <code>
-            var sv = new SynchronizedValue&lt;int&gt;(15);
+            var sv = new ReaderWriterLockSlimValue&lt;int&gt;(15);
             
             // get the value
             await setValue = sv.GetValueAsync(20);
@@ -592,7 +390,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValue(`0)">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.SetValue(`0)">
             <summary>
             Sets the current value to the provided value.
             </summary>
@@ -600,7 +398,7 @@
             <returns>The provided value.</returns>
             <example>
             <code>
-            var sv = new SynchronizedValue&lt;int&gt;();
+            var sv = new ReaderWriterLockSlimValue&lt;int&gt;();
             
             // set the value to 10.
             setValue = sv.SetValue(10);
@@ -611,7 +409,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.SetValueAsync(`0)">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.SetValueAsync(`0)">
             <summary>
             Sets the current value to the provided value.
             </summary>
@@ -619,7 +417,7 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
             <example>
             <code>
-            var sv = new SynchronizedValue&lt;int&gt;();
+            var sv = new ReaderWriterLockSlimValue&lt;int&gt;();
             
             // set the value to 10.
             await setValue = sv.SetValueAsync(10);
@@ -630,7 +428,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValue(System.Func{`0,`0})">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValue(System.Func{`0,`0})">
              <summary>
              Calls the provided function, passing in the current value, and assigns the result
              of the function call, to the current value. <b>This is not recursively reentrant.
@@ -644,7 +442,7 @@
              <example>
              Standard usage: pass in a function to manipulate the current value.
              <code>
-             var sv = new SynchronizedValue&lt;int&gt;();
+             var sv = new ReaderWriterLockSlimValue&lt;int&gt;();
              
              // increment the value by one.
              var changedValue = sv.Do(x => x + 1);
@@ -660,14 +458,14 @@
              the following.
              </para>
              <code>
-             var sv=new SynchronizedValue&lt;int&gt;(10);
+             var sv=new ReaderWriterLockSlimValue&lt;int&gt;(10);
             
              // deadlock yourself in a single line of code!
              var changedValue = sv.Do(x=>sv.Value+10);
              </code>
              </remarks>
         </member>
-        <member name="M:Jcd.Tasks.SynchronizedValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
+        <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
              <summary>
              Calls the provided function, passing in the current value, and assigns the result
              of the function call, to the current value. <b>This is not recursively reentrant.
@@ -678,7 +476,7 @@
              <example>
              Standard usage: pass in a function to manipulate the current value.
              <code>
-             var sv = new SynchronizedValue&lt;int&gt;();
+             var sv = new ReaderWriterLockSlimValue&lt;int&gt;();
              
              // increment the value by one.
              var changedValue = await sv.ChangeValueAsync(x => x + 1);
@@ -696,100 +494,284 @@
              the following.
              </para>
              <code>
-             var sv=new SynchronizedValue&lt;int&gt;(10);
+             var sv=new ReaderWriterLockSlimValue&lt;int&gt;(10);
             
              // deadlock yourself in a single line of code!
              var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
              </code>
              </remarks>
         </member>
-        <member name="T:Jcd.Tasks.TaskSchedulerExtensions">
+        <member name="T:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1">
             <summary>
-            Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
-            This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            in a manner similar to `Task.Run` 
-            </summary>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="scheduler">The scheduler to execute the action with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="action">the action to execute.</param>
-            <param name="scheduler">The scheduler to execute the action with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task})">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the action to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0})">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0},System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}})">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="M:Jcd.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
-            <summary>
-            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
-            </summary>
-            <param name="function">the function to execute.</param>
-            <param name="scheduler">The scheduler to execute the function with.</param>
-            <param name="cancellationToken">the token to check for cancellation</param>
-            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
-        </member>
-        <member name="T:Jcd.Tasks.TicketLockedValue`1">
-            <summary>
-            A value wrapper for a <see cref="T:Jcd.Tasks.TicketLock"/> to block access during reads
-            and writes. It guarantees FIFO order of execution.
+            A value wrapper with a <see cref="T:System.Threading.SemaphoreSlim"/> to block access during reads and writes.
+            This results in single writer or single reader access to the data.  
             </summary>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Jcd.Tasks.TicketLockedValue`1.#ctor(`0)" -->
-        <member name="P:Jcd.Tasks.TicketLockedValue`1.Value">
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.#ctor(`0)">
+            <summary>
+            Constructs an instance of <see cref="T:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1"/>
+            </summary>
+            <param name="value">the initial value to store></param>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.Dispose">
             <inheritdoc />
         </member>
-        <member name="M:Jcd.Tasks.TicketLockedValue`1.GetValue">
+        <member name="P:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.Value">
+            <summary>
+            The value protected by the mutex.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.GetValue">
+            <summary>
+            Retrieves the current value. If another thread edits the value, moment later a subsequent
+            call will yield a different result. 
+            </summary>
+            <returns>The current value as of establishing the lock.</returns>
+            <example>
+            <code>
+            var sv = new SemaphoreSlimValue&lt;int&gt;(15);
+            
+            // get the value
+            setValue = swmr.GetValue(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.GetValueAsync">
+            <summary>
+            Gets the value in an async friendly manner.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the retrieved value.</returns>
+            <example>
+            <code>
+            var sv = new SemaphoreSlimValue&lt;int&gt;(15);
+            
+            // get the value
+            await setValue = swmr.GetValueAsync(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.SetValue(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>The provided value.</returns>
+            <example>
+            <code>
+            var sv = new SemaphoreSlimValue&lt;int&gt;();
+            
+            // set the value to 10.
+            setValue = swmr.SetValue(10);
+            
+            // set the value to 20.
+            setValue = swmr.SetValue(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.SetValueAsync(`0)">
+            <summary>
+            Sets the current value to the provided value.
+            </summary>
+            <param name="value">The provided value.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the provided value.</returns>
+            <example>
+            <code>
+            var sv = new SemaphoreSlimValue&lt;int&gt;();
+            
+            // set the value to 10.
+            await setValue = swmr.SetValueAsync(10);
+            
+            // set the value to 20.
+            await setValue = swmr.SetValueAsync(20);
+            
+            </code>
+            </example>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.ChangeValue(System.Func{`0,`0})">
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">
+             A function to call which receives the current value, modifies it, and returns the
+             modified result.
+             </param>
+             <returns>The modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new SemaphoreSlimValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = sv.ChangeValue(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = sv.ChangeValue(x => x + 2);
+             
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SemaphoreSlimValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = sv.ChangeValue(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">The function to call.</param>
+             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new SemaphoreSlimValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = await sv.ChangeValueAsync(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = await sv.ChangeValueAsync(x => x + 2);
+             
+             // Perform some operation that requires the value to remain unchanged during the operation.
+             var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SemaphoreSlimValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="T:Jcd.Threading.SynchronizedValues.SpinLockValue`1">
+            <summary>
+            Provides synchronization to an underlying value through a <see cref="T:System.Threading.SpinLock"/>.
+            </summary>
+            <typeparam name="T">The type of the data being stored.</typeparam>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SpinLockValue`1.#ctor(`0,System.Boolean)">
+            <summary>
+            Creates an instance of a <see cref="T:Jcd.Threading.SynchronizedValues.SpinLockValue`1"/>
+            </summary>
+            <param name="initialValue">The initial value</param>
+            <param name="useMemoryBarrier">Indicates if the call to Exit should use a memory barrier to notify other threads the lock has been freed(much slower!).</param>
+        </member>
+        <member name="P:Jcd.Threading.SynchronizedValues.SpinLockValue`1.Value">
+            <summary>
+            Sets or gets the value. This will block.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SpinLockValue`1.ChangeValue(System.Func{`0,`0})">
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">
+             A function to call which receives the current value, modifies it, and returns the
+             modified result.
+             </param>
+             <returns>The modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new SpinLockValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = sv.ChangeValue(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = sv.ChangeValue(x => x + 2);
+             
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SpinLockValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = sv.ChangeValue(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.SpinLockValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">The function to call.</param>
+             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new SpinLockValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = await sv.ChangeValueAsync(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = await sv.ChangeValueAsync(x => x + 2);
+             
+             // Perform some operation that requires the value to remain unchanged during the operation.
+             var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new SpinLockValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="T:Jcd.Threading.SynchronizedValues.TicketLockValue`1">
+            <summary>
+            A value wrapper for a <see cref="T:Jcd.Threading.TicketLock"/> to block access during reads
+            and writes. It guarantees in order execution of locks.
+            </summary>
+            <typeparam name="T">The data type to synchronize access to.</typeparam>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.#ctor(`0)">
+            <summary>
+            Constructs an instance of <see cref="T:Jcd.Threading.SynchronizedValues.TicketLockValue`1"/>
+            </summary>
+            <param name="initialValue">the initial value to store></param>
+        </member>
+        <member name="P:Jcd.Threading.SynchronizedValues.TicketLockValue`1.Value">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.GetValue">
             <summary>
             Retrieves the current value. If another thread edits the value, moment later a subsequent
             call will yield a different result. 
@@ -805,7 +787,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.TicketLockedValue`1.GetValueAsync">
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.GetValueAsync">
             <summary>
             Gets the value in an async friendly manner.
             </summary>
@@ -820,7 +802,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.TicketLockedValue`1.SetValue(`0)">
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.SetValue(`0)">
             <summary>
             Sets the current value to the provided value.
             </summary>
@@ -828,7 +810,7 @@
             <returns>The provided value.</returns>
             <example>
             <code>
-            var sv = new SingleWriterMultipleReaderValue&lt;int&gt;();
+            var sv = new TicketLockValue&lt;int&gt;();
             
             // set the value to 10.
             setValue = swmr.SetValue(10);
@@ -839,7 +821,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Jcd.Tasks.TicketLockedValue`1.SetValueAsync(`0)">
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.SetValueAsync(`0)">
             <summary>
             Sets the current value to the provided value.
             </summary>
@@ -857,6 +839,623 @@
             
             </code>
             </example>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.ChangeValue(System.Func{`0,`0})">
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">
+             A function to call which receives the current value, modifies it, and returns the
+             modified result.
+             </param>
+             <returns>The modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new TicketLockValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = sv.Do(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = sv.Do(x => x + 2);
+             
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new TicketLockValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = sv.ChangeValue(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})">
+             <summary>
+             Calls the provided function, passing in the current value, and assigns the result
+             of the function call, to the current value. <b>This is not recursively reentrant.
+             see remarks for details.</b>
+             </summary>
+             <param name="func">The function to call.</param>
+             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> containing the modified value.</returns>
+             <example>
+             Standard usage: pass in a function to manipulate the current value.
+             <code>
+             var sv = new TicketLockValue&lt;int&gt;();
+             
+             // increment the value by one.
+             var changedValue = await sv.ChangeValueAsync(x => x + 1);
+             
+             // increment the value by two.
+             changedValue = await sv.ChangeValueAsync(x => x + 2);
+             
+             // Perform some operation that requires the value to remain unchanged during the operation.
+             var sameValue = await sv.ChangeValueAsync(x => { DoSomething(x); return x;});
+             </code>
+             </example>
+             <remarks>
+             <para>
+             <b>WARNING:</b>This is <b>not</b> a recursively reentrant method. Never write code like
+             the following.
+             </para>
+             <code>
+             var sv=new TicketLockValue&lt;int&gt;(10);
+            
+             // deadlock yourself in a single line of code!
+             var changedValue = await sv.ChangeValueAsync(x=>sv.Value+10);
+             </code>
+             </remarks>
+        </member>
+        <member name="T:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner">
+            <summary>
+            A static class that schedules tasks on the current <see cref="T:System.Threading.Tasks.TaskScheduler"/> or
+            a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/> if null is passed in or none is specified.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Scheduler">
+            <summary>
+            The current <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to run</param>
+            <param name="scheduler">The scheduler to use, pass null to use the the current one. </param>
+            <returns></returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CurrentSchedulerTaskRunner.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work with the current or user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">the token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="T:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1">
+            <summary>
+            A singleton <see cref="T:System.Threading.Tasks.TaskScheduler"/> bound task runner. It ensures all tasks it creates
+            are registered with either its own, or a user provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Scheduler">
+            <summary>
+            The <see cref="T:System.Threading.Tasks.TaskScheduler"/> used to schedule and execute tasks.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run(System.Action,System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="asyncAction">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run(System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="asyncAction">the action to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{``0},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.CustomSchedulerTaskRunner`1.Run``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Schedules work on either the <see cref="T:System.Threading.Tasks.TaskScheduler"/> this type owns or the user provided one. 
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="cancellationToken">The token to check for cancellation.</param>
+            <param name="scheduler">The optional scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="T:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler">
+            <summary>
+            A <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived base type that runs <see cref="T:System.Threading.Tasks.Task"/> instances
+            in a fixed size pool of threads. Inlining is disabled by default to ensure only
+            the threads managed by this <see cref="T:System.Threading.Tasks.TaskScheduler"/> will process the tasks.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.GetScheduledTasks">
+            <inheritdoc />
+        </member>
+        <member name="P:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.Threads">
+            <summary>
+            The set of threads that will process Tasks. This is provided for
+            advanced use cases where an action needs to be taken on the entire
+            pool of threads.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.Shutdown">
+            <summary>
+            Signals the underlying threads that the <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            is being shutdown (i.e. disposed of). Threads should shortly thereafter. 
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.#ctor(System.Int32,System.Threading.ApartmentState)">
+            <summary>
+            Constructs an instance of the type.
+            </summary>
+            <param name="threadCount">The number of threads to create.</param>
+            <param name="state">the thread apartment state setting for all threads.</param>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>
+            The method to attempt executing a Task in the calling thread's context.
+            This is disabled by default. See remarks for discussion. 
+            </summary>
+            <param name="task">the task to try inlining</param>
+            <param name="taskWasPreviouslyQueued">indicates if it was previously queued with this scheduler</param>
+            <returns>false, by default, may be overridden in a derived type.</returns>
+            <remarks>
+            The default implementation for this scheduler guarantees only its threads are processing tasks, so we cannot
+            inline operations as inlining executes the task on the ThreadPool, which may not meet the same requirements as our
+            dedicated threads.
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.Dispose(System.Boolean)">
+            <summary>
+            Disposes unmanaged resources  
+            </summary>
+            <param name="disposing">indicates if it's disposing.</param>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.Tasks.SimpleThreadedTaskScheduler.Finalize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Jcd.Threading.Tasks.TaskSchedulerExtensions">
+            <summary>
+            Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
+            This allows tasks to be scheduled with the desired <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            in a manner similar to `Task.Run` 
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Action,System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="action">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the action with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the action to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0})">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{``0},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="M:Jcd.Threading.Tasks.TaskSchedulerExtensions.Run``1(System.Threading.Tasks.TaskScheduler,System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Schedules work with the provided <see cref="T:System.Threading.Tasks.TaskScheduler"/>
+            </summary>
+            <param name="function">the function to execute.</param>
+            <param name="scheduler">The scheduler to execute the function with.</param>
+            <param name="cancellationToken">the token to check for cancellation</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> representing the result of the execution.</returns>
+        </member>
+        <member name="T:Jcd.Threading.ThreadWrapper">
+            <summary>
+            Provides basic thread management facilities such as Pause, Resume, Stop, Start and
+            entering and exiting the idle state. 
+            </summary>
+            <remarks>
+            `Stop` will shutdown the underlying thread completely, and a subsequent call to Start will
+            create a brand new thread (with associated cancellation token), while Pause and
+            Resume will suspend the thread operations at 
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.#ctor(System.Boolean,System.String,System.Boolean,System.Boolean,System.Int32,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
+            <summary>
+            Constructs a <see cref="T:Jcd.Threading.ThreadWrapper"/>
+            </summary>
+            <param name="name">The name of this <see cref="T:Jcd.Threading.ThreadWrapper"/>, propagated to the underlying thread as "{name}.Thread".</param>
+            <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
+            <param name="autoStart">Indicates if the thread should be automatically started in the constructor.</param>
+            <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop</param>
+            <param name="priority">The priority to start the processing thread at.</param>
+            <param name="apartmentState">The apartment state for the underlying thread.</param>
+            <param name="yieldEachCycle">A flag indicating if CPU time is yielded each pass through the main loop.</param>
+            <remarks>
+            <para>
+            NOTE: The underlying thread is not created until the first call to `Start` and will change when calling `Stop`
+            followed by `Start`. This is because the thread ends completely with a call to `Stop`.
+            </para>
+            <para>
+            If resuming  the same thread is the desired behavior, call `Pause` and `Resume` instead.
+            </para> 
+            </remarks>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.Name">
+            <summary>
+            The name of this instance of the <see cref="T:Jcd.Threading.ThreadWrapper"/>.
+            By default the underlying thread will be named as follows:
+            `$"{Name}.Thread"`
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.Thread">
+            <summary>
+            Provides direct access to the underlying thread.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.ThreadProc">
+            <summary>
+            The main thread control loop. 
+            </summary>
+            <remarks>
+            <para>
+            You should only override this for advanced use cases.
+            Override `GetShouldContinue` for determining when the thread ends.
+            Override `PerformWork` to do a single unit of work on each pass through the loop.
+            </para>
+            <para>
+            If you choose to override this and supply your own main loop for the thread,
+            You will need to check for cancellation, Call `IdleWait` and `PauseWait`
+            at the appropriate time in your loop, as well as `YieldCpuTime` to ensure
+            your thread doesn't monopolize the CPU.
+            use cases. 
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.PerformWork(System.Threading.CancellationToken)">
+            <summary>
+            Performs a single unit of work. Implement in derived types not overriding ThreadProc.
+            </summary>
+            <param name="token">the token cancellation token to use</param>
+            <returns>
+            True if meaningful work was done. False if the it should transition to idle
+            after this call.
+            </returns>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.YieldCpuTime(System.Int32)">
+            <summary>
+            Yields very small amounts of CPU time. This can approach 1ms.
+            Thread.Sleep and Task.Delay will wait at least 15ms.
+            </summary>
+            <param name="timeToYieldInMilliseconds">The amount of time to wait, in milliseconds.</param>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.CancellationToken">
+            <summary>
+            Gives derived types access to the <see cref="P:Jcd.Threading.ThreadWrapper.CancellationToken"/>
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.IsStarted">
+            <summary>
+            Gets a flag indicating if the item processing loop has started.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.IsPaused">
+            <summary>
+            Gets a flag indicating if the item processing is currently paused.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.IsIdle">
+            <summary>
+            Gets a flag indicating if the item processing is currently paused.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.GetShouldContinue(System.Threading.CancellationToken)">
+            <summary>
+            Determines if the main thread loop should continue looping.
+            </summary>
+            <param name="token">the token to check for cancellation</param>
+            <returns>True if the main thread loop should continue.</returns>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.PerformStateThreadCleanup">
+            <summary>
+            Ensures thread state is reset to final, including cancellation.
+            This is called as a thread is exiting..
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.IdleWait(System.Threading.CancellationToken)">
+            <summary>
+            Wait in idle state, if the IsIdle flag is set.
+            </summary>
+            <param name="token">the token to observe for cancellation.</param>
+            <returns>true if we waited in the idle state.</returns>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.PauseWait(System.Threading.CancellationToken)">
+            <summary>
+            Wait in the paused state if the IsPaused flag is set.
+            </summary>
+            <param name="token">the token to observe for cancellation.</param>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.EnterIdleState">
+            <summary>
+            Sets the thread into the idle state.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.ExitIdleState">
+            <summary>
+            Causes the owning thread to resume. This must be called by an external thread.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.EnterPausedState">
+            <summary>
+            Puts the thread into the Paused state.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.ExitPausedState">
+            <summary>
+            Causes the thread to exit the paused state. This must be called by
+            an external thread.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Pause">
+            <summary>
+            Pauses the retrieval and processing of queued items. 
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Resume">
+            <summary>
+            Resumes item processing.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Start">
+            <summary>
+            Starts the processing of queued items.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Stop">
+            <summary>
+            Shuts down the thread through the CancellationToken
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Dispose(System.Boolean)">
+            <summary>
+            Disposes of resources.
+            </summary>
+            <param name="disposing">indicates if it's actually being disposed vs garbage collected</param>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.Finalize">
+            <summary>
+            finalizes the object.
+            </summary>
+        </member>
+        <member name="T:Jcd.Threading.TicketLock">
+            <summary>
+            Provides a naiive implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
+            </summary>
+            <remarks>
+            See also: <see href="https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b">Ticket Locking Algorithm : Fair Lock Delivery Mechanism</see>
+            For other details see the <see href="https://en.wikipedia.org/wiki/Ticket_lock">Wikipedia Article on Ticket locks</see>.
+            </remarks>
+        </member>
+        <member name="P:Jcd.Threading.TicketLock.MaxTicketCount">
+            <summary>
+            The maximum number of possible tickets. (At 1 per 20ms this should last 350 years of continuous run time.)
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.TicketLock.NowServing">
+            <summary>
+            The ticket currently holding the lock.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.TicketLock.CurrentCount">
+            <summary>
+            The total number of pending tickets.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.TicketLock.Release">
+            <summary>
+            Increment's NowServing so that the next thread
+            can begin processing.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.TicketLock.GetTicket">
+            <summary>
+            Creates an <see cref="T:Jcd.Threading.ITicket"/>.
+            </summary>
+            <remarks>
+            WARNING: This is for advanced use cases only. Failing to release the lock
+            will deadlock all other tickets with a larger TicketId. However, calling release
+            on the ticket before this <see cref="T:Jcd.Threading.TicketLock"/> has NowServing set to the
+            new ticket's ID will cause a race condition between the code locked by
+            this specific ticket and the next immediately higher lock.  
+            </remarks>
+            <returns>The new ticket.</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLock.Lock">
+            <summary>
+            Creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            </summary>
+            <returns>The ticket once the lock is acquired.</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLock.Lock(System.Threading.CancellationToken)">
+            <summary>
+            Creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            </summary>
+            <param name="token">The token to listen for cancellation on.</param>
+            <returns>The ticket once the lock is acquired.</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLock.LockAsync">
+            <summary>
+            Asynchronously creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            </summary>
+            <returns>The ticket once the lock is acquired.</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLock.LockAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            </summary>
+            <param name="token">The token to listen for cancellation on.</param>
+            <returns>The ticket once the lock is acquired.</returns>
         </member>
     </members>
 </doc>

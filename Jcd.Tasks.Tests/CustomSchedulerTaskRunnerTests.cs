@@ -1,7 +1,8 @@
 ﻿using CustomSchedulerTaskRunner =
-   Jcd.Tasks.CustomSchedulerTaskRunner<Jcd.Tasks.Tests.Helpers.CallingThreadTaskScheduler>;
+   Jcd.Threading.Tasks.CustomSchedulerTaskRunner<Jcd.Threading.Tests.Helpers.CallingThreadTaskScheduler>;
 
-using Jcd.Tasks.Tests.Helpers;
+using Jcd.Threading.Tests.Helpers;
+using Jcd.Threading.Tasks;
 
 // ReSharper disable InlineTemporaryVariable
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -9,7 +10,7 @@ using Jcd.Tasks.Tests.Helpers;
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable MethodSupportsCancellation
 
-namespace Jcd.Tasks.Tests;
+namespace Jcd.Threading.Tests;
 
 public class CustomSchedulerTaskRunnerTests
 {

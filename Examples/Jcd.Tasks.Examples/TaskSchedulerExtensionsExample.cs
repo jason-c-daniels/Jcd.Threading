@@ -1,4 +1,6 @@
-﻿namespace Jcd.Tasks.Examples;
+﻿using Jcd.Threading.Tasks;
+
+namespace Jcd.Threading.Examples;
 
 public static class TaskSchedulerExtensionsExample
 {

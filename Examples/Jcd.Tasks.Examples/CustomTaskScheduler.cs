@@ -1,4 +1,6 @@
-namespace Jcd.Tasks.Examples;
+using Jcd.Threading.Tasks;
+
+namespace Jcd.Threading.Examples;
 
 /// <summary>
 /// A <see cref="TaskScheduler"/> that uses exactly four MTA threads to execute

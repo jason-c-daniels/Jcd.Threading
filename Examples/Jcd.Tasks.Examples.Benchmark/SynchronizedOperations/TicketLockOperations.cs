@@ -1,12 +1,15 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace Jcd.Tasks.Examples.Benchmark.SynchronizedOperations;
+using Jcd.Threading;
+using Jcd.Threading.SynchronizedValues;
+
+namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
 public class TicketLockOperations
 {
-   public           int                    RawValue = 14;
-   private readonly TicketLockedValue<int> tlv      = new(17);
-   private readonly TicketLock             tl       = new();
+   public           int                  RawValue = 14;
+   private readonly TicketLockValue<int> tlv      = new(17);
+   private readonly TicketLock           tl       = new();
 
    [Benchmark]
    public int DirectCallsToTicket_ReadValue()
@@ -17,7 +20,7 @@ public class TicketLockOperations
 
       return RawValue;
    }
-   
+
    [Benchmark]
    public int DirectCallsToTicket_WriteValue()
    {
@@ -27,7 +30,7 @@ public class TicketLockOperations
 
       return RawValue = 1234;
    }
-   
+
    [Benchmark]
    public async Task<int> DirectCallsToTicket_ReadValueAsync()
    {
@@ -37,7 +40,7 @@ public class TicketLockOperations
 
       return RawValue;
    }
-   
+
    [Benchmark]
    public async Task<int> DirectCallsToTicket_WriteValueAsync()
    {
@@ -55,7 +58,7 @@ public class TicketLockOperations
 
       return RawValue;
    }
-   
+
    [Benchmark]
    public int DirectCallsToLock_WriteValue()
    {
@@ -63,7 +66,7 @@ public class TicketLockOperations
 
       return RawValue = 1234;
    }
-   
+
    [Benchmark]
    public async Task<int> DirectCallsToLock_ReadValueAsync()
    {
@@ -71,7 +74,7 @@ public class TicketLockOperations
 
       return RawValue;
    }
-   
+
    [Benchmark]
    public async Task<int> DirectCallsToLock_WriteValueAsync()
    {
@@ -79,7 +82,7 @@ public class TicketLockOperations
 
       return RawValue = 1234;
    }
-   
+
    [Benchmark]
    public int UsingTicketLockedValue_ReadValue() { return tlv.Value; }
 

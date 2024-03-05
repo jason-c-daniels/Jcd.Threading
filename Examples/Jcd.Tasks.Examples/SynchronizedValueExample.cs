@@ -4,10 +4,12 @@
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Jcd.Tasks.Examples;
+using Jcd.Threading.SynchronizedValues;
+
+namespace Jcd.Threading.Examples;
 
 /// <summary>
-/// Demonstrates some of the uses for <see cref="SynchronizedValue{T}"/>
+/// Demonstrates some of the uses for <see cref="ReaderWriterLockSlimValue{T}"/>
 /// </summary>
 public static class SynchronizedValueExample
 {
@@ -18,7 +20,7 @@ public static class SynchronizedValueExample
    /// <exception cref="TaskCanceledException"></exception>
    public static async Task<int> Run()
    {
-      var       counter = new SynchronizedValue<int>();
+      var       counter = new ReaderWriterLockSlimValue<int>();
       using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(0.11)); // set a total run time of 0.11 minutes
 
       // create a hot-task that starts incrementing the value by 1 every 100 ms;
@@ -45,7 +47,7 @@ public static class SynchronizedValueExample
       return 0;
    }
 
-   private static Task CreateReportValueTask(CancellationTokenSource cts, SynchronizedValue<int> counter)
+   private static Task CreateReportValueTask(CancellationTokenSource cts, ReaderWriterLockSlimValue<int> counter)
    {
       var reportValue = Task.Run(async () =>
                                  {
@@ -68,7 +70,7 @@ public static class SynchronizedValueExample
       return reportValue;
    }
 
-   private static Task CreateSetTo20Task(CancellationTokenSource cts, SynchronizedValue<int> counter)
+   private static Task CreateSetTo20Task(CancellationTokenSource cts, ReaderWriterLockSlimValue<int> counter)
    {
       var setTo20Task = Task.Run(async () =>
                                  {
@@ -93,7 +95,7 @@ public static class SynchronizedValueExample
       return setTo20Task;
    }
 
-   private static Task CreateDecrementBy4Task(CancellationTokenSource cts, SynchronizedValue<int> counter)
+   private static Task CreateDecrementBy4Task(CancellationTokenSource cts, ReaderWriterLockSlimValue<int> counter)
    {
       var decBy4Task = Task.Run(async () =>
                                 {
@@ -116,7 +118,7 @@ public static class SynchronizedValueExample
       return decBy4Task;
    }
 
-   private static Task CreateIncrementTask(CancellationTokenSource cts, SynchronizedValue<int> counter)
+   private static Task CreateIncrementTask(CancellationTokenSource cts, ReaderWriterLockSlimValue<int> counter)
    {
       var incrementTask = Task.Run(async () =>
                                    {

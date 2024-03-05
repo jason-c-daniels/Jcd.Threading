@@ -6,7 +6,7 @@ using System.Windows.Threading;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MethodCanBePrivate.Global
 
-namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
+namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>
 /// A lightweight wrapper to Application.Current.Dispatcher exposing its methods as static methods.

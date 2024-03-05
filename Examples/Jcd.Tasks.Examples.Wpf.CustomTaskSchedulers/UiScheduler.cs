@@ -1,5 +1,5 @@
-﻿using Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
+﻿using Jcd.Threading.Examples.Wpf.CustomTaskSchedulers.ExampleSchedulers;
 
-namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
+namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 
 internal class UiScheduler() : IdleTaskScheduler(4, ApartmentState.STA);

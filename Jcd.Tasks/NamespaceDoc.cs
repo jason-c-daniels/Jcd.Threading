@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 // ReSharper disable UnusedType.Global
 
-namespace Jcd.Tasks;
+namespace Jcd.Threading;
 
 /// <summary>
 /// Provides types and extension methods to assist with the creation, execution, and
@@ -11,5 +11,3 @@ namespace Jcd.Tasks;
 internal class NamespaceDoc;
 
 // some .cs file included in your project
-
-

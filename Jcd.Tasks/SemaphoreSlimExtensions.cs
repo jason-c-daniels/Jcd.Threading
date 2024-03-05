@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Jcd.Tasks;
+namespace Jcd.Threading;
 
 /// <summary>
 /// A set of extension methods to simplify using a <see cref="SemaphoreSlim"/>
@@ -46,7 +46,7 @@ public static class SemaphoreSlimExtensions
    /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>
-   /// <param name="token">A cancellation token to use during the wait.</param>
+   /// <param name="action">the action to execute</param>
    /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static void Lock(this SemaphoreSlim sem, Action action)
@@ -60,8 +60,8 @@ public static class SemaphoreSlimExtensions
       {
          sem.Release();
       }
-
    }
+
    /// <summary>
    /// Asynchronously waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
    /// </summary>

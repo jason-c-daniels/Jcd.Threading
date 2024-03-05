@@ -9,7 +9,8 @@
       <IsPackable>false</IsPackable>
 
       <LangVersion>latest</LangVersion>
-      <RootNamespace>Jcd.Tasks..Examples.Wpf.CustomTaskSchedulers</RootNamespace>
+      <RootNamespace>Jcd.Threading..Examples.Wpf.CustomTaskSchedulers</RootNamespace>
+      <AssemblyName>Jcd.Threading.Examples.Wpf.CustomTaskSchedulers</AssemblyName>
    </PropertyGroup>
 
    <ItemGroup>

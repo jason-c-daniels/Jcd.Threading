@@ -1,6 +1,6 @@
 ﻿// ReSharper disable HeapView.ObjectAllocation.Evident
 
-namespace Jcd.Tasks.Tests.Helpers;
+namespace Jcd.Threading.Tests.Helpers;
 
 /// <summary>
 /// A non-queuing TaskScheduler that immediately executes its queued work on the calling

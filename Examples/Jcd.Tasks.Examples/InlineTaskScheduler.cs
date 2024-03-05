@@ -1,4 +1,4 @@
-﻿namespace Jcd.Tasks.Examples;
+﻿namespace Jcd.Threading.Examples;
 
 /// <summary>
 /// Executes all tasks inline, without queuing or scheduling.

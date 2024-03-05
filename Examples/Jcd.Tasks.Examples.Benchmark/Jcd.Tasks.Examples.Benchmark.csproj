@@ -1,24 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <TargetFrameworks>net8.0;net462</TargetFrameworks>
-       <LangVersion>latest</LangVersion>
-    </PropertyGroup>
+   <PropertyGroup>
+      <OutputType>Exe</OutputType>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+      <TargetFrameworks>net8.0;net462</TargetFrameworks>
+      <LangVersion>latest</LangVersion>
+      <AssemblyName>Jcd.Threading.Examples.Benchmark</AssemblyName>
+      <RootNamespace>Jcd.Threading.Examples.Benchmark</RootNamespace>
+   </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
-      <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2" />
-    </ItemGroup>
+   <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.13.12"/>
+      <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.2"/>
+   </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj" />
-    </ItemGroup>
+   <ItemGroup>
+      <ProjectReference Include="..\..\Jcd.Tasks\Jcd.Tasks.csproj"/>
+   </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="benchmarks\out\results\" />
-    </ItemGroup>
+   <ItemGroup>
+      <Folder Include="benchmarks\out\results\"/>
+   </ItemGroup>
 
 </Project>
