@@ -8,7 +8,7 @@ public class ReaderWriterLockSlimOperations : IDisposable
    
    public           int                  RawValue = 14;
 
-   [Benchmark(Baseline = true)]
+   [Benchmark]
    public int DirectCalls_ReadValue()
    {
       try

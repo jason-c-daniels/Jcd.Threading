@@ -3,8 +3,6 @@
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
-using System.Windows;
-
 namespace Jcd.Tasks.Examples.Wpf.CustomTaskSchedulers;
 
 /// <summary>

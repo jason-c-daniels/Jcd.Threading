@@ -1,4 +1,4 @@
 ﻿#!/bin/bash
-rm ./benchmarks/out/*
 mkdir -p ./benchmarks/out
+rm -R ./benchmarks/out/*
 dotnet run -c Release -f net8.0 -- -a ./benchmarks/out --warmupCount 1 --minIterationCount 5 --maxIterationCount 10 --runtimes net8.0 net462 --filter "*"

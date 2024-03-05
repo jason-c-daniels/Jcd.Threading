@@ -9,34 +9,29 @@ using Hardware.Info;
 using Jcd.Tasks;
 using Jcd.Tasks.Examples;
 
-const int delay      = 250;
-int       runiter = Environment.ProcessorCount * 2;
+int       cpuCount = Environment.ProcessorCount;
+const int delay    = 125;
+int       taskCount  = cpuCount;
+int       q          = 0;
+
+
 await RunTicketLock();
+Console.ReadLine();
+await RunSemaphoreLock();
 
 async Task RunSemaphoreLock()
 {
-   bool           addExtras = false;
-   CountdownEvent cde       = new CountdownEvent(runiter * 2);
-   AutoResetEvent are       = new AutoResetEvent(false);
-   var            tl        = new SemaphoreSlim(1, 1);
+   var            semaphore        = new SemaphoreSlim(1, 1);
 
    var tasks = new List<Task>();
 
    //var svsb  = new MutexValue<List<string>>(new List<string>());
    Console.WriteLine("Enqueuing tasks.");
    var sw = Stopwatch.StartNew();
-   are.Reset();
-   for (var i = 0; i < runiter; i++)
+   for (var i = 0; i < taskCount; i++)
    {
       var n = i;
-      AddNewSemaphoreTask(tasks, i, tl, are);
-   }
-
-   while (addExtras && tasks.Count < runiter*2)
-   {
-      if (!are.WaitOne(100, true)) continue;
-      while (cde.CurrentCount < runiter)
-         AddNewSemaphoreTask(tasks, tasks.Count -1, tl, are);
+      AddNewSemaphoreTask(tasks, i, semaphore);
    }
    
    await Task.WhenAll(tasks);
@@ -44,26 +39,36 @@ async Task RunSemaphoreLock()
    Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 }
 
-void AddNewSemaphoreTask(List<Task> list, int n, SemaphoreSlim tl, AutoResetEvent are)
+void AddNewSemaphoreTask(List<Task> list, int n, SemaphoreSlim semaphore)
 {
    list.Add(Task.Run(async () =>
-                                    {
-                                       long tid = n;
-                                       Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] started.");
-                                       Console.Out.Flush();
-                                       await Task.Delay(delay);
-                                       using (var t = await tl.LockAsync())
-                                       {
-                                          Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} in critical section.");
-                                          tid = n; //t.TicketId;
-                                          Console.Out.Flush();
-                                          await Task.Delay(delay);
-                                       }
-                                       await Task.Delay(delay);
-                                       Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} ended.");
-                                       Console.Out.Flush();
-                                       are.Set();
-                                    }
+                     {
+                        long tid = n;
+                        Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] started.");
+                        Console.Out.Flush();
+                        await Task.Delay(delay);
+                        try
+                        {
+                           using (var t = await semaphore.LockAsync())
+                           {
+                              q++;
+                              tid = q;
+                              Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} in critical section.");
+                              Console.Out.Flush();
+                              await Task.Delay(delay);
+                           }
+
+                           Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} exited critical section.");
+                           Console.Out.Flush();
+                           await Task.Delay(delay);
+                           Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} ended.");
+                           Console.Out.Flush();
+                        }
+                        catch
+                        {
+                           
+                        }
+                     }
                     )
            );
 }
@@ -78,7 +83,7 @@ async Task RunTicketLock()
    Console.WriteLine("Enqueuing tasks.");
    var sw = Stopwatch.StartNew();
 
-   for (var i = 0; i < runiter; i++)
+   for (var i = 0; i < taskCount; i++)
    {
       var n = i;
       tasks.Add(Task.Run(async () =>
@@ -95,6 +100,8 @@ async Task RunTicketLock()
                                Console.Out.Flush();
                                await Task.Delay(delay);
                             }
+                            Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} exited critical section.");
+                            Console.Out.Flush();
                             await Task.Delay(delay);
                             Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] {tid:D4} ended.");
                             Console.Out.Flush();

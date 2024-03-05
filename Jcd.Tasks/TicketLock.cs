@@ -6,21 +6,20 @@ namespace Jcd.Tasks;
 
 public class TicketLock
 {
-   //private           SpinWait      spinWait;
-   private          long           ticketCounter;
-   internal          long           nowServing;
-
-   public           long           MaxTicketCount => long.MaxValue;
+   private long ticketCounter;
+   private long nowServing;
+   public  long MaxTicketCount => long.MaxValue;
 
    public long NowServing => nowServing;
-   
+
    public long CurrentCount => ticketCounter - nowServing;
    
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    internal void Release()
    {
       Interlocked.Increment(ref nowServing);
    }
-   
+
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public ITicket GetTicket()
    {
@@ -28,24 +27,38 @@ public class TicketLock
    }
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public ITicket Lock() => Lock(CancellationToken.None);
-   
+   public ITicket Lock()
+   {
+      var ticket = GetTicket();
+      ticket.Wait();
+
+      return ticket;
+   }
+
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public ITicket Lock(CancellationToken token)
    {
       var ticket = GetTicket();
       ticket.Wait(token);
+
       return ticket;
    }
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public Task<ITicket> LockAsync() => LockAsync(CancellationToken.None);
+   public async Task<ITicket> LockAsync()
+   {
+      var ticket = GetTicket();
+      await ticket.WaitAsync();
+
+      return ticket;
+   }
    
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public async Task<ITicket> LockAsync(CancellationToken token)
    {
       var ticket = GetTicket();
       await ticket.WaitAsync(token);
+
       return ticket;
    }
 }

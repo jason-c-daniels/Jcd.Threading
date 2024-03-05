@@ -9,7 +9,7 @@ public class SpinLockOperations
    private readonly SpinLockedValue<int> spinLockValue = new(17);
    private          SpinLock             sl;
 
-   [Benchmark(Baseline = true)]
+   [Benchmark]
    public int DirectSpinLockCalls_ReadValue_NoMemoryBarrier()
    {
       bool lockTaken = false;

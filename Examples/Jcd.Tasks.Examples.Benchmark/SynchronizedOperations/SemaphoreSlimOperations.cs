@@ -21,7 +21,7 @@ public class SemaphoreSlimOperations : IDisposable
       return RawValue;
    }
 
-   [Benchmark(Baseline = true)]
+   [Benchmark]
    public int UsingSemaphoreDirectly_ReadValue()
    {
       try

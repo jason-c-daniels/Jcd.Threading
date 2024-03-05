@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\Examples\Jcd.Tasks.Examples.Benchmark\benchmarks\out\results\Jcd.Tasks.Examples.Benchmark.SynchronizedOperations.NitoAsyncOperations-report.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\Examples\Jcd.Tasks.Examples.Benchmark\benchmarks\out\results\Jcd.Tasks.Examples.Benchmark.SynchronizedOperations.SemaphoreSlimOperations-report.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

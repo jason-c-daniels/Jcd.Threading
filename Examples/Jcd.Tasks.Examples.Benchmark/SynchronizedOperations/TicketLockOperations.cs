@@ -8,7 +8,7 @@ public class TicketLockOperations
    private readonly TicketLockedValue<int> tlv      = new(17);
    private readonly TicketLock             tl       = new();
 
-   [Benchmark(Baseline = true)]
+   [Benchmark]
    public int DirectCallsToTicket_ReadValue()
    {
       using var t = tl.GetTicket();
