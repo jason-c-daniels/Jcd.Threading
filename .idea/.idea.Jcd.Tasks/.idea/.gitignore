@@ -4,7 +4,7 @@
 # Rider ignored files
 /modules.xml
 /contentModel.xml
-/.idea.Jcd.Tasks.iml
+/.idea.Jcd.Threading.iml
 /projectSettingsUpdater.xml
 # Editor-based HTTP Client requests
 /httpRequests/

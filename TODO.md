@@ -20,7 +20,7 @@ Jason, do these ASAP.
     - Turn on "Deploy from branch" with the branch set to "main"
 3. Setup the [codefactor.io project](https://www.codefactor.io/dashboard).
 * Click the "+ Add" button on the [dashboard](https://www.codefactor.io/dashboard)
-* Select Jcd.Tasks from the list.
+* Select Jcd.Threading from the list.
 * Click "Import" at the bottom of the screen.
 4. Review various generated non-code files to ensure you have customized the content to this project's
    needs. *The list is relative to the repository root directory.*

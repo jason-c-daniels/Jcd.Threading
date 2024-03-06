@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <LangVersion>latest</LangVersion>
+      <Nullable>enable</Nullable>
+      <AssemblyName>Jcd.Threading</AssemblyName>
+      <RootNamespace>Jcd.Threading</RootNamespace>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <PackageReference Include="DefaultDocumentation" Version="0.8.2">
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+         <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="Jcd.Validations" Version="1.1.7"/>
+      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.3">
+         <PrivateAssets>all</PrivateAssets>
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+   </ItemGroup>
+   
+   <PropertyGroup>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <Title>Jcd.Threading</Title>
+      <Authors>Jason C. Daniels</Authors>
+      <Description>A *netstandard2.0* library that provides utility classes to aid with thread creation, task scheduling and using synchronization primitives.</Description>
+      <Copyright>2023 to 2024</Copyright>
+      <PackageProjectUrl>https://github.com/jason-c-daniels/Jcd.Threading</PackageProjectUrl>
+      <PackageLicenseUrl>https://github.com/jason-c-daniels/Jcd.Threading/blob/main/LICENSE</PackageLicenseUrl>
+      <RepositoryUrl>https://github.com/jason-c-daniels/Jcd.Threading</RepositoryUrl>
+      <RepositoryType>GitHub</RepositoryType>
+      <PackageVersion>0.2.0</PackageVersion>
+      <AssemblyVersion>0.2.0</AssemblyVersion>
+      <FileVersion>0.2.0</FileVersion>
+      <PackageIcon>Jason.C.Daniels.jpg</PackageIcon>
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <PackageReleaseNotes>Converted from Jcd.Tasks to Jcd.Threading</PackageReleaseNotes>
+      <DefaultDocumentationFileNameFactory>NameAndMd5Mix</DefaultDocumentationFileNameFactory>
+   </PropertyGroup>
+
+   <PropertyGroup>
+      <PackageReadmeFile>README.md</PackageReadmeFile>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <None Include="..\README.md" Pack="true" PackagePath="\"/>
+      <None Include="..\LICENSE" Pack="false" PackagePath="\"/>
+      <None Include="icon\Jason.C.Daniels.jpg" Pack="true" PackagePath="\" />
+      <None Include="..\nuget.config" Pack="false" PackagePath="\"/>
+   </ItemGroup>
+
+   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>..\docs\Jcd.Threading.xml</DocumentationFile>
+   </PropertyGroup>
+
+   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>..\docs\Jcd.Threading.xml</DocumentationFile>
+      <PlatformTarget>AnyCPU</PlatformTarget>
+   </PropertyGroup>
+
+</Project>
+  

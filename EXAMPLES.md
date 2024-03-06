@@ -1,288 +1,279 @@
-# Jcd.Tasks Example Code
+# Jcd.Threading Selected Example Code
 
-## TaskSchedulerExtensions Examples
-This type was created to allow specifying a task scheduler to
-schedule work with, in a shorter manner than calling `Task.Factory.StartNew`.
-The API signatures are compatible with `Task.Run`.
+## Synchronization Helpers
+
+Several types have been implemented to help developers correctly
+release locks. There are two main categories: Extension methods to
+existing synchronization primitives, like `SemaphoreSlim` and
+value wrappers. 
+
+With the exception of SpinLock, the extension methods create an
+`IDisposable` from a call to Lock/LockAsync. The disposable
+releases the resources in the call to Dispose.
+
+The value wrappers provide locking using a specific sort of
+synchronization primitive. In the case of `SemaphoreSlim` 
+the type is named `SemaphoreSlimValue`. All of these wrappers
+and writes. In addition to provid 
+
+### Synchronization Primitives Extensions
+- These are located in the root namespace `Jcd.Threading`.
+- All methods are called Lock or LockAsync.
 
 ```csharp
-// create an instance of the custom TaskScheduler
-var scheduler = new MyTaskScheduler();
+// Locking a critical section with a SemaphoreSlim
+var sem = new SemaphoreSlim(1,1); // all accesses are mutually exclusive.
 
-// execute an action with the scheduler.
-await scheduler.Run(()=>Log("Execute an action."));
+using (sem.Lock()) // calls Wait(). 
+   criticalValue=10;
+   // calls Release() because Dispose hase been called.
 
-// execute a function with the scheduler and return the result.
-var result= await scheduler.Run(()=>Log("Execute a function and return its result",10));
-Console.WriteLine($"result: {result}");
-
-// execute an async action with the scheduler.
-await scheduler.Run(()=>LogAsync("Execute an async action."));
-
-// execute an async function with the scheduler and return the result.
-result = await scheduler.Run(()=>LogAsync("Execute an async function and return its result", 20));
-Console.WriteLine($"result: {result}");
-
-// ---------------------------------------------------------------
-// Log and LogAsyc
-//
-
-static void Log(string text) =>
-   Console.WriteLine($"[{TaskScheduler.Current.GetType().Name}] : {text}");
-
-static Task LogAsync(string text)
+// the equivalent code without the extension method
+sem.Wait();
+try 
 {
-   Log(text);
-   return Task.CompletedTask;
+   criticalValue=10;
+}
+finally 
+{
+   sem.Release();
 }
 
-static TResult Log<TResult>(string text, TResult result)
+// locking a critical section with a ReaderWriterLockSlim
+var rwls = new ReaderWriterLockSlim();
+
+using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
 {
-   Log(text);
-   return result;
+   criticalValue=10;   
 }
 
-static Task<TResult> LogAsync<TResult>(string text, TResult result) => 
-   Task.FromResult(Log(text, result));
-
-// ---------------------------------------------------------------
-// The custom TaskScheduler.
-//
-
-/// <summary>
-/// A non-queuing TaskScheduler that immediately executes its queued work.
-/// </summary>
-public class MyTaskScheduler : TaskScheduler
+// the equivalent code without the extension method
+rwls.TryEnterWriteLock(-1); 
+try 
 {
-   protected override IEnumerable<Task> GetScheduledTasks() => Array.Empty<Task>();
-
-   protected override void QueueTask(Task task) => TryExecuteTask(task);
-
-   protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-      => TryExecuteTask(task);
+   criticalValue=10;      
+}
+finally
+{
+   rwls.ExitWriteLock();
 }
 ```
 
-### TaskSchedulerExtensions Output
-```text
-[MyTaskScheduler] : Execute an action.
-[MyTaskScheduler] : Execute a function and return its result
-result: 10
-[MyTaskScheduler] : Execute an async action.
-[MyTaskScheduler] : Execute an async function and return its result
-result: 20
-```
+While the default coding pattern isn't terribly difficult to do, it does 
+have room for error and is far more verbose. By wrapping the block needing
+synchronized access in a using block the scope of the lock is clearer
+and the code is easier to understand.
 
-## CurrentSchedulerTaskRunner Examples
-`CurrentSchedulerTaskRunner` provides a `Task.Run` compatible API
-and allows work scheduled from within a task to be scheduled on 
-the same `TaskScheduler` instance as the currently executing task
-was started on.
+As always, wrappers of this sort introduce some degree of performance hit.
+See Jcd.Threading.Examples.Benchmark output to compare the impacts of the
+various techniques.
 
-The motivation for creating this type is that Task.Run uses 
-`TaskScheduler.Default` in its calls to `Task.Factory.StartNew`.
-`TaskScheduler.Default` uses the global .Net `ThreadPool` to 
-choose where to execute work.
 
-`TaskScheduler.Default` is usually sufficient for most use cases.
-However, it is not sufficient when the exact thread executing work 
-must be controlled. Using this type when the outer level task was 
-executed with a custom `TaskScheduler`that ensuring thread of 
-execution, will ensure sub-tasks started with `.Run` are also
-using the same scheduler.
-
-Given the long names resulting from using this type it should be aliased in
-a using statement.
-
-This type is syntactic sugar for the following use of the `TaskSchedulerExtensions`
+### Value Wrappers
+- These are all in the namespace `Jcd.Threading.SynchronizedValues`.
+- All types follow the naming pattern: {PrimitiveName}Value (e.g. SemaphoreSlimValue)
+- All types have a .Value property supporting getting and setting.
+- For special use cases `ChangeValue`, `ChangeValueAsync`, `GetValue`,  
+  `GetValueAsync`, `SetValue`, and `SetValueAsync` are also provided.
+- The expected use of these types is to provide synchronized access to
+  data that will not typically need more than just the data altered.
+  (i.e. no other operations occur)
 
 ```csharp
-TaskScheduler.Current.Run(()=>{/* do your work here.*/});
+var sv = new SemaphoreSlimValue<int>();
+
+// set the value in a thread safe manner
+int someValue=10;
+sv.Value = someValue; // NOTE: If another thread has also acquired
+                      // the lock, this data could be stale by the 
+                      // time the next line executes.
+
+// get the value in a thread safe manner.
+var staleValue = sv.Value; // this value is potentially stale.
+                           // only use these value wrappers
+                           // for sharing data which is allowed
+                           // to be stale. Also, design for handling
+                           // stale data.
+
+// the same scenario using ReaderWriterLockSlimValue
+var rwlv = new ReaderWriterLockSlimValue();
+
+// set the value in a thread safe manner.
+rwlv.Value = 13;
+
+// get the value in a thread safe manner.
+var anotherStaleValue = rwlv.Value;
+
 ```
 
-### CurrentSchedulerTaskRunner Sample Code
+NOTE: All synchronization suffers from potentially stale data after a
+lock is released. Ensure you've held the lock for the least amount of
+time necessary, but no less time than that.
+
+Also, these types will pair well with other direct uses of synchronization
+primitives, such as for pausing a thread in a CPU friendly fashion. 
+When doing so, ensure that you're calling Wait and Release (on a SemaphoreSlim, 
+for example.) At the right times. If possible, write copious unit tests to force
+every possible permutation of of how the lock is acquired and released. 
+
+## Threading and TaskScheduling
+
+One noteable absence in System.Threading.Tasks is a direct way to
+run tasks on a custom TaskScheduler.
+
+In fact, Task.Run often picks TaskScheduler.Default, which uses the
+.Net `ThreadPool`. This is suboptimal when it's require to have strict
+control over which threads a `Task` runs on.
+
+As well, Microsoft has deprecated calls to `Thread.Sleep` and
+has advised developers to essentially _roll their own_ synchronization
+mechanisms to allow for pausing and resuming a thread.
+
+`Jcd.Threading` and `Jcd.Threading.Tasks` have classes to help
+with these needs.
+
+### ThreadWrapper
+
+`ThreadWrapper` wraps a managed `Thread` and provides it with
+its own `ThreadStart`delegate that handles pausing, resuming. 
+Derive from this type to implement your own custom thread, while 
+having the semantics of pause and resume handled for you. All 
+typical thread creation parameters are supported, including 
+threading apartment model.
+
 ```csharp
-// Alias the type.
-using CSTask=Jcd.Tasks.CurrentSchedulerTaskRunner;
-
-// class and method definition elided for brevity.
-var scheduler=new MyCustomScheduler();
-
-// use TaskSchedulerExtensions.Run to kick off the 
-// outer level of work on a custom TaskScheduler
-scheduler.Run(()=> {
-         Console.WriteLine("Outer level of work.");
-         CSTask.Run(()=>{
-            Console.WriteLine("Inner level of work, guaranteed to use the same scheduler.");
-         });
-});
-```
-
-This pattern is useful if you have operations that need to
-have a guarantee about the pool of threads executing some tasks;
-for example: dedicated hardware communications pool of threads 
-separated from the standard ThreadPool worker threads.
-
-To do this you'd implement your own `TaskScheduler` that has
-a dedicated pool of threads.
-
-## SimpleThreadedTaskScheduler Example
-This type is provided to ease the use of creating a `TaskScheduler`
-implementation which has a dedicated pool of threads, which it
-is always guaranteed to schedule work on.
-
-By default it forbids inlining (which may execute a task on the global 
-`ThreadPool`). This can be overridden in derived types.
-
-When deriving from this type you must provide a thread count and
-the `ApartmentState`
-
-### Example SimpleThreadedTaskScheduler implementation
-```csharp
-// An MTA thread hosting scheduler with one thread per CPU.
-public class MyScheduler : SimpleThreadedTaskScheduler
+// define our own specialized thread...
+public class MyItemQueueProcessingThread : ThreadWrapper
 {
-   public MyScheduler() : base(Environment.ProcessorCount) { }
+   public MyItemQueueProcessingThread() : base(name:"MyCoolClass", autoStart:false) { }
+   
+   protected override bool PerformWork() 
+   {
+      // check if there are any items in the ConcurrentQueue<MyItem>.
+      if (cq.Count == 0 ) 
+      {
+         return false; // we did no work and none is pending. Indicate we can go to idle state.
+      }
+      MyItem item;
+      if (cq.TryDequeue(out item))
+      {
+         // do something with the item.
+      }
+      return cq.Count > 0; // indicate we either did work or have work pending.
+   }
+   
+   // implement a special loop end criteria.
+   protected override bool GetShouldContinue(CancellationToken token) 
+   {
+      if (queue)   
+      return !token.IsCancellationRequested; 
+   }
+   
+   public Enqueue(MyItem item) 
+   {
+      cq.Enqueue();
+      ExitIdleState(); // exits the idle state so that processing can continue.
+   }
 }
+
+// use the custom thread+queue processor.
+var qp = new MyItemQueueProcessingThread();
+
+var t = qp.Thread; // this is null. The thread isn't started (or created) yet.
+
+qp.Start();
+
+t = qp.Thread; // This is populated now.
+
+qp.Pause(); // suspend processing.
+
+// populate the queue
+qp.Enqueue(new MyItem(...));
+qp.Enqueue(new MyItem(...));
+qp.Enqueue(new MyItem(...));
+
+// resume processing.
+qp.Resume(); // let the processing proceed.
+
 ```
 
-From here you can use the scheduler just like any other TaskScheduler.
+### TaskScheduling
 
-NOTE: It uses some IDisposable items for queue management and must
-be disposed of properly when done with the scheduler.
+A custom `TaskScheduler`, `IdleTaskScheduler`, and mechanisms to 
+ease the use of this or other custom `TaskScheduler`s are also 
+provided in this library.
 
-## CustomSchedulerTaskRunner Example
-`CurrentSchedulerTaskRunner` provides a `Task.Run` compatible API, and
-a singleton instance of the underlying TaskScheduler that it will use. 
-It ensures all work is scheduled singleton `TaskScheduler` instance it owns.
+### IdleTaskScheduler
 
-Given the long names resulting from using this type it should be aliased in 
-a using statement.
-
-### CustomSchedulerTaskRunner Sample Code 
-```csharp
-// Alias the type.
-using MyTaskRunner=Jcd.Tasks.CustomSchedulerTaskRunner<MyScheduler>;
-
-// class and method definition elided for brevity.
-
-MyTaskRunner.Run(()=> {
-         Console.WriteLine("Outer level of work.");
-         MyTaskRunner.Run(()=>{
-            Console.WriteLine("Inner level of work, guaranteed to use the same scheduler.");
-         });
-});
-```
-
-This pattern is useful if you have operations that need to
-have a guarantee about the pool of threads executing some tasks,
-and you only ever need one instance of the type of scheduler
-you're using.
-
-## SynchronizedValue Examples
-This type was created to act as a replacement for the non-CLS compliant type `Interlocked`.
-It uses `SemaphoreSlim` to control access and therefore implements `IDisposable` for all the
-good and bad that comes with that. The following example has three threads modifying the value,
-and one thread reporting on the value.
+This task scheduler maintains its own pool of threads,
+(Built atop ThreadWrapper) to provide idle-aware,
+round robin task scheduling.
 
 ```csharp
-using Jcd.Tasks;
-using Jcd.Tasks.Examples;
 
-var       counter = new SynchronizedValue<int>();
-using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(0.11)); // set a total run time of 0.11 minutes
+// create a scheduler with two threads meant for scheduling UI threads.
+var uiScheduler = new IdleTaskScheduler(name:"UI Scheduler", apartmentState: ApartmentState.STA);
 
-// create a hot-task that starts incrementing the value by 1 every 100 ms;
-var incrementTask = CreateIncrementTask(cts, counter);
+// create a scheduler with the default number of threads[1]
+// meant for scheduling UI threads.
+// [1] Number of processors - 2, with a minimum of 2. 
+var bgScheduler = new IdleTaskScheduler("Background Scheduler", apartmentState: ApartmentState.STA);
 
-// create a hot-task that starts decrements the value by 3 every 420 ms;
-var decBy4Task = CreateDecrementBy4Task(cts, counter);
+// begin scheduling work!
 
-// create a hot-task that sets the to 10 every 5 seconds;
-var setTo20Task = CreateSetTo20Task(cts, counter);
-
-// create a hot-task that reports the value and a timestamp every 100ms
-var reportValueTask = CreateReportValueTask(cts, counter);
-
-// wait for the tasks to finish regardless if their faulted or cancelled status.
-await Task.WhenAll(reportValueTask, setTo20Task, decBy4Task, incrementTask);
-
-// now report their statuses.
-Console.WriteLine($"reportValue.Status {reportValueTask.Status}");
-Console.WriteLine($"setTo20Task.Status {setTo20Task.Status}");
-Console.WriteLine($"decBy4Task.Status {decBy4Task.Status}");
-Console.WriteLine($"incrementTask.Status {incrementTask.Status}");
 ```
 
-### SynchronizedValue Examples Output
 
-The output of the above code should roughly similar to the following:
+#### Run Extension
 
-```text
-2023-03-18T12:43:02.1173968-05:00 : counter.Value = 1
-2023-03-18T12:43:02.2270726-05:00 : counter.Value = 2
-2023-03-18T12:43:02.3301075-05:00 : counter.Value = 3
-2023-03-18T12:43:02.4400485-05:00 : counter.Value = 4
-2023-03-18T12:43:02.5492861-05:00 : counter.Value = 2
-2023-03-18T12:43:02.6591205-05:00 : counter.Value = 2
-2023-03-18T12:43:02.7721114-05:00 : counter.Value = 4
-2023-03-18T12:43:02.8772863-05:00 : counter.Value = 2
-2023-03-18T12:43:02.9882733-05:00 : counter.Value = 2
-2023-03-18T12:43:03.0985160-05:00 : counter.Value = 4
-2023-03-18T12:43:03.2084325-05:00 : counter.Value = 5
-2023-03-18T12:43:03.3181794-05:00 : counter.Value = 3
-2023-03-18T12:43:03.4335586-05:00 : counter.Value = 3
-2023-03-18T12:43:03.5434152-05:00 : counter.Value = 5
-2023-03-18T12:43:03.6533078-05:00 : counter.Value = 5
-2023-03-18T12:43:03.7628965-05:00 : counter.Value = 4
-2023-03-18T12:43:03.8797796-05:00 : counter.Value = 5
-2023-03-18T12:43:03.9808191-05:00 : counter.Value = 5
-2023-03-18T12:43:04.0906125-05:00 : counter.Value = 6
-2023-03-18T12:43:04.2016158-05:00 : counter.Value = 5
-2023-03-18T12:43:04.3110516-05:00 : counter.Value = 5
-2023-03-18T12:43:04.4260432-05:00 : counter.Value = 7
-2023-03-18T12:43:04.5365307-05:00 : counter.Value = 7
-2023-03-18T12:43:04.6463788-05:00 : counter.Value = 6
-2023-03-18T12:43:04.7571726-05:00 : counter.Value = 7
-2023-03-18T12:43:04.8669400-05:00 : counter.Value = 8
-2023-03-18T12:43:04.9814393-05:00 : counter.Value = 8
-2023-03-18T12:43:05.0912601-05:00 : counter.Value = 6
-2023-03-18T12:43:05.2016218-05:00 : counter.Value = 7
-2023-03-18T12:43:05.3111081-05:00 : counter.Value = 9
-2023-03-18T12:43:05.4211987-05:00 : counter.Value = 9
-2023-03-18T12:43:05.5358968-05:00 : counter.Value = 7
-2023-03-18T12:43:05.6457578-05:00 : counter.Value = 9
-2023-03-18T12:43:05.7554969-05:00 : counter.Value = 9
-2023-03-18T12:43:05.8652770-05:00 : counter.Value = 7
-2023-03-18T12:43:05.9806659-05:00 : counter.Value = 8
-2023-03-18T12:43:06.0901124-05:00 : counter.Value = 9
-2023-03-18T12:43:06.2002277-05:00 : counter.Value = 10
-2023-03-18T12:43:06.3100703-05:00 : counter.Value = 8
-2023-03-18T12:43:06.4199452-05:00 : counter.Value = 10
-2023-03-18T12:43:06.5337006-05:00 : counter.Value = 10
-2023-03-18T12:43:06.6435961-05:00 : counter.Value = 12
-2023-03-18T12:43:06.7538127-05:00 : counter.Value = 10
-2023-03-18T12:43:06.8638225-05:00 : counter.Value = 11
-2023-03-18T12:43:06.9736779-05:00 : counter.Value = 12
-2023-03-18T12:43:07.0215673-05:00 : Reset to 10!
-2023-03-18T12:43:07.0833536-05:00 : counter.Value = 11
-2023-03-18T12:43:07.1928076-05:00 : counter.Value = 9
-2023-03-18T12:43:07.3031394-05:00 : counter.Value = 9
-2023-03-18T12:43:07.4129646-05:00 : counter.Value = 10
-2023-03-18T12:43:07.5233343-05:00 : counter.Value = 11
-2023-03-18T12:43:07.6373707-05:00 : counter.Value = 9
-2023-03-18T12:43:07.7471527-05:00 : counter.Value = 11
-2023-03-18T12:43:07.8570405-05:00 : counter.Value = 12
-2023-03-18T12:43:07.9668396-05:00 : counter.Value = 12
-2023-03-18T12:43:08.0666566-05:00 : counter.Value = 10
-2023-03-18T12:43:08.1710265-05:00 : counter.Value = 11
-2023-03-18T12:43:08.2808028-05:00 : counter.Value = 13
-2023-03-18T12:43:08.3904942-05:00 : counter.Value = 14
-2023-03-18T12:43:08.5002954-05:00 : counter.Value = 11
-2023-03-18T12:43:08.6105815-05:00 : counter.Value = 13
-reportValue.Status Canceled
-setTo20Task.Status Canceled
-decBy4Task.Status Canceled
-incrementTask.Status Canceled
+To allow programmers to use an arbitrary task scheduler in a 
+familiar manner (i.e. Task.Run) a number of `TaskScheduler` 
+extension methods, all overloads of Run, have been provided 
+to do this.
+
+```csharp
+var ts = new IdleTaskScheduler(name:"My Scheduler");
+
+// the default way of scheduling on a custom task scheduler
+Task.Factory.StartNew(()=>{/*do some work*/}
+                                , CancellationToken.None
+                                , TaskCreationOptions.DenyChildAttach
+                                , ts)
+                                 );
+
+// as you can see that's quite verbose and unles a person
+// has written that code a lot, will not be very intuitive.
+// the above code can now be written as:
+
+ts.Run(()=>{/*do some work*/}); // a far more intuitive API!
+
 ```
 
+Since most use cases will only need a single TaskScheduler
+a static-class singleton has been provided to remove the need
+to track the single instance of the app's custom `TaskScheduler`.
+`CustomSchedulerTaskRunner<TScheduler>`
+
+The name of the base singleton is a bit ugly at the moment,
+but with type aliasing the experience will be similar to
+`Task.Run`.
+
+The only constraint is the `TaskScheduler` type used must have
+a parameterless constructor.
+
+```csharp
+// in your global usings file: register the custom scheduler as follows 
+global using UiTask = 
+   Jcd.Threading.Tasks.CustomSchedulerTaskRunner<MyCode.MyUiScheduler>;
+
+global using BgTask = 
+   Jcd.Threading.Tasks.CustomSchedulerTaskRunner<MyCode.MyBackgroundScheduler>;
+
+// in any other source file in that project...
+
+UiTask.Run(()=>{/*Do some UI work, such as showing a dialog or main window on startup. this needs at least two threads!*/});
+
+BgTask.Run(()=>{/*Do some background work.*/});
+
+
+```

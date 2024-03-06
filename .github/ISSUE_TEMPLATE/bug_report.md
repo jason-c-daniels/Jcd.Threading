@@ -42,13 +42,13 @@ If applicable, add console output and/or log files to help explain the problem.
 
 ### Desktop Environment (please complete the following information)
 
-- Jcd.Tasks Version: [e.g. 0.0.1]
+- Jcd.Threading Version: [e.g. 0.0.1]
 - OS: [e.g. Debian 10, Windows 11]
 - Browser [e.g. chrome, safari]
 
 ### Smartphone (please complete the following information)
 
-- Jcd.Tasks Version: [e.g. 0.0.1]
+- Jcd.Threading Version: [e.g. 0.0.1]
 - Device: [e.g. iPhone6]
 - OS: [e.g. iOS8.1]
 - Browser [e.g. stock browser, safari]
