@@ -181,7 +181,7 @@ async Task ReportScheduler(int i)
    await InnerReportScheduler(i);
 }
 
-int JitteredMs(int baseDelay) { return (Random.Shared.Next(baseDelay * 11) * 7) % (baseDelay / 2) + baseDelay; }
+int JitteredMs(int baseDelay) { return ((Random.Shared.Next(baseDelay * 11) * 7) % (baseDelay / 2)) + baseDelay; }
 
 // ReSharper disable once HeapView.ClosureAllocation
 async Task InnerReportScheduler(int i)
