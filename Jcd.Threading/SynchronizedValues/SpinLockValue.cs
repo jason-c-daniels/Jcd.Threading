@@ -29,7 +29,7 @@ public class SpinLockValue<T>
    /// <param name="useMemoryBarrier">Indicates if the call to Exit should use a memory barrier to notify other threads the lock has been freed(much slower!).</param>
    /// <param name="useThreadTracking">Indicates if the <see cref="SpinLock"/> uses thread tracking.</param>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public SpinLockValue(T initialVal = default, bool useMemoryBarrier = false, bool useThreadTracking=false)
+   public SpinLockValue(T initialVal = default, bool useMemoryBarrier = false, bool useThreadTracking = false)
    {
       this.useMemoryBarrier = useMemoryBarrier;
       val                   = initialVal;

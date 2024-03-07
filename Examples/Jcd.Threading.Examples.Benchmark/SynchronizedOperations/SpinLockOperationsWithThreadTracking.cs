@@ -12,7 +12,7 @@ public class SpinLockOperationsWithThreadTracking
    public int ReadMe = 10;
 
    private readonly SpinLockValue<int> spinLockValue = new(17);
-   private          SpinLock           sl            = new (true);
+   private          SpinLock           sl            = new(true);
 
    [Benchmark]
    public int DirectSpinLockCalls_ReadValue_NoMemoryBarrier()

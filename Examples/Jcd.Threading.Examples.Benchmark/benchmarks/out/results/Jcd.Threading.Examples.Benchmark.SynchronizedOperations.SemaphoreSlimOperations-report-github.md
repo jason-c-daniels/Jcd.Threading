@@ -10,8 +10,9 @@ BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3155/23H2/2023Update/SunValley3
 MaxIterationCount=10  MinIterationCount=5  WarmupCount=1  
 
 ```
-| Method                                 | Runtime              | Mean      | Error     | StdDev    | Ratio | RatioSD |
-|--------------------------------------- |--------------------- |----------:|----------:|----------:|------:|--------:|
+
+| Method                                 | Runtime              |      Mean |     Error |    StdDev | Ratio | RatioSD |
+|----------------------------------------|----------------------|----------:|----------:|----------:|------:|--------:|
 | UsingMutexValue_ReadValue              | .NET 8.0             |  31.99 ns |  0.526 ns |  0.137 ns |  1.00 |    0.00 |
 | UsingMutexValue_ReadValue              | .NET Framework 4.6.2 |  67.17 ns |  1.250 ns |  0.325 ns |  2.10 |    0.01 |
 |                                        |                      |           |           |           |       |         |

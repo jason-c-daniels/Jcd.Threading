@@ -121,15 +121,8 @@ public class SemaphoreSlimOperations : IDisposable
       return RawValue;
    }
 
-   private void ReleaseUnmanagedResources()
-   {
-      // TODO release unmanaged resources here
-   }
-
    protected virtual void Dispose(bool disposing)
    {
-      ReleaseUnmanagedResources();
-
       if (disposing)
       {
          sv.Dispose();

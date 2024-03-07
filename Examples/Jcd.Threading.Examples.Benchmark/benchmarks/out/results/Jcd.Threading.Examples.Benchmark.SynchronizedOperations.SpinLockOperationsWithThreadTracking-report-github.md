@@ -10,8 +10,9 @@ BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3155/23H2/2023Update/SunValley3
 MaxIterationCount=10  MinIterationCount=5  WarmupCount=1  
 
 ```
-| Method                                           | Runtime              | Mean      | Error     | StdDev    | Ratio |
-|------------------------------------------------- |--------------------- |----------:|----------:|----------:|------:|
+
+| Method                                           | Runtime              |      Mean |     Error |    StdDev | Ratio |
+|--------------------------------------------------|----------------------|----------:|----------:|----------:|------:|
 | DirectSpinLockCalls_ReadValue_NoMemoryBarrier    | .NET 8.0             | 53.677 ns | 0.4500 ns | 0.1169 ns |  1.00 |
 | DirectSpinLockCalls_ReadValue_NoMemoryBarrier    | .NET Framework 4.6.2 | 62.284 ns | 0.9293 ns | 0.3314 ns |  1.16 |
 |                                                  |                      |           |           |           |       |
