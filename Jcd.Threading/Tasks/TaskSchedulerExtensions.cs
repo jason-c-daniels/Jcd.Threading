@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+// ReSharper disable NullableWarningSuppressionIsUsed
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable HeapView.ObjectAllocation.Evident
 

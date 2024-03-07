@@ -26,8 +26,8 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 var sv = new ReaderWriterLockSlimValue<int>();  
   
 // set the value to 10.  
-await setValue = sv.SetValueAsync(10);  
+var result = await sv.SetValueAsync(10);  
   
 // set the value to 20.  
-await setValue = sv.SetValueAsync(20);  
+result = await sv.SetValueAsync(20);  
 ```

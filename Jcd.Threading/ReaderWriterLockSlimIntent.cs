@@ -8,16 +8,19 @@ public enum ReaderWriterLockSlimIntent
    /// <summary>
    /// The lock is being used to read data.
    /// </summary>
-   Read,
+   Read
+
+  ,
 
    /// <summary>
    /// The lock is being used to read, at first, but can be upgraded to a write.
    /// </summary>
-   UpgradeableRead,
+   UpgradeableRead
+
+  ,
 
    /// <summary>
    /// The lock is being used for writing.
    /// </summary>
    Write
-   
 }

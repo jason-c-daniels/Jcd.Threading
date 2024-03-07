@@ -12,34 +12,43 @@ namespace Jcd.Threading;
 /// </summary>
 public static class ReaderWriterLockSlimExtensions
 {
-   private abstract class LockBase(ReaderWriterLockSlim @lock) : IDisposable
+   private abstract class LockBase(ReaderWriterLockSlim readWriteLock) : IDisposable
    {
-      protected readonly ReaderWriterLockSlim Lock = @lock;
+      protected readonly ReaderWriterLockSlim ReadWriteLock = readWriteLock;
 
       public void Dispose()
       {
-         if (Lock.IsWriteLockHeld)
-            Lock.ExitWriteLock();
-         else if (Lock.IsUpgradeableReadLockHeld)
-            Lock.ExitUpgradeableReadLock();
-         else if (Lock.IsReadLockHeld)
-            Lock.ExitReadLock();
+         if (ReadWriteLock.IsWriteLockHeld)
+            ReadWriteLock.ExitWriteLock();
+         else if (ReadWriteLock.IsUpgradeableReadLockHeld)
+            ReadWriteLock.ExitUpgradeableReadLock();
+         else if (ReadWriteLock.IsReadLockHeld)
+            ReadWriteLock.ExitReadLock();
       }
    }
 
    private sealed class ReadLock : LockBase
    {
-      internal ReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.TryEnterReadLock(-1); }
+      internal ReadLock(ReaderWriterLockSlim readWriteLock) : base(readWriteLock)
+      {
+         ReadWriteLock.TryEnterReadLock(-1);
+      }
    }
 
    private sealed class UpgradeableReadLock : LockBase
    {
-      internal UpgradeableReadLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.TryEnterUpgradeableReadLock(-1); }
+      internal UpgradeableReadLock(ReaderWriterLockSlim readWriteLock) : base(readWriteLock)
+      {
+         ReadWriteLock.TryEnterUpgradeableReadLock(-1);
+      }
    }
 
    private sealed class WriteLock : LockBase
    {
-      internal WriteLock(ReaderWriterLockSlim @lock) : base(@lock) { Lock.TryEnterWriteLock(-1); }
+      internal WriteLock(ReaderWriterLockSlim readWriteLock) : base(readWriteLock)
+      {
+         ReadWriteLock.TryEnterWriteLock(-1);
+      }
    }
 
    /// <summary>
@@ -78,7 +87,6 @@ public static class ReaderWriterLockSlimExtensions
               , _                                          => new ReadLock(@lock)
              };
    }
-
 
    /// <summary>
    /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns an IDisposable that

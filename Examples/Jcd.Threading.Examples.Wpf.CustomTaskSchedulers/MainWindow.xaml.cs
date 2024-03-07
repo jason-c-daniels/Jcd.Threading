@@ -6,6 +6,9 @@ using System.Windows.Threading;
 
 using Jcd.Threading.Tasks;
 
+// ReSharper disable InvertIf
+
+// ReSharper disable HeapView.ObjectAllocation.Possible
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.ObjectAllocation
@@ -20,8 +23,8 @@ namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 public partial class MainWindow //: Window
 {
    private readonly MainWindowViewModel mainWindowViewModel = new();
-   private          DispatcherTimer     scrollResultsTimer  = new();
-   private          DispatcherTimer     scrollItemsTimer    = new();
+   private readonly DispatcherTimer     scrollResultsTimer  = new();
+   private readonly DispatcherTimer     scrollItemsTimer    = new();
 
    public MainWindow()
    {
@@ -35,7 +38,7 @@ public partial class MainWindow //: Window
       scrollResultsTimer.Start();
    }
 
-   private int lastResultCount = 0;
+   private int lastResultCount;
 
    private void ScrollResultsTimerOnTick(object sender, EventArgs e)
    {
@@ -43,7 +46,7 @@ public partial class MainWindow //: Window
       lastResultCount = ScrollToEnd(ResultsList);
    }
 
-   private int lastItemCount = 0;
+   private int lastItemCount;
 
    private void ScrollItemsTimerOnTick(object sender, EventArgs e)
    {
@@ -51,8 +54,9 @@ public partial class MainWindow //: Window
       lastItemCount = ScrollToEnd(ItemsList);
    }
 
-   private static int ScrollToEnd(ListBox list)
+   private static int ScrollToEnd(ItemsControl list)
    {
+      // ReSharper disable once InvertIf -- Doing this actually makes the flow less intuitive. Suppress it.
       if (list.Items.Count > 0)
       {
          var border       = (Border) VisualTreeHelper.GetChild(list,         0);

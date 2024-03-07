@@ -86,7 +86,7 @@ public sealed class ReaderWriterLockSlimValue<T>
    /// var sv = new ReaderWriterLockSlimValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// setValue = sv.GetValue(20);
+   /// var result = sv.GetValue(20);
    /// 
    /// </code>
    /// </example>
@@ -115,7 +115,7 @@ public sealed class ReaderWriterLockSlimValue<T>
    /// var sv = new ReaderWriterLockSlimValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// await setValue = sv.GetValueAsync(20);
+   /// var result = await sv.GetValueAsync(20);
    /// 
    /// </code>
    /// </example>
@@ -145,10 +145,10 @@ public sealed class ReaderWriterLockSlimValue<T>
    /// var sv = new ReaderWriterLockSlimValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
-   /// setValue = sv.SetValue(10);
+   /// var result = sv.SetValue(10);
    /// 
    /// // set the value to 20.
-   /// setValue = sv.SetValue(20);
+   /// result = sv.SetValue(20);
    /// 
    /// </code>
    /// </example>
@@ -177,10 +177,10 @@ public sealed class ReaderWriterLockSlimValue<T>
    /// var sv = new ReaderWriterLockSlimValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
-   /// await setValue = sv.SetValueAsync(10);
+   /// var result = await sv.SetValueAsync(10);
    /// 
    /// // set the value to 20.
-   /// await setValue = sv.SetValueAsync(20);
+   /// result = await sv.SetValueAsync(20);
    /// 
    /// </code>
    /// </example>

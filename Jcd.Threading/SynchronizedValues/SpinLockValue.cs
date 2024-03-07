@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+// ReSharper disable UnusedMember.Global
+
 #pragma warning disable CS8603 // Possible null reference return.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -17,19 +19,19 @@ internal class SpinLockValue<T>
 {
    // ReSharper disable once FieldCanBeMadeReadOnly.Local
    private          SpinLock spinLock;
-   private          T        value;
+   private          T        val;
    private readonly bool     useMemoryBarrier;
 
    /// <summary>
    /// Creates an instance of a <see cref="SpinLockValue{T}"/>
    /// </summary>
-   /// <param name="initialValue">The initial value</param>
+   /// <param name="initialVal">The initial value</param>
    /// <param name="useMemoryBarrier">Indicates if the call to Exit should use a memory barrier to notify other threads the lock has been freed(much slower!).</param>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public SpinLockValue(T initialValue = default, bool useMemoryBarrier = false)
+   public SpinLockValue(T initialVal = default, bool useMemoryBarrier = false)
    {
       this.useMemoryBarrier = useMemoryBarrier;
-      value                 = initialValue;
+      val                   = initialVal;
    }
 
    /// <summary>
@@ -44,17 +46,31 @@ internal class SpinLockValue<T>
       set => SetValue(value);
    }
 
+   /// <summary>
+   /// Retrieves the current value. If another thread edits the value, moment later a subsequent
+   /// call will yield a different result. 
+   /// </summary>
+   /// <returns>The current value as of establishing the lock.</returns>
+   /// <example>
+   /// <code>
+   /// var sv = new SpinLockValue&lt;int&gt;(15);
+   /// 
+   /// // get the value
+   /// setValue = sv.GetValue(20);
+   /// 
+   /// </code>
+   /// </example>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public T GetValue()
    {
-      T result = default;
+      T result;
 
       var lockTaken = false;
 
       try
       {
          spinLock.TryEnter(-1, ref lockTaken);
-         result = value;
+         result = val;
       }
       finally
       {
@@ -65,19 +81,29 @@ internal class SpinLockValue<T>
       return result;
    }
 
+   /// <summary>
+   /// Gets the value in an async friendly manner.
+   /// </summary>
+   /// <returns>A <see cref="Task{T}"/> containing the retrieved value.</returns>
+   /// <example>
+   /// <code>
+   /// var sv = new SpinLockValue&lt;int&gt;(15);
+   /// 
+   /// // get the value
+   /// var result = await sv.GetValueAsync(20);
+   /// 
+   /// </code>
+   /// </example>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public Task<T> GetValueAsync()
    {
-      T result;
-
       var lockTaken = false;
 
       try
       {
          spinLock.TryEnter(-1, ref lockTaken);
-         result = value;
 
-         return Task.FromResult(result);
+         return Task.FromResult(val);
       }
       finally
       {
@@ -86,6 +112,24 @@ internal class SpinLockValue<T>
       }
    }
 
+   /// <summary>
+   /// Sets the current value to the provided value.
+   /// </summary>
+   /// <param name="value">The provided value.</param>
+   /// <returns>The provided value.</returns>
+   /// <example>
+   /// <code>
+   /// var sv = new SpinLockValue&lt;int&gt;();
+   /// 
+   /// // set the value to 10.
+   /// var result = sv.SetValue(10);
+   /// 
+   /// // set the value to 20.
+   /// setValue = sv.SetValue(20);
+   /// 
+   /// </code>
+   /// </example>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public T SetValue(T value)
    {
       var lockTaken = false;
@@ -94,7 +138,7 @@ internal class SpinLockValue<T>
       {
          spinLock.TryEnter(-1, ref lockTaken);
 
-         return this.value = value;
+         return val = value;
       }
       finally
       {
@@ -103,6 +147,24 @@ internal class SpinLockValue<T>
       }
    }
 
+   /// <summary>
+   /// Sets the current value to the provided value.
+   /// </summary>
+   /// <param name="value">The provided value.</param>
+   /// <returns>A <see cref="Task{T}"/> containing the provided value.</returns>
+   /// <example>
+   /// <code>
+   /// var sv = new SpinLockValue&lt;int&gt;();
+   /// 
+   /// // set the value to 10.
+   /// var result = await sv.SetValueAsync(10);
+   /// 
+   /// // set the value to 20.
+   /// result = await sv.SetValueAsync(20);
+   /// 
+   /// </code>
+   /// </example>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public Task<T> SetValueAsync(T value)
    {
       var lockTaken = false;
@@ -111,7 +173,7 @@ internal class SpinLockValue<T>
       {
          spinLock.TryEnter(-1, ref lockTaken);
 
-         return Task.FromResult(this.value = value);
+         return Task.FromResult(val = value);
       }
       finally
       {
@@ -158,14 +220,14 @@ internal class SpinLockValue<T>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public T ChangeValue(Func<T, T>? func)
    {
-      if (func == null) return value;
+      if (func == null) return val;
 
       var lockTaken = false;
 
       try
       {
          spinLock.TryEnter(-1, ref lockTaken);
-         var result = value = func(value);
+         var result = val = func(val);
 
          return result;
       }
@@ -221,7 +283,7 @@ internal class SpinLockValue<T>
       {
          spinLock.TryEnter(-1, ref lockTaken);
 
-         return value = await func(value);
+         return val = await func(val);
       }
       finally
       {

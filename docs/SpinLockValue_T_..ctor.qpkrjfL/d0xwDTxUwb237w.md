@@ -6,13 +6,13 @@
 Creates an instance of a [SpinLockValue&lt;T&gt;](SpinLockValue_T_.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>')
 
 ```csharp
-public SpinLockValue(T initialValue=default(T), bool useMemoryBarrier=false);
+public SpinLockValue(T initialVal=default(T), bool useMemoryBarrier=false);
 ```
 #### Parameters
 
-<a name='Jcd.Threading.SynchronizedValues.SpinLockValue_T_.SpinLockValue(T,bool).initialValue'></a>
+<a name='Jcd.Threading.SynchronizedValues.SpinLockValue_T_.SpinLockValue(T,bool).initialVal'></a>
 
-`initialValue` [T](SpinLockValue_T_.md#Jcd.Threading.SynchronizedValues.SpinLockValue_T_.T 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.T')
+`initialVal` [T](SpinLockValue_T_.md#Jcd.Threading.SynchronizedValues.SpinLockValue_T_.T 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.T')
 
 The initial value
 

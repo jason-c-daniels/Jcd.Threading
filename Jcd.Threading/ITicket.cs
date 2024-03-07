@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+// ReSharper disable UnusedMemberInSuper.Global
+
 namespace Jcd.Threading;
 
 /// <summary>

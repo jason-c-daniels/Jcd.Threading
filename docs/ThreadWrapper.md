@@ -25,7 +25,7 @@ Resume will suspend the thread operations at the appropriate time in the main lo
 
 | Constructors | |
 | :--- | :--- |
-| [ThreadWrapper(bool, string, bool, bool, int, ThreadPriority, ApartmentState)](ThreadWrapper..ctor.IET6XOM4O8t97gkO8Fqxyg.md 'Jcd.Threading.ThreadWrapper.ThreadWrapper(bool, string, bool, bool, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') |
+| [ThreadWrapper(bool, string, bool, bool, int, int, ThreadPriority, ApartmentState)](ThreadWrapper..ctor.P11YetUSK7Dh1ZnTbZWMNQ.md 'Jcd.Threading.ThreadWrapper.ThreadWrapper(bool, string, bool, bool, int, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') |
 
 | Properties | |
 | :--- | :--- |
@@ -48,7 +48,7 @@ Resume will suspend the thread operations at the appropriate time in the main lo
 | [IdleWait(CancellationToken)](ThreadWrapper.IdleWait.q69Aj6do6sbEw/LzUpxGWQ.md 'Jcd.Threading.ThreadWrapper.IdleWait(System.Threading.CancellationToken)') | Wait in idle state, if the IsIdle flag is set. |
 | [Pause()](ThreadWrapper.Pause().md 'Jcd.Threading.ThreadWrapper.Pause()') | Pauses the retrieval and processing of queued items. |
 | [PauseWait(CancellationToken)](ThreadWrapper.PauseWait.iLYFR/oz4tfG+yGYs8FSiw.md 'Jcd.Threading.ThreadWrapper.PauseWait(System.Threading.CancellationToken)') | Wait in the paused state if the IsPaused flag is set. |
-| [PerformStateThreadCleanup()](ThreadWrapper.PerformStateThreadCleanup().md 'Jcd.Threading.ThreadWrapper.PerformStateThreadCleanup()') | Ensures thread state is reset to final, including cancellation.<br/>This is called as a thread is exiting.. |
+| [PerformThreadStateCleanup()](ThreadWrapper.PerformThreadStateCleanup().md 'Jcd.Threading.ThreadWrapper.PerformThreadStateCleanup()') | Ensures thread state is reset to final, including cancellation.<br/>This is called as a thread is exiting.. |
 | [PerformWork(CancellationToken)](ThreadWrapper.PerformWork.Iee0Rq4O6c1RXxlt3rXwsg.md 'Jcd.Threading.ThreadWrapper.PerformWork(System.Threading.CancellationToken)') | Performs a single unit of work. Implement in derived types not overriding ThreadProc. |
 | [Resume()](ThreadWrapper.Resume().md 'Jcd.Threading.ThreadWrapper.Resume()') | Resumes item processing. |
 | [Start()](ThreadWrapper.Start().md 'Jcd.Threading.ThreadWrapper.Start()') | Starts the processing of queued items. |

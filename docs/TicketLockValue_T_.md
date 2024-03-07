@@ -23,6 +23,10 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 | :--- | :--- |
 | [TicketLockValue(T)](TicketLockValue_T_..ctor.Qiyrb7RohSHzoHH+Tg1lNQ.md 'Jcd.Threading.SynchronizedValues.TicketLockValue<T>.TicketLockValue(T)') | Constructs an instance of [TicketLockValue&lt;T&gt;](TicketLockValue_T_.md 'Jcd.Threading.SynchronizedValues.TicketLockValue<T>') |
 
+| Properties | |
+| :--- | :--- |
+| [Value](TicketLockValue_T_.Value.md 'Jcd.Threading.SynchronizedValues.TicketLockValue<T>.Value') | The synchronized value. |
+
 | Methods | |
 | :--- | :--- |
 | [ChangeValue(Func&lt;T,T&gt;)](TicketLockValue_T_.ChangeValue.6lXEnT5Pt8Em1e6VS5RuIw.md 'Jcd.Threading.SynchronizedValues.TicketLockValue<T>.ChangeValue(System.Func<T,T>)') | Calls the provided function, passing in the current value, and assigns the result<br/>of the function call, to the current value. <b>This is not recursively reentrant.<br/>see remarks for details.</b> |

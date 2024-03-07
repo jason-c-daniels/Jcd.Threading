@@ -26,8 +26,8 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 var sv = new TicketLockedValue<int>();  
   
 // set the value to 10.  
-await setValue = swmr.SetValueAsync(10);  
+var result = await sv.SetValueAsync(10);  
   
 // set the value to 20.  
-await setValue = swmr.SetValueAsync(20);  
+result = await sv.SetValueAsync(20);  
 ```

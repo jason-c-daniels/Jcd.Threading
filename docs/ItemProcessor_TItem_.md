@@ -3,7 +3,8 @@
 
 ## ItemProcessor<TItem> Class
 
-An item processor that calls a delegate on each item enqueued with it.
+Provides the ability to call a delegate on each item in an internally managed queue  
+from its own background thread.
 
 ```csharp
 public sealed class ItemProcessor<TItem> : Jcd.Threading.ThreadWrapper
@@ -22,7 +23,7 @@ synchronized appropriately. This type only synchronizes access to internal data.
 
 | Constructors | |
 | :--- | :--- |
-| [ItemProcessor(Action&lt;TItem&gt;, bool, string, bool, bool, int, ThreadPriority, ApartmentState)](ItemProcessor_TItem_..ctor.4y5VUw/96RDQyJdAdqZBXg.md 'Jcd.Threading.ItemProcessor<TItem>.ItemProcessor(System.Action<TItem>, bool, string, bool, bool, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') |
+| [ItemProcessor(Action&lt;TItem&gt;, bool, string, bool, bool, int, int, ThreadPriority, ApartmentState)](ItemProcessor_TItem_..ctor.eRZ9xDBjXorufwazyJ0kgw.md 'Jcd.Threading.ItemProcessor<TItem>.ItemProcessor(System.Action<TItem>, bool, string, bool, bool, int, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') |
 
 | Properties | |
 | :--- | :--- |

@@ -4,6 +4,10 @@ using System.Threading;
 
 using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable VirtualMemberNeverOverridden.Global
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation
@@ -31,6 +35,7 @@ public abstract class ThreadWrapper : IDisposable
    /// <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
    /// <param name="autoStart">Indicates if the thread should be automatically started in the constructor.</param>
    /// <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop</param>
+   /// <param name="idleAfterEmptyQueueCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
    /// <param name="priority">The priority to start the processing thread at.</param>
    /// <param name="apartmentState">The apartment state for the underlying thread.</param>
    /// <param name="yieldEachCycle">A flag indicating if CPU time is yielded each pass through the main loop.</param>
@@ -43,24 +48,28 @@ public abstract class ThreadWrapper : IDisposable
    /// If resuming  the same thread is the desired behavior, call `Pause` and `Resume` instead.
    /// </para> 
    /// </remarks>
-   public ThreadWrapper(
-      bool           autoStart           = true
-    , string?        name                = null
-    , bool           useBackgroundThread = true
-    , bool           yieldEachCycle      = true
-    , int            timeToYieldInMs     = 15
-    , ThreadPriority priority            = ThreadPriority.Normal
-    , ApartmentState apartmentState      = ApartmentState.Unknown
+   protected ThreadWrapper(
+      bool           autoStart                = true
+    , string?        name                     = null
+    , bool           useBackgroundThread      = true
+    , bool           yieldEachCycle           = true
+    , int            timeToYieldInMs          = 15
+    , int            idleAfterEmptyQueueCount = 15
+    , ThreadPriority priority                 = ThreadPriority.Normal
+    , ApartmentState apartmentState           = ApartmentState.Unknown
    )
    {
       if (yieldEachCycle && timeToYieldInMs < 1)
-         throw new ArgumentException(nameof(timeToYieldInMs), "must be greater than or equal to 1");
-      this.name                = name ?? $"{GetType().Name}";
-      this.useBackgroundThread = useBackgroundThread;
-      this.yieldEachCycle      = yieldEachCycle;
-      this.timeToYieldInMs     = timeToYieldInMs;
-      this.priority            = priority;
-      this.apartmentState      = apartmentState;
+         throw new ArgumentException("must be greater than or equal to 1", nameof(timeToYieldInMs));
+
+      Name                          = name ?? $"{GetType().Name}";
+      isIdleDetectionDisabled       = idleAfterEmptyQueueCount < 0;
+      this.useBackgroundThread      = useBackgroundThread;
+      this.yieldEachCycle           = yieldEachCycle;
+      this.timeToYieldInMs          = timeToYieldInMs;
+      this.idleAfterEmptyQueueCount = idleAfterEmptyQueueCount;
+      this.priority                 = priority;
+      this.apartmentState           = apartmentState;
       if (autoStart) Start();
    }
 
@@ -71,15 +80,15 @@ public abstract class ThreadWrapper : IDisposable
    private readonly bool                               useBackgroundThread;
    private readonly bool                               yieldEachCycle;
    private readonly int                                timeToYieldInMs;
-   private readonly string                             name;
-   private readonly ReaderWriterLockSlimValue<Thread?> thread;
+   private readonly int                                idleAfterEmptyQueueCount;
+   private readonly ReaderWriterLockSlimValue<Thread?> thread = new();
 
    /// <summary>
    /// The name of this instance of the <see cref="ThreadWrapper"/>.
    /// By default the underlying thread will be named as follows:
    /// `$"{Name}.Thread"`
    /// </summary>
-   public string Name => name;
+   public string Name { get; }
 
    /// <summary>
    /// Provides direct access to the underlying thread.
@@ -90,7 +99,7 @@ public abstract class ThreadWrapper : IDisposable
    {
       var newThread = new Thread(ThreadProc)
                       {
-                         Name = $"{name}.Thread", IsBackground = useBackgroundThread, Priority = priority
+                         Name = $"{Name}.Thread", IsBackground = useBackgroundThread, Priority = priority
                       };
 
       if (apartmentState != ApartmentState.Unknown)
@@ -127,11 +136,12 @@ public abstract class ThreadWrapper : IDisposable
 
          do
          {
+            DoWorkAndIdleDetection(token);
+
             if (token.IsCancellationRequested)
                return;
 
-            if (!IdleWait(token) && yieldEachCycle)
-               YieldCpuTime(timeToYieldInMs);
+            DoIdleOrYield(token);
 
             if (token.IsCancellationRequested)
                return;
@@ -140,9 +150,6 @@ public abstract class ThreadWrapper : IDisposable
 
             if (token.IsCancellationRequested)
                return;
-
-            if (!PerformWork(token))
-               EnterIdleState();
          }
          while (GetShouldContinue(token));
       }
@@ -153,10 +160,36 @@ public abstract class ThreadWrapper : IDisposable
       }
       finally
       {
-         PerformStateThreadCleanup();
+         PerformThreadStateCleanup();
          Debug.WriteLine($"Exiting {nameof(ThreadProc)}");
          Debug.Flush();
       }
+   }
+
+   private int noWorkCounter;
+
+   private void DoWorkAndIdleDetection(CancellationToken token)
+   {
+      var meaningfulWorkPerformed = PerformWork(token);
+
+      if (isIdleDetectionDisabled) return;
+
+      if (meaningfulWorkPerformed)
+      {
+         noWorkCounter = 0;
+      }
+      else
+      {
+         noWorkCounter++;
+         if (idleAfterEmptyQueueCount < noWorkCounter)
+            EnterIdleState();
+      }
+   }
+
+   private void DoIdleOrYield(CancellationToken token)
+   {
+      if (!IdleWait(token) && yieldEachCycle)
+         YieldCpuTime(timeToYieldInMs);
    }
 
    /// <summary>
@@ -169,8 +202,9 @@ public abstract class ThreadWrapper : IDisposable
    /// </returns>
    protected virtual bool PerformWork(CancellationToken token) { return false; }
 
-   private AutoResetEvent waitEvent = new(false);
+   private readonly AutoResetEvent waitEvent = new(false);
 
+   // ReSharper disable once MemberCanBePrivate.Global -- intended to be called by derived types.
    /// <summary>
    /// Yields very small amounts of CPU time. This can approach 1ms.
    /// Thread.Sleep and Task.Delay will wait at least 15ms.
@@ -187,8 +221,8 @@ public abstract class ThreadWrapper : IDisposable
    private readonly SemaphoreSlim           idleSem            = new(1, 1);
 
    private readonly ReaderWriterLockSlimValue<bool> isPaused = new();
-   private          bool                            isStarted;
-   private readonly ReaderWriterLockSlimValue<bool> isIdle = new(true);
+   private readonly ReaderWriterLockSlimValue<bool> isIdle   = new(true);
+   private readonly bool                            isIdleDetectionDisabled;
 
    /// <summary>
    /// Gives derived types access to the <see cref="CancellationToken"/>
@@ -198,7 +232,7 @@ public abstract class ThreadWrapper : IDisposable
    /// <summary>
    /// Gets a flag indicating if the item processing loop has started.
    /// </summary>
-   public bool IsStarted => isStarted;
+   public bool IsStarted { get; private set; }
 
    /// <summary>
    /// Gets a flag indicating if the item processing is currently paused.
@@ -221,13 +255,13 @@ public abstract class ThreadWrapper : IDisposable
    /// Ensures thread state is reset to final, including cancellation.
    /// This is called as a thread is exiting..
    /// </summary>
-   protected void PerformStateThreadCleanup()
+   protected void PerformThreadStateCleanup()
    {
       if (!cancellationSource.IsCancellationRequested)
          cancellationSource.Cancel();
       if (IsIdle) ExitIdleState();
       if (IsPaused) ExitPausedState();
-      isStarted = false;
+      IsStarted = false;
    }
 
    /// <summary>
@@ -265,7 +299,7 @@ public abstract class ThreadWrapper : IDisposable
    protected void ExitIdleState()
    {
       if (idleSem.CurrentCount > 0) return;
-      Debug.WriteLine($"{name} is no longer idle.");
+      Debug.WriteLine($"{Name} is no longer idle.");
       isIdle.Value = false;
       idleSem.Release();
    }
@@ -302,10 +336,12 @@ public abstract class ThreadWrapper : IDisposable
    /// <summary>
    /// Starts the processing of queued items.
    /// </summary>
+
+   // ReSharper disable once MemberCanBeProtected.Global -- intended to be called by other classes.
    public void Start()
    {
       if (IsStarted) return;
-      isStarted    = true;
+      IsStarted    = true;
       thread.Value = CreateThread();
       thread.Value.Start();
    }
@@ -315,7 +351,7 @@ public abstract class ThreadWrapper : IDisposable
    /// </summary>
    public void Stop()
    {
-      if (!isStarted) return;
+      if (!IsStarted) return;
       if (!cancellationSource.IsCancellationRequested)
          cancellationSource.Cancel();
    }

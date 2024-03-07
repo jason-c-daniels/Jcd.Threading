@@ -1,10 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-using Jcd.Threading;
-
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public class ReaderWriterLockSlimOperations : IDisposable
+public sealed class ReaderWriterLockSlimOperations : IDisposable
 {
    private readonly ReaderWriterLockSlim rwls = new();
 

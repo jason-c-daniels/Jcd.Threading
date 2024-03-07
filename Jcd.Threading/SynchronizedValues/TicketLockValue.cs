@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Jcd.Threading.SynchronizedValues;
 
 /// <summary>
@@ -21,10 +23,11 @@ public sealed class TicketLockValue<T>
    /// <param name="initialValue">the initial value to store></param>
    public TicketLockValue(T initialValue = default!) { val = initialValue; }
 
-   /// <inheritdoc />
-
    #region properties and accessors
 
+   /// <summary>
+   /// The synchronized value.
+   /// </summary>
    public T Value
    {
       get => GetValue();
@@ -41,7 +44,7 @@ public sealed class TicketLockValue<T>
    /// var sv = new TicketLockedValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// setValue = swmr.GetValue(20);
+   /// setValue = sv.GetValue(20);
    /// 
    /// </code>
    /// </example>
@@ -61,7 +64,7 @@ public sealed class TicketLockValue<T>
    /// var sv = new TicketLockedValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// await setValue = swmr.GetValueAsync(20);
+   /// var result = await sv.GetValueAsync(20);
    /// 
    /// </code>
    /// </example>
@@ -82,10 +85,10 @@ public sealed class TicketLockValue<T>
    /// var sv = new TicketLockValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
-   /// setValue = swmr.SetValue(10);
+   /// var result = sv.SetValue(10);
    /// 
    /// // set the value to 20.
-   /// setValue = swmr.SetValue(20);
+   /// result = sv.SetValue(20);
    /// 
    /// </code>
    /// </example>
@@ -106,10 +109,10 @@ public sealed class TicketLockValue<T>
    /// var sv = new TicketLockedValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
-   /// await setValue = swmr.SetValueAsync(10);
+   /// var result = await sv.SetValueAsync(10);
    /// 
    /// // set the value to 20.
-   /// await setValue = swmr.SetValueAsync(20);
+   /// result = await sv.SetValueAsync(20);
    /// 
    /// </code>
    /// </example>

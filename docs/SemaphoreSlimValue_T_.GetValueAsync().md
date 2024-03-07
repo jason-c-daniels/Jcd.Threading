@@ -19,5 +19,5 @@ A [System.Threading.Tasks.Task&lt;&gt;](https://docs.microsoft.com/en-us/dotnet/
 var sv = new SemaphoreSlimValue<int>(15);  
   
 // get the value  
-await setValue = swmr.GetValueAsync(20);  
+var result = await sv.GetValueAsync(20);  
 ```

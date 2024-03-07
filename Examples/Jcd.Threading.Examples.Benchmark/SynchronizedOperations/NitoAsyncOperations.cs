@@ -1,14 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-using Jcd.Threading;
-
 using Nito.AsyncEx;
-
-using SemaphoreSlimExtensions = Jcd.Threading.SemaphoreSlimExtensions;
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public class NitoAsyncOperations : IDisposable
+public sealed class NitoAsyncOperations : IDisposable
 {
    private readonly AsyncLock     nito     = new();
    private readonly SemaphoreSlim sem      = new(1, 1);
@@ -19,7 +15,6 @@ public class NitoAsyncOperations : IDisposable
    {
       using (nito.Lock())
          return RawValue;
-      ;
    }
 
    [Benchmark]
@@ -36,7 +31,6 @@ public class NitoAsyncOperations : IDisposable
    {
       using (await nito.LockAsync())
          return RawValue;
-      ;
    }
 
    [Benchmark]
@@ -51,14 +45,14 @@ public class NitoAsyncOperations : IDisposable
    [Benchmark]
    public int UsingSemaphoreSlimExtensions_ReadValue()
    {
-      using (SemaphoreSlimExtensions.Lock(sem))
+      using (Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
          return RawValue;
    }
 
    [Benchmark]
    public int UsingSemaphoreSlimExtensions_WriteValue()
    {
-      using (SemaphoreSlimExtensions.Lock(sem))
+      using (Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
          RawValue = 15;
 
       return RawValue;

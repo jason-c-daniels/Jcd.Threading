@@ -19,7 +19,7 @@
          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
    </ItemGroup>
-   
+
    <PropertyGroup>
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Title>Jcd.Threading</Title>
@@ -46,7 +46,7 @@
    <ItemGroup>
       <None Include="..\README.md" Pack="true" PackagePath="\"/>
       <None Include="..\LICENSE" Pack="false" PackagePath="\"/>
-      <None Include="icon\Jason.C.Daniels.jpg" Pack="true" PackagePath="\" />
+      <None Include="icon\Jason.C.Daniels.jpg" Pack="true" PackagePath="\"/>
       <None Include="..\nuget.config" Pack="false" PackagePath="\"/>
    </ItemGroup>
 

@@ -6,7 +6,7 @@
 Gets a flag indicating if the item processing loop has started.
 
 ```csharp
-public bool IsStarted { get; }
+public bool IsStarted { get; set; }
 ```
 
 #### Property Value

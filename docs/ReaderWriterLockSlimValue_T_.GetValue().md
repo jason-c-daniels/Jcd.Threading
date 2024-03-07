@@ -20,5 +20,5 @@ The current value as of establishing the lock.
 var sv = new ReaderWriterLockSlimValue<int>(15);  
   
 // get the value  
-setValue = sv.GetValue(20);  
+var result = sv.GetValue(20);  
 ```

@@ -7,7 +7,7 @@ management of unstarted [System.Threading.Tasks.Task](https://docs.microsoft.com
 
 | Classes | |
 | :--- | :--- |
-| [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') | An item processor that calls a delegate on each item enqueued with it. |
+| [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') | Provides the ability to call a delegate on each item in an internally managed queue<br/>from its own background thread. |
 | [ReaderWriterLockSlimExtensions](ReaderWriterLockSlimExtensions.md 'Jcd.Threading.ReaderWriterLockSlimExtensions') | A set of extension methods to simplify using a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim')<br/>to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,<br/>and EnterWrite+ExitWrite are called. |
 | [SemaphoreSlimExtensions](SemaphoreSlimExtensions.md 'Jcd.Threading.SemaphoreSlimExtensions') | A set of extension methods to simplify using a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim')<br/>to ensure that Release is called for every Wait or WaitAsync. Useful for<br/>ensuring synchronized access to data for short lived operations. |
 | [SpinLockExtensions](SpinLockExtensions.md 'Jcd.Threading.SpinLockExtensions') | Provides extension methods to aid in working with SpinLocks |

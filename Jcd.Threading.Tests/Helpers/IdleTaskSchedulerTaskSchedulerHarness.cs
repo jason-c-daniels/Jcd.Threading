@@ -2,13 +2,9 @@
 
 namespace Jcd.Threading.Tests.Helpers;
 
-public class SimpleThreadedTaskSchedulerHarness : SimpleThreadedTaskScheduler
+public class IdleTaskSchedulerTaskSchedulerHarness(int threadCount, ApartmentState state = ApartmentState.Unknown)
+   : IdleTaskScheduler(threadCount, state)
 {
-   public SimpleThreadedTaskSchedulerHarness(int threadCount, ApartmentState state = ApartmentState.Unknown) :
-      base(threadCount, state)
-   {
-   }
-
    public bool PublicTryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
    {
       return TryExecuteTaskInline(task, taskWasPreviouslyQueued);

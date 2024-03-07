@@ -2,12 +2,14 @@
 
 using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable ConvertToConstant.Global
+
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public class SynchronizedValueOperations : IDisposable
+public sealed class SynchronizedValueOperations : IDisposable
 {
-   public  int                            RawValue = 333;
-   private ReaderWriterLockSlimValue<int> sv       = new(11);
+   public readonly  int                            RawValue = 333;
+   private readonly ReaderWriterLockSlimValue<int> sv       = new(11);
 
    [Benchmark]
    public int UsingSynchronizedValue_ReadValue()

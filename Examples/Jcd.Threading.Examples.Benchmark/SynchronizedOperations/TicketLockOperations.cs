@@ -1,11 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-using Jcd.Threading;
 using Jcd.Threading.SynchronizedValues;
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public class TicketLockOperations
+public sealed class TicketLockOperations
 {
    public           int                  RawValue = 14;
    private readonly TicketLockValue<int> tlv      = new(17);

@@ -1,9 +1,7 @@
-﻿// WPF Apps need two STA threads, one for event processing and one for rendering.
-// a Single STA Thread is not sufficient.
+﻿using Jcd.Threading.Tasks;
 
-// ReSharper disable HeapView.ObjectAllocation.Evident
-
-using Jcd.Threading.Tasks;
+// ReSharper disable HeapView.BoxingAllocation
+// ReSharper disable HeapView.ObjectAllocation
 
 namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 
@@ -24,8 +22,8 @@ public partial class App //: Application
    [STAThread]
    private static Task<int> AsyncMain()
    {
-      // var uiT          = Current.Dispatcher?.Thread;
-      var uiT        = Thread.CurrentThread;
+      var cT = Thread.CurrentThread;
+      Console.WriteLine($"The Current thread is: {cT.Name}[{cT.ManagedThreadId}]");
       var mainWindow = new MainWindow();
       var app        = new App();
 

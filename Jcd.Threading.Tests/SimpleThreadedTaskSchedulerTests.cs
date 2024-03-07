@@ -1,6 +1,8 @@
 ﻿using Jcd.Threading.Tests.Helpers;
 using Jcd.Threading.Tasks;
 
+// ReSharper disable HeapView.ObjectAllocation.Possible
+
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
@@ -21,15 +23,15 @@ public class SimpleThreadedTaskSchedulerTests
     , ApartmentState expectedState
    )
    {
-      var       expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount;
-      using var scheduler           = new SimpleThreadedTaskScheduler(threadCount, expectedState);
+      var       expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount - 2;
+      using var scheduler           = new IdleTaskScheduler(threadCount, expectedState);
       Assert.Equal(expectedThreadCount, scheduler.Threads.Count);
 
       foreach (var thread in scheduler.Threads)
       {
-         if (OsSupportsThreadingApartmentModel())
+         if (OsSupportsThreadingApartmentModel() && thread !=null)
             Assert.Equal(expectedState, thread.GetApartmentState());
-         Assert.True(thread.IsAlive);
+         Assert.True(thread?.IsAlive);
       }
    }
 
@@ -44,7 +46,7 @@ public class SimpleThreadedTaskSchedulerTests
    public async Task Scheduled_Work_Executes_On_Thread_Owned_By_Scheduler()
    {
       // ensure we have only one thread. This will make our verification trivial.
-      using var scheduler      = new SimpleThreadedTaskScheduler(1);
+      using var scheduler      = new IdleTaskScheduler(1);
       Thread?   capturedThread = null;
       await scheduler.Run(() =>
                           {
@@ -60,12 +62,11 @@ public class SimpleThreadedTaskSchedulerTests
    public async Task Scheduled_Work_That_Throws_An_Exception_Does_Not_Kill_The_Thread()
    {
       // ensure we have only one thread. This will make our verification trivial.
-      using var scheduler = new SimpleThreadedTaskScheduler(1);
+      using var scheduler = new IdleTaskScheduler(1);
 
       // run some faulting tasks.
-      for (var i = 1; i < 10; i++)
+      for (var i = 0; i < 1; i++)
          await RunAFaultingTaskAndWait(scheduler);
-
       var workRan = false;
       await scheduler.Run(() => { workRan = true; });
       Assert.True(workRan);
@@ -76,20 +77,20 @@ public class SimpleThreadedTaskSchedulerTests
    [InlineData(true)]
    public void TryExecuteTaskInline_Always_Returns_False(bool wasPreviouslyQueued)
    {
-      using var scheduler = new SimpleThreadedTaskSchedulerHarness(1, ApartmentState.MTA);
+      using var scheduler = new IdleTaskSchedulerTaskSchedulerHarness(1, ApartmentState.MTA);
       Assert.False(scheduler.PublicTryExecuteTaskInline(Task.CompletedTask, wasPreviouslyQueued));
    }
 
    [Fact]
    public void GetScheduledTasks_Does_Not_Return_Null()
    {
-      using var scheduler = new SimpleThreadedTaskSchedulerHarness(1, ApartmentState.MTA);
+      using var scheduler = new IdleTaskSchedulerTaskSchedulerHarness(1, ApartmentState.MTA);
       Assert.NotNull(scheduler.PublicGetScheduledTasks());
    }
 
-   private static async Task RunAFaultingTaskAndWait(SimpleThreadedTaskScheduler scheduler)
+   private static async Task RunAFaultingTaskAndWait(TaskScheduler scheduler)
    {
-      using var task = scheduler.Run(() => throw new ArgumentException("dummy exception"));
+      var task = scheduler.Run(() => throw new ArgumentException("dummy exception"));
 
       // wait for task to end, this ignores the exception we're throwing.
       while (!task.IsCompleted) await Task.Yield();

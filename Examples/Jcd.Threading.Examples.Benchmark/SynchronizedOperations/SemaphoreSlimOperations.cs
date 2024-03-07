@@ -2,13 +2,16 @@
 
 using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ClosureAllocation
+
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public class SemaphoreSlimOperations : IDisposable
+public sealed class SemaphoreSlimOperations : IDisposable
 {
-   private SemaphoreSlimValue<int> mv       = new(12);
-   private SemaphoreSlim           sem      = new(1, 1);
-   public  int                     RawValue = 13;
+   private readonly SemaphoreSlimValue<int> mv       = new(12);
+   private readonly SemaphoreSlim           sem      = new(1, 1);
+   public           int                     RawValue = 13;
 
    [Benchmark]
    public int UsingMutexValue_ReadValue() { return mv.Value; }
@@ -129,7 +132,7 @@ public class SemaphoreSlimOperations : IDisposable
    [Benchmark]
    public int UsingExtensions_WriteValueFromClosureVariable()
    {
-      var foo = 131;
+      const int foo = 131;
       sem.Lock(() => { RawValue = foo; });
 
       return RawValue;

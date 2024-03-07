@@ -1,5 +1,7 @@
 ﻿using Jcd.Threading.Tasks;
 
+// ReSharper disable HeapView.ObjectAllocation
+
 namespace Jcd.Threading.Examples;
 
 public static class TaskSchedulerExtensionsExample

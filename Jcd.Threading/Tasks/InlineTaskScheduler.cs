@@ -11,12 +11,15 @@ namespace Jcd.Threading.Tasks;
 /// </summary>
 public class InlineTaskScheduler : TaskScheduler
 {
+   /// <inheritdoc />
    protected override void QueueTask(Task task) { TryExecuteTask(task); }
 
+   /// <inheritdoc />
    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
    {
       return TryExecuteTask(task);
    }
 
+   /// <inheritdoc />
    protected override IEnumerable<Task> GetScheduledTasks() { return Enumerable.Empty<Task>(); }
 }

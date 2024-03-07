@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Jcd.Threading.SynchronizedValues;
 
 /// <summary>
@@ -49,7 +51,7 @@ public sealed class SemaphoreSlimValue<T> : IDisposable
    /// var sv = new SemaphoreSlimValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// setValue = swmr.GetValue(20);
+   /// var result = sv.GetValue(20);
    /// 
    /// </code>
    /// </example>
@@ -78,7 +80,7 @@ public sealed class SemaphoreSlimValue<T> : IDisposable
    /// var sv = new SemaphoreSlimValue&lt;int&gt;(15);
    /// 
    /// // get the value
-   /// await setValue = swmr.GetValueAsync(20);
+   /// var result = await sv.GetValueAsync(20);
    /// 
    /// </code>
    /// </example>
@@ -108,10 +110,10 @@ public sealed class SemaphoreSlimValue<T> : IDisposable
    /// var sv = new SemaphoreSlimValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
-   /// setValue = swmr.SetValue(10);
+   /// var result = sv.SetValue(10);
    /// 
    /// // set the value to 20.
-   /// setValue = swmr.SetValue(20);
+   /// setValue = sv.SetValue(20);
    /// 
    /// </code>
    /// </example>
@@ -141,10 +143,10 @@ public sealed class SemaphoreSlimValue<T> : IDisposable
    /// var sv = new SemaphoreSlimValue&lt;int&gt;();
    /// 
    /// // set the value to 10.
-   /// await setValue = swmr.SetValueAsync(10);
+   /// var result = await sv.SetValueAsync(10);
    /// 
    /// // set the value to 20.
-   /// await setValue = swmr.SetValueAsync(20);
+   /// result = await sv.SetValueAsync(20);
    /// 
    /// </code>
    /// </example>

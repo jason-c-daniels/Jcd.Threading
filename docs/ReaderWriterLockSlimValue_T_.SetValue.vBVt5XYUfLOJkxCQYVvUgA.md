@@ -26,8 +26,8 @@ The provided value.
 var sv = new ReaderWriterLockSlimValue<int>();  
   
 // set the value to 10.  
-setValue = sv.SetValue(10);  
+var result = sv.SetValue(10);  
   
 // set the value to 20.  
-setValue = sv.SetValue(20);  
+result = sv.SetValue(20);  
 ```

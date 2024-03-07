@@ -1,25 +1,30 @@
-﻿// ReSharper disable HeapView.DelegateAllocation
-// ReSharper disable HeapView.ObjectAllocation
-// ReSharper disable HeapView.ObjectAllocation.Evident
-
-using System.Diagnostics;
-
-using Hardware.Info;
+﻿using System.Diagnostics;
 
 using Jcd.Threading;
-using Jcd.Threading.Examples;
-using Jcd.Threading.SynchronizedValues;
 using Jcd.Threading.Tasks;
+using Jcd.Threading.Examples;
+
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ObjectAllocation
+// ReSharper disable HeapView.ObjectAllocation.Evident
+// ReSharper disable InlineTemporaryVariable
+// ReSharper disable HeapView.ClosureAllocation
+
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
 var       cpuCount  = Environment.ProcessorCount;
 const int delay     = 125;
 var       taskCount = cpuCount;
 var       q         = 0;
+const int count     = 5000;
 
 await RunTicketLock();
 Console.ReadLine();
 await RunSemaphoreLock();
+RunItemProcessorExample();
+await RunTaskSchedulerExamples();
+
+return;
 
 async Task RunSemaphoreLock()
 {
@@ -33,7 +38,7 @@ async Task RunSemaphoreLock()
 
    for (var i = 0; i < taskCount; i++)
    {
-      var n = i;
+      _ = i;
       AddNewSemaphoreTask(tasks, i, semaphore);
    }
 
@@ -42,18 +47,19 @@ async Task RunSemaphoreLock()
    Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 }
 
-void AddNewSemaphoreTask(List<Task> list, int n, SemaphoreSlim semaphore)
+void AddNewSemaphoreTask(ICollection<Task> list, int n, SemaphoreSlim semaphore)
 {
    list.Add(Task.Run(async () =>
                      {
-                        long tid = n;
                         Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] started.");
                         Console.Out.Flush();
                         await Task.Delay(delay);
 
                         try
                         {
-                           using (var t = await semaphore.LockAsync())
+                           long tid;
+
+                           using (var _ = await semaphore.LockAsync())
                            {
                               q++;
                               tid = q;
@@ -72,6 +78,7 @@ void AddNewSemaphoreTask(List<Task> list, int n, SemaphoreSlim semaphore)
                         }
                         catch
                         {
+                           // intentionally ignored.
                         }
                      }
                     )
@@ -93,7 +100,7 @@ async Task RunTicketLock()
       var n = i;
       tasks.Add(Task.Run(async () =>
                          {
-                            long tid = n;
+                            long tid;
 
                             Console.WriteLine($"[{DateTime.Now.TimeOfDay}] Task[{n:D4}] started.");
                             Console.Out.Flush();
@@ -124,440 +131,23 @@ async Task RunTicketLock()
    Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 }
 
-return;
-var tlv  = new TicketLockValue<int>(12);
-var tlvV = tlv.Value;
-
-var                            mres       = new ManualResetEventSlim(true);
-var                            sv         = new ReaderWriterLockSlimValue<int>(10);
-const int                      iterations = 10_000_000;
-var                            syncRoot   = new object();
-var                            asyncLock  = new Nito.AsyncEx.AsyncLock();
-var                            t          = 10;
-ReaderWriterLockSlimValue<int> svT        = new(10);
-var                            hwi        = new HardwareInfo();
-hwi.RefreshCPUList(false);
-var cpuHz = hwi.CpuList.First().MaxClockSpeed;
-var d     = 1.1;
-var cpu   = hwi.CpuList.First();
-
-for (var i = 0; i < 1000; i++)
+async Task RunTaskSchedulerExamples()
 {
-   d /= 1.0001;
-   for (var j = 0; j < iterations; j++)
-      d *= 1.001;
-   d /= 1.01;
+   StartBlock("TaskSchedulerExtensionsExample Example");
+   await TaskSchedulerExtensionsExample.Run();
+
+   StartBlock("SynchronizedValue Example");
+   await SynchronizedValueExample.Run();
+
+   StartBlock("CustomTaskRunner Example");
+   var scheduler = new IdleTaskScheduler(13);
+
+   Log(-999, TaskScheduler.Current, "App Started");
+
+   await scheduler.Run(Main);
+
+   Log(-999, TaskScheduler.Current, "CustomTaskRunner Ending");
 }
-
-cpuHz = Math.Max(cpuHz, cpu.CurrentClockSpeed);
-var dz = cpuHz;
-
-cpuHz *= 1_000_000;
-
-Console.WriteLine($"CPU Hz,{cpuHz}");
-Console.WriteLine($"Iterations,{iterations}");
-Console.WriteLine($"Test,duration (ms),Ops/ms,ops/s,cycles/op,Op Time in µs");
-
-TimeIt("Raw Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++) t = i;
-       }
-      );
-
-var x = t;
-
-TimeIt("Raw Get"
-     , () =>
-       {
-          var r                                  = 0;
-          for (var i = 0; i < iterations; i++) r = t;
-
-          t = r;
-       }
-      );
-
-x += t;
-var rwls = new ReaderWriterLockSlim();
-TimeIt("RWLSExt Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-             using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
-                t = i;
-       }
-      );
-x += t;
-
-TimeIt("RWLSExt Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-             using (rwls.Lock())
-                r = t;
-       }
-      );
-x += t;
-
-TimeIt("RWLS Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             rwls.EnterWriteLock();
-             t = i;
-             rwls.ExitWriteLock();
-          }
-       }
-      );
-x += t;
-
-TimeIt("RWLS Get"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             rwls.EnterReadLock();
-             var r = t;
-             rwls.ExitReadLock();
-          }
-       }
-      );
-x += t;
-
-var sem = new SemaphoreSlim(1, 1);
-TimeIt("SemSlimExt Synchronized Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             using (sem.Lock())
-                t = i;
-          }
-       }
-      );
-x += t;
-
-TimeIt("SemSlimExt Synchronized Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-             using (sem.Lock())
-                r = t;
-       }
-      );
-
-TimeIt("SemSlim Synchronized Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             sem.Wait();
-             t = i;
-             sem.Release();
-          }
-       }
-      );
-x += t;
-
-TimeIt("SemSlim Synchronized Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-          {
-             sem.Wait();
-             r = t;
-             sem.Release();
-          }
-
-          //var x = r;
-       }
-      );
-
-TimeIt("Nito.AsyncEx.AsyncLock Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             using (Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
-                t = i;
-          }
-       }
-      );
-x += t;
-
-TimeItAsync("Nito.AsyncEx.AsyncLock Get"
-          , async () =>
-            {
-               var r = 0;
-
-               for (var i = 0; i < iterations; i++)
-                  using (await Nito.AsyncEx.SemaphoreSlimExtensions.LockAsync(sem))
-                     r = t;
-            }
-           );
-
-TimeIt("Nito.AsyncEx.SemaphoreSlimExtensions.Lock Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             using (Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
-                t = i;
-          }
-       }
-      );
-x += t;
-
-TimeIt("Nito.AsyncEx.SemaphoreSlimExtensions.Lock Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-             using (Nito.AsyncEx.SemaphoreSlimExtensions.Lock(sem))
-                r = t;
-       }
-      );
-
-TimeIt("lock(syncRoot) Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             lock (syncRoot)
-                t = i;
-          }
-       }
-      );
-x += t;
-
-TimeIt("lock(syncRoot) Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-             lock (syncRoot)
-                r = t;
-       }
-      );
-
-TimeIt("SynchronizedValue Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++) sv.Value = i;
-       }
-      );
-x += sv.Value;
-
-TimeIt("SynchronizedValue Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++) r = sv.Value;
-       }
-      );
-
-x += sv.Value;
-
-await TimeItAsync("SynchronizedValue SetAsync"
-                , async () =>
-                  {
-                     for (var i = 0; i < iterations; i++) await sv.SetValueAsync(i);
-                  }
-                 );
-x += sv.Value;
-
-await TimeItAsync("SynchronizedValue GetAsync"
-                , async () =>
-                  {
-                     var r = 0;
-
-                     for (var i = 0; i < iterations; i++) r = await sv.GetValueAsync();
-                  }
-                 );
-
-x += sv.Value;
-
-await TimeItAsync("RWLSExt SetAsync"
-                , async () =>
-                  {
-                     for (var i = 0; i < iterations; i++)
-                        using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
-                           t = i;
-                  }
-                 );
-x += sv.Value;
-
-await TimeItAsync("RWLSExt GetAsync"
-                , async () =>
-                  {
-                     var r = 0;
-
-                     for (var i = 0; i < iterations; i++)
-                        using (await rwls.LockAsync())
-                           r = t;
-                  }
-                 );
-
-x += sv.Value;
-
-if (!mres.IsSet) mres.Set();
-TimeIt("MRES Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             mres.Wait();
-             mres.Reset();
-             t = i;
-             mres.Set();
-          }
-       }
-      );
-x += sv.Value;
-
-if (!mres.IsSet) mres.Set();
-TimeIt("MRES Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-          {
-             mres.Wait();
-             r = t;
-          }
-       }
-      );
-
-x += sv.Value;
-
-var swmr = new SemaphoreSlimValue<int>(15);
-
-TimeIt("SWMR Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++) swmr.Value = i;
-       }
-      );
-x += sv.Value;
-
-TimeIt("SWMR Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++) r = swmr.Value;
-       }
-      );
-
-x += sv.Value;
-
-await TimeItAsync("SWMR SetAsync"
-                , async () =>
-                  {
-                     for (var i = 0; i < iterations; i++) await swmr.SetValueAsync(i);
-                  }
-                 );
-x += sv.Value;
-
-await TimeItAsync("SWMR GetAsync"
-                , async () =>
-                  {
-                     var r = 0;
-
-                     for (var i = 0; i < iterations; i++) r = await swmr.GetValueAsync();
-                  }
-                 );
-
-x += sv.Value;
-
-var cde = new CountdownEvent(0);
-
-TimeIt("Presignaled CDE with RWLS Set"
-     , () =>
-       {
-          for (var i = 0; i < iterations; i++)
-          {
-             cde.Reset(1);
-             rwls.EnterWriteLock();
-             t = i;
-             rwls.ExitWriteLock();
-             cde.Signal();
-          }
-       }
-      );
-x += sv.Value;
-
-// ensure its unsignaled.
-//cde.Reset(0);
-TimeIt("Presignaled CDE Get"
-     , () =>
-       {
-          var r = 0;
-
-          for (var i = 0; i < iterations; i++)
-          {
-             cde.Wait();
-             r = t;
-          }
-       }
-      );
-
-x += sv.Value;
-
-Console.WriteLine($"x={x}");
-
-void TimeIt(string name, Action action)
-{
-   var sw = Stopwatch.StartNew();
-   action();
-   sw.Stop();
-   var el = sw.Elapsed.TotalMilliseconds;
-   Console.WriteLine($"{name},{el:0.###},{iterations / el:0.###}");
-}
-
-async Task TimeItAsync(string name, Func<Task> action)
-{
-   var sw = Stopwatch.StartNew();
-   await action();
-   sw.Stop();
-   var el = sw.Elapsed.TotalMilliseconds;
-   Console.WriteLine($"{name},{el:0.###},{iterations / el:0.###}");
-}
-
-x += t;
-
-// by doing this we ensure the compiler doesn't optimize out the raw value operation loops.
-
-return;
-
-const int count = 5000;
-StartBlock("TaskSchedulerExtensionsExample Example");
-await TaskSchedulerExtensionsExample.Run();
-
-StartBlock("SynchronizedValue Example");
-await SynchronizedValueExample.Run();
-
-StartBlock("CustomTaskRunner Example");
-var scheduler = new SimpleThreadedTaskScheduler(13);
-
-Log(-999, TaskScheduler.Current, "App Started");
-
-await scheduler.Run(Main);
-
-Log(-999, TaskScheduler.Current, "CustomTaskRunner Ending");
-
-return;
 
 void StartBlock(string s)
 {
@@ -625,22 +215,18 @@ void Log(int i, TaskScheduler ts, string text)
    Console.Out.WriteLine($"[{i:D4}:{Environment.CurrentManagedThreadId:D10};  {name}; {ts.GetType().Name};]  : {text}");
 }
 
-void RunItemProcessorExample(int iterations = 5000, int processors = 0, int delayInMs = 5)
+void RunItemProcessorExample(int iterations = 5000, int processors = 0)
 {
    if (processors < 1) processors = Environment.ProcessorCount * 20;
    var cde                        = new CountdownEvent(processors * iterations);
    var procs = Enumerable.Range(0, processors)
                          .Select(i => new ItemProcessor<int>(x =>
                                                              {
-                                                                //using var are = new AutoResetEvent(false);
-                                                                //are.WaitOne(delayInMs);
-                                                                //var thread = Thread.CurrentThread;
-                                                                //Console.WriteLine($"Item {x} from {thread.Name}({thread.ManagedThreadId})");
-                                                                var z = 0;
-                                                                for (; z < iterations * 10; z++) ;
-                                                                var t = z;
-                                                                var a = t * 13;
-                                                                var j = a / 23;
+                                                                int z;
+                                                                for (z = 0; z < iterations * 10; z++) x *= z;
+                                                                var t                                   = z;
+                                                                var a                                   = t * 13;
+                                                                _ = a / 23;
                                                                 cde.Signal();
                                                              }
                                                            , name: $"Int Processor[{i}]"

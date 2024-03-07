@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable HeapView.ObjectAllocation
+
 namespace Jcd.Threading.Examples.Wpf.CustomTaskSchedulers;
 
 public class MainWindowViewModel
@@ -35,6 +37,7 @@ public class MainWindowViewModel
    }
 
    // Declare the event
+   // ReSharper disable once EventNeverSubscribedTo.Global
    public event PropertyChangedEventHandler? PropertyChanged;
 
    // Create the OnPropertyChanged method to raise the event

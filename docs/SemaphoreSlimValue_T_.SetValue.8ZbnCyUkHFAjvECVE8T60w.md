@@ -26,8 +26,8 @@ The provided value.
 var sv = new SemaphoreSlimValue<int>();  
   
 // set the value to 10.  
-setValue = swmr.SetValue(10);  
+var result = sv.SetValue(10);  
   
 // set the value to 20.  
-setValue = swmr.SetValue(20);  
+setValue = sv.SetValue(20);  
 ```
