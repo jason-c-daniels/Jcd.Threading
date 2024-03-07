@@ -1,6 +1,8 @@
 ﻿using Jcd.Threading.Tests.Helpers;
 using Jcd.Threading.Tasks;
 
+using Xunit.Abstractions;
+
 // ReSharper disable HeapView.ObjectAllocation.Possible
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -9,7 +11,7 @@ using Jcd.Threading.Tasks;
 
 namespace Jcd.Threading.Tests;
 
-public class SimpleThreadedTaskSchedulerTests
+public class SimpleThreadedTaskSchedulerTests(ITestOutputHelper testOutputHelper)
 {
    [Theory]
    [InlineData(1,  ApartmentState.STA)]
@@ -24,15 +26,20 @@ public class SimpleThreadedTaskSchedulerTests
    )
    {
       var       expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount - 2;
-      using var scheduler           = new IdleTaskScheduler(threadCount, expectedState);
+      var scheduler           = new IdleTaskScheduler(threadCount, expectedState);
+      testOutputHelper.WriteLine($"Created scheduler with {threadCount} Threads.");
       Assert.Equal(expectedThreadCount, scheduler.Threads.Count);
-
+      
+      testOutputHelper.WriteLine("We compared the thread count.");
+      
+      testOutputHelper.WriteLine($"Comparing statuses of each thread.");
       foreach (var thread in scheduler.Threads)
       {
          if (OsSupportsThreadingApartmentModel() && thread !=null)
             Assert.Equal(expectedState, thread.GetApartmentState());
          Assert.True(thread?.IsAlive);
       }
+      testOutputHelper.WriteLine($"Exiting unit test.");
    }
 
    private static bool OsSupportsThreadingApartmentModel()
