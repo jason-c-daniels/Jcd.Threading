@@ -1,5 +1,5 @@
-﻿using Jcd.Threading.Tests.Helpers;
-using Jcd.Threading.Tasks;
+﻿using Jcd.Threading.Tasks;
+using Jcd.Threading.Tests.Helpers;
 
 using Xunit.Abstractions;
 
@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
 
-namespace Jcd.Threading.Tests;
+namespace Jcd.Threading.Tests.Tasks;
 
 public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
 {

@@ -43,26 +43,6 @@ public static class SemaphoreSlimExtensions
    }
 
    /// <summary>
-   /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
-   /// </summary>
-   /// <param name="sem">the semaphore to use.</param>
-   /// <param name="action">the action to execute</param>
-   /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static void Lock(this SemaphoreSlim sem, Action action)
-   {
-      try
-      {
-         sem.Wait();
-         action();
-      }
-      finally
-      {
-         sem.Release();
-      }
-   }
-
-   /// <summary>
    /// Asynchronously waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>

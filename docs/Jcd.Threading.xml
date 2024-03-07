@@ -241,14 +241,6 @@
             <param name="token">A cancellation token to use during the wait.</param>
             <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
-        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Action)">
-            <summary>
-            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
-            </summary>
-            <param name="sem">the semaphore to use.</param>
-            <param name="action">the action to execute</param>
-            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
-        </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim)">
             <summary>
             Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
@@ -1196,22 +1188,6 @@
             <summary>
             Finalizes stuff.
             </summary>
-        </member>
-        <member name="T:Jcd.Threading.Tasks.InlineTaskScheduler">
-            <summary>
-            Executes all tasks inline, without queuing or scheduling.
-            As a result this executes work in the .Net ThreadPool.
-            So, consequently, it can hardly be called a TaskScheduler.
-            </summary>
-        </member>
-        <member name="M:Jcd.Threading.Tasks.InlineTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
-            <inheritdoc />
-        </member>
-        <member name="M:Jcd.Threading.Tasks.InlineTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Jcd.Threading.Tasks.InlineTaskScheduler.GetScheduledTasks">
-            <inheritdoc />
         </member>
         <member name="T:Jcd.Threading.Tasks.TaskSchedulerExtensions">
             <summary>

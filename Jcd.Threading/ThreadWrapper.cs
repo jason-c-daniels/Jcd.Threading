@@ -4,10 +4,10 @@ using System.Threading;
 
 using Jcd.Threading.SynchronizedValues;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable VirtualMemberNeverOverridden.Global
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable VirtualMemberNeverOverridden.Global
 // ReSharper disable HeapView.ObjectAllocation.Evident
 // ReSharper disable HeapView.BoxingAllocation
 // ReSharper disable HeapView.ObjectAllocation
@@ -378,12 +378,12 @@ public abstract class ThreadWrapper : IDisposable
          // intentionally ignored
       }
 
-      pauseSem.Dispose();
-      idleSem.Dispose();
       isPaused.Dispose();
       isIdle.Dispose();
-      cancellationSource.Dispose();
       waitEvent.Dispose();
+      pauseSem.Dispose();
+      idleSem.Dispose();
+      cancellationSource.Dispose();
    }
 
    /// <inheritdoc />

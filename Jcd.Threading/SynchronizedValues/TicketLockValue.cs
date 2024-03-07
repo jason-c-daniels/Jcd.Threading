@@ -163,7 +163,7 @@ public sealed class TicketLockValue<T>
    {
       if (func == null) return Value;
 
-      using (ticketLock.LockAsync())
+      using (ticketLock.Lock())
          return val = func(val);
    }
 

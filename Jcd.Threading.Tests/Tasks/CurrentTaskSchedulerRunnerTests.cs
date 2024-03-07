@@ -1,5 +1,4 @@
-﻿using Jcd.Threading.Tests.Helpers;
-using Jcd.Threading.Tasks;
+﻿using Jcd.Threading.Tasks;
 
 // ReSharper disable InlineTemporaryVariable
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -7,7 +6,7 @@ using Jcd.Threading.Tasks;
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable MethodSupportsCancellation
 
-namespace Jcd.Threading.Tests;
+namespace Jcd.Threading.Tests.Tasks;
 
 public class CurrentTaskSchedulerRunnerTests
 {

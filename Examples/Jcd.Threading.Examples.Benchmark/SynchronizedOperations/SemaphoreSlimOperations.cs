@@ -120,24 +120,6 @@ public sealed class SemaphoreSlimOperations : IDisposable
       return RawValue;
    }
 
-   [Benchmark]
-   public int UsingExtensions_ReadValueToClosureVariable()
-   {
-      var foo = 12;
-      sem.Lock(() => { foo = RawValue; });
-
-      return foo;
-   }
-
-   [Benchmark]
-   public int UsingExtensions_WriteValueFromClosureVariable()
-   {
-      const int foo = 131;
-      sem.Lock(() => { RawValue = foo; });
-
-      return RawValue;
-   }
-
    public void Dispose()
    {
       mv.Dispose();

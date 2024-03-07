@@ -1,13 +1,8 @@
-﻿// ReSharper disable HeapView.DelegateAllocation
-// ReSharper disable HeapView.ObjectAllocation.Evident
+﻿using Jcd.Threading.SynchronizedValues;
 
-// ReSharper disable HeapView.ClosureAllocation
+namespace Jcd.Threading.Tests.SynchronizedValues;
 
-using Jcd.Threading.SynchronizedValues;
-
-namespace Jcd.Threading.Tests;
-
-public class ReaderWriterLockSlimValueTests
+public class SemaphoreSlimValueTests
 {
    [Theory]
    [InlineData(1)]
@@ -15,7 +10,7 @@ public class ReaderWriterLockSlimValueTests
    [InlineData(2)]
    public void Constructor_Creates_With_The_Provided_Value(int expectedValue)
    {
-      using var sv = new ReaderWriterLockSlimValue<int>(expectedValue);
+      using var sv = new SemaphoreSlimValue<int>(expectedValue);
       Assert.Equal(expectedValue, sv.Value);
    }
 
@@ -25,7 +20,7 @@ public class ReaderWriterLockSlimValueTests
    [InlineData(2)]
    public void SetValue_Sets_And_Returns_The_Provided_Value(int expectedValue)
    {
-      using var sv     = new ReaderWriterLockSlimValue<int>();
+      using var sv     = new SemaphoreSlimValue<int>();
       var       result = sv.SetValue(expectedValue);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
@@ -37,7 +32,7 @@ public class ReaderWriterLockSlimValueTests
    [InlineData(2)]
    public async Task SetValueAsync_Sets_And_Returns_The_Provided_Value(int expectedValue)
    {
-      using var sv     = new ReaderWriterLockSlimValue<int>();
+      using var sv     = new SemaphoreSlimValue<int>();
       var       result = await sv.SetValueAsync(expectedValue);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
@@ -49,7 +44,7 @@ public class ReaderWriterLockSlimValueTests
    [InlineData(2)]
    public void GetValue_Sets_And_Returns_The_Provided_Value(int expectedValue)
    {
-      using var sv = new ReaderWriterLockSlimValue<int>();
+      using var sv = new SemaphoreSlimValue<int>();
       sv.SetValue(expectedValue);
       Assert.Equal(expectedValue, sv.GetValue());
    }
@@ -60,9 +55,26 @@ public class ReaderWriterLockSlimValueTests
    [InlineData(2)]
    public async Task GetValueAsync_Sets_And_Returns_The_Provided_Value(int expectedValue)
    {
-      using var sv = new ReaderWriterLockSlimValue<int>();
+      using var sv = new SemaphoreSlimValue<int>();
       await sv.SetValueAsync(expectedValue);
       Assert.Equal(expectedValue, await sv.GetValueAsync());
+   }
+
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
+   public void ChangeValue_Sets_And_Returns_The_Provided_Value(int value)
+   {
+      var       expectedValue = MultiplyByTen(value);
+      using var sv            = new SemaphoreSlimValue<int>(value);
+      var       result        = sv.ChangeValue(MultiplyByTen);
+      Assert.Equal(expectedValue, sv.Value);
+      Assert.Equal(expectedValue, result);
+
+      return;
+
+      int MultiplyByTen(int i) { return i * 10; }
    }
 
    [Theory]
@@ -72,7 +84,7 @@ public class ReaderWriterLockSlimValueTests
    public async Task ChangeValueAsync_Sets_And_Returns_The_Provided_Value(int value)
    {
       var       expectedValue = await MultiplyByTenAsync(value);
-      using var sv            = new ReaderWriterLockSlimValue<int>(value);
+      using var sv            = new SemaphoreSlimValue<int>(value);
       var       result        = await sv.ChangeValueAsync(MultiplyByTenAsync);
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
