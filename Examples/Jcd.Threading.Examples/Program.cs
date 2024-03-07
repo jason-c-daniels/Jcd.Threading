@@ -3,6 +3,7 @@
 using Jcd.Threading;
 using Jcd.Threading.Tasks;
 using Jcd.Threading.Examples;
+// ReSharper disable ArrangeRedundantParentheses
 
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
@@ -180,7 +181,7 @@ async Task ReportScheduler(int i)
    await InnerReportScheduler(i);
 }
 
-int JitteredMs(int baseDelay) { return Random.Shared.Next(baseDelay * 11) * 7 % (baseDelay / 2) + baseDelay; }
+int JitteredMs(int baseDelay) { return (Random.Shared.Next(baseDelay * 11) * 7) % (baseDelay / 2) + baseDelay; }
 
 // ReSharper disable once HeapView.ClosureAllocation
 async Task InnerReportScheduler(int i)
@@ -253,7 +254,7 @@ void RunItemProcessorExample(int iterations = 5000, int processors = 0)
    for (var qn = 0; qn < processors; qn++)
    {
       var proc = procs[qn];
-      for (var iter = 1; iter <= iterations; iter++) proc.Enqueue(iter + iterations * 10);
+      for (var iter = 1; iter <= iterations; iter++) proc.Enqueue(iter + (iterations * 10));
    }
 
    Console.WriteLine("Finished enqueuing second batch");
@@ -269,7 +270,7 @@ void RunItemProcessorExample(int iterations = 5000, int processors = 0)
    for (var qn = 0; qn < processors; qn++)
    {
       var proc = procs[qn];
-      for (var iter = 1; iter <= iterations; iter++) proc.Enqueue(iter + iterations * 20);
+      for (var iter = 1; iter <= iterations; iter++) proc.Enqueue(iter + (iterations * 20));
    }
 
    Console.WriteLine("Finished enqueuing third batch");
