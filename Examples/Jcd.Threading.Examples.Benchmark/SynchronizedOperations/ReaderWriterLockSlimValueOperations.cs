@@ -6,7 +6,8 @@ using Jcd.Threading.SynchronizedValues;
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public sealed class SynchronizedValueOperations : IDisposable
+// ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+public class ReaderWriterLockSlimValueOperations : IDisposable
 {
    public readonly  int                            RawValue = 333;
    private readonly ReaderWriterLockSlimValue<int> sv       = new(11);
@@ -33,5 +34,18 @@ public sealed class SynchronizedValueOperations : IDisposable
    [Benchmark]
    public Task<int> UsingSynchronizedValue_WriteValueAsync() { return sv.SetValueAsync(RawValue); }
 
-   public void Dispose() { sv.Dispose(); }
+   protected virtual void Dispose(bool disposing)
+   {
+      // doing this pattern to make SonarCloud shut up ... it's good, but lots LOTS of false positives.
+
+      if (disposing) sv.Dispose();
+   }
+
+   public void Dispose()
+   {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+
+   ~ReaderWriterLockSlimValueOperations() { Dispose(false); }
 }

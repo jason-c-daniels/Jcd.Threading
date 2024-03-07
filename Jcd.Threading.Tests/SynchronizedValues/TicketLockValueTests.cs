@@ -93,4 +93,25 @@ public class TicketLockValueTests
 
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
+
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
+   public void Value_Property_Set_Sets_Value_To_ExpectedValue(int expectedValue)
+   {
+      var sv = new TicketLockValue<int>();
+      sv.Value = expectedValue;
+      Assert.Equal(expectedValue, sv.Value);
+   }
+
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
+   public void Value_Property_Get_Gets_The_ExpectedValue(int expectedValue)
+   {
+      var sv = new TicketLockValue<int>(expectedValue);
+      Assert.Equal(expectedValue, sv.Value);
+   }
 }

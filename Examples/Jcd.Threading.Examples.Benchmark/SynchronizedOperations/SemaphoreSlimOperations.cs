@@ -7,19 +7,20 @@ using Jcd.Threading.SynchronizedValues;
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public sealed class SemaphoreSlimOperations : IDisposable
+// ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
+public class SemaphoreSlimOperations : IDisposable
 {
-   private readonly SemaphoreSlimValue<int> mv       = new(12);
+   private readonly SemaphoreSlimValue<int> sv       = new(12);
    private readonly SemaphoreSlim           sem      = new(1, 1);
    public           int                     RawValue = 13;
 
    [Benchmark]
-   public int UsingMutexValue_ReadValue() { return mv.Value; }
+   public int UsingMutexValue_ReadValue() { return sv.Value; }
 
    [Benchmark]
    public int UsingMutexValue_WriteValue()
    {
-      mv.Value = RawValue;
+      sv.Value = RawValue;
 
       return RawValue;
    }
@@ -120,9 +121,27 @@ public sealed class SemaphoreSlimOperations : IDisposable
       return RawValue;
    }
 
+   private void ReleaseUnmanagedResources()
+   {
+      // TODO release unmanaged resources here
+   }
+
+   protected virtual void Dispose(bool disposing)
+   {
+      ReleaseUnmanagedResources();
+
+      if (disposing)
+      {
+         sv.Dispose();
+         sem.Dispose();
+      }
+   }
+
    public void Dispose()
    {
-      mv.Dispose();
-      sem.Dispose();
+      Dispose(true);
+      GC.SuppressFinalize(this);
    }
+
+   ~SemaphoreSlimOperations() { Dispose(false); }
 }

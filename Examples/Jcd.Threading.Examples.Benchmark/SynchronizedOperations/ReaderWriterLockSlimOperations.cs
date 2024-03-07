@@ -2,7 +2,7 @@
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public sealed class ReaderWriterLockSlimOperations : IDisposable
+public class ReaderWriterLockSlimOperations : IDisposable
 {
    private readonly ReaderWriterLockSlim rwls = new();
 
@@ -84,5 +84,16 @@ public sealed class ReaderWriterLockSlimOperations : IDisposable
       return foo;
    }
 
-   public void Dispose() { rwls.Dispose(); }
+   protected virtual void Dispose(bool disposing)
+   {
+      if (disposing) rwls.Dispose();
+   }
+
+   public void Dispose()
+   {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+
+   ~ReaderWriterLockSlimOperations() { Dispose(false); }
 }

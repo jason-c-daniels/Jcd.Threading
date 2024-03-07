@@ -15,7 +15,7 @@ namespace Jcd.Threading.SynchronizedValues;
 /// Provides synchronization to an underlying value through a <see cref="SpinLock"/>.
 /// </summary>
 /// <typeparam name="T">The type of the data being stored.</typeparam>
-internal class SpinLockValue<T>
+public class SpinLockValue<T>
 {
    // ReSharper disable once FieldCanBeMadeReadOnly.Local
    private          SpinLock spinLock;
@@ -27,11 +27,13 @@ internal class SpinLockValue<T>
    /// </summary>
    /// <param name="initialVal">The initial value</param>
    /// <param name="useMemoryBarrier">Indicates if the call to Exit should use a memory barrier to notify other threads the lock has been freed(much slower!).</param>
+   /// <param name="useThreadTracking">Indicates if the <see cref="SpinLock"/> uses thread tracking.</param>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public SpinLockValue(T initialVal = default, bool useMemoryBarrier = false)
+   public SpinLockValue(T initialVal = default, bool useMemoryBarrier = false, bool useThreadTracking=false)
    {
       this.useMemoryBarrier = useMemoryBarrier;
       val                   = initialVal;
+      spinLock              = new SpinLock(useThreadTracking);
    }
 
    /// <summary>

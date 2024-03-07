@@ -4,7 +4,7 @@ using Jcd.Threading.SynchronizedValues;
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public sealed class TicketLockOperations
+public class TicketLockOperations
 {
    public           int                  RawValue = 14;
    private readonly TicketLockValue<int> tlv      = new(17);

@@ -2,17 +2,14 @@
 
 using Jcd.Threading.SynchronizedValues;
 
-// ReSharper disable HeapView.DelegateAllocation
-// ReSharper disable HeapView.ClosureAllocation
-
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public sealed class SpinLockOperations
+public class SpinLockOperationsWithoutThreadTracking
 {
    public int ReadMe = 10;
 
    private readonly SpinLockValue<int> spinLockValue = new(17);
-   private          SpinLock           sl;
+   private          SpinLock           sl            = new (false);
 
    [Benchmark]
    public int DirectSpinLockCalls_ReadValue_NoMemoryBarrier()

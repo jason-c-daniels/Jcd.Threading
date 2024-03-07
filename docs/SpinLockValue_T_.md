@@ -6,7 +6,7 @@
 Provides synchronization to an underlying value through a [System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock').
 
 ```csharp
-internal class SpinLockValue<T>
+public class SpinLockValue<T>
 ```
 #### Type parameters
 
@@ -20,7 +20,7 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Constructors | |
 | :--- | :--- |
-| [SpinLockValue(T, bool)](SpinLockValue_T_..ctor.qpkrjfL/d0xwDTxUwb237w.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.SpinLockValue(T, bool)') | Creates an instance of a [SpinLockValue&lt;T&gt;](SpinLockValue_T_.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>') |
+| [SpinLockValue(T, bool, bool)](SpinLockValue_T_..ctor.akII8HT8casqXbD47ae38A.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.SpinLockValue(T, bool, bool)') | Creates an instance of a [SpinLockValue&lt;T&gt;](SpinLockValue_T_.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>') |
 
 | Properties | |
 | :--- | :--- |
