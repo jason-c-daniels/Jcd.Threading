@@ -1,6 +1,8 @@
 ﻿using Jcd.Threading.Tests.Helpers;
 using Jcd.Threading.Tasks;
 
+using Xunit.Abstractions;
+
 // ReSharper disable HeapView.ObjectAllocation.Possible
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -9,7 +11,7 @@ using Jcd.Threading.Tasks;
 
 namespace Jcd.Threading.Tests;
 
-public class SimpleThreadedTaskSchedulerTests
+public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
 {
    [Theory]
    [InlineData(1,  ApartmentState.STA)]
@@ -23,16 +25,27 @@ public class SimpleThreadedTaskSchedulerTests
     , ApartmentState expectedState
    )
    {
-      var       expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount - 2;
-      using var scheduler           = new IdleTaskScheduler(threadCount, expectedState);
+      var expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount - 2;
+      if (expectedThreadCount <= 0) expectedThreadCount = 1;
+      var scheduler = new IdleTaskScheduler(threadCount, expectedState);
+      testOutputHelper
+        .WriteLine($"Created scheduler with {threadCount} threads, expecting {expectedThreadCount} threads.");
+
+      testOutputHelper.WriteLine("Comparing the thread count.");
       Assert.Equal(expectedThreadCount, scheduler.Threads.Count);
+
+      testOutputHelper.WriteLine("Compared the thread count.");
+
+      testOutputHelper.WriteLine($"Comparing statuses of each thread.");
 
       foreach (var thread in scheduler.Threads)
       {
-         if (OsSupportsThreadingApartmentModel() && thread !=null)
+         if (OsSupportsThreadingApartmentModel() && thread != null)
             Assert.Equal(expectedState, thread.GetApartmentState());
          Assert.True(thread?.IsAlive);
       }
+
+      testOutputHelper.WriteLine($"Exiting unit test.");
    }
 
    private static bool OsSupportsThreadingApartmentModel()

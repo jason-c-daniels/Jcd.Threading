@@ -3,8 +3,8 @@
 using Jcd.Threading;
 using Jcd.Threading.Tasks;
 using Jcd.Threading.Examples;
-// ReSharper disable ArrangeRedundantParentheses
 
+// ReSharper disable ArrangeRedundantParentheses
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -33,7 +33,6 @@ async Task RunSemaphoreLock()
 
    var tasks = new List<Task>();
 
-   //var svsb  = new MutexValue<List<string>>(new List<string>());
    Console.WriteLine("Enqueuing tasks.");
    var sw = Stopwatch.StartNew();
 
@@ -92,7 +91,6 @@ async Task RunTicketLock()
 
    var tasks = new List<Task>();
 
-   //var svsb  = new MutexValue<List<string>>(new List<string>());
    Console.WriteLine("Enqueuing tasks.");
    var sw = Stopwatch.StartNew();
 

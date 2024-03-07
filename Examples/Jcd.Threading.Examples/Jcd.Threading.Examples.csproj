@@ -16,6 +16,7 @@
       <Nullable>enable</Nullable>
       <AssemblyName>Jcd.Threading.Examples</AssemblyName>
       <RootNamespace>Jcd.Threading.Examples</RootNamespace>
+      <IsPackable>false</IsPackable>
       <LangVersion>latest</LangVersion>
    </PropertyGroup>
 

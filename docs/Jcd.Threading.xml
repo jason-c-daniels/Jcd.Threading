@@ -1192,6 +1192,11 @@
         <member name="M:Jcd.Threading.Tasks.IdleTaskScheduler.Dispose">
             <inheritdoc />
         </member>
+        <member name="M:Jcd.Threading.Tasks.IdleTaskScheduler.Finalize">
+            <summary>
+            Finalizes stuff.
+            </summary>
+        </member>
         <member name="T:Jcd.Threading.Tasks.InlineTaskScheduler">
             <summary>
             Executes all tasks inline, without queuing or scheduling.
