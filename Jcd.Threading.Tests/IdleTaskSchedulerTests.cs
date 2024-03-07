@@ -27,8 +27,9 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
    {
       var expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount - 2;
       if (expectedThreadCount <= 0) expectedThreadCount = 1;
-      var scheduler           = new IdleTaskScheduler(threadCount, expectedState);
-      testOutputHelper.WriteLine($"Created scheduler with {threadCount} threads, expecting {expectedThreadCount} threads.");
+      var scheduler = new IdleTaskScheduler(threadCount, expectedState);
+      testOutputHelper
+        .WriteLine($"Created scheduler with {threadCount} threads, expecting {expectedThreadCount} threads.");
 
       testOutputHelper.WriteLine("Comparing the thread count.");
       Assert.Equal(expectedThreadCount, scheduler.Threads.Count);

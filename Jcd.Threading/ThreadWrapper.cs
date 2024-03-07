@@ -257,12 +257,12 @@ public abstract class ThreadWrapper : IDisposable
    /// </summary>
    protected void PerformThreadStateCleanup()
    {
-#if CANCEL_STATES      
+      #if CANCEL_STATES
       if (!cancellationSource.IsCancellationRequested)
          cancellationSource.Cancel();
       if (IsIdle) ExitIdleState();
       if (IsPaused) ExitPausedState();
-#endif
+      #endif
       IsStarted = false;
    }
 
