@@ -66,6 +66,8 @@ public partial class MainWindow //: Window
 
       return list.Items.Count;
    }
+   
+   const string Executed = "Executed";
 
    private async void RunWithMTA_OnClick(object sender, RoutedEventArgs e)
    {
@@ -73,7 +75,7 @@ public partial class MainWindow //: Window
       await ReportSchedulerName(nameof(RunWithMTA_OnClick)
                               , RunWithMta
                               , Stopwatch.StartNew()
-                              , "Executed"
+                              , Executed
                               , await BackgroundTask.Run(GetExecutingSchedulerAndThreadInfo)
                                );
    }
@@ -108,7 +110,7 @@ public partial class MainWindow //: Window
       await ReportSchedulerName(nameof(RunWithSTA_OnClick)
                               , RunWithSta
                               , Stopwatch.StartNew()
-                              , "Executed"
+                              , Executed
                               , await STAScheduler.Run(GetExecutingSchedulerAndThreadInfo)
                                );
    }
@@ -119,7 +121,7 @@ public partial class MainWindow //: Window
       await ReportSchedulerName(nameof(RunInHandler_OnClick)
                               , RunInHandler
                               , Stopwatch.StartNew()
-                              , "Executed"
+                              , Executed
                               , GetExecutingSchedulerAndThreadInfo()
                                );
    }
@@ -138,7 +140,7 @@ public partial class MainWindow //: Window
       await ReportSchedulerName(nameof(RunWithCurrent_OnClick)
                               , RunWithCurrent
                               , Stopwatch.StartNew()
-                              , "Executed"
+                              , Executed
                               , await CurrentScheduler.Run(GetExecutingSchedulerAndThreadInfo)
                                );
    }
@@ -149,7 +151,7 @@ public partial class MainWindow //: Window
       await ReportSchedulerName(nameof(STAViaMTA_OnClick)
                               , StaViaMta
                               , Stopwatch.StartNew()
-                              , "Executed"
+                              , Executed
                               , await BackgroundTask.Run(() => STAScheduler.Run(GetExecutingSchedulerAndThreadInfo))
                                );
    }
@@ -160,7 +162,7 @@ public partial class MainWindow //: Window
       await BackgroundTask.Run(() => Ui.Invoke(() => ReportSchedulerName(nameof(UiViaMTA_OnClick)
                                                                        , UiViaMta
                                                                        , Stopwatch.StartNew()
-                                                                       , "Executed"
+                                                                       , Executed
                                                                        , GetExecutingSchedulerAndThreadInfo()
                                                                         )
                                               )
@@ -173,7 +175,7 @@ public partial class MainWindow //: Window
       await CurrentScheduler.Run(() => Ui.Invoke(() => ReportSchedulerName(nameof(UiViaCurrent_OnClick)
                                                                          , UiViaCurrent
                                                                          , Stopwatch.StartNew()
-                                                                         , "Executed"
+                                                                         , Executed
                                                                          , GetExecutingSchedulerAndThreadInfo()
                                                                           )
                                                 )
@@ -186,7 +188,7 @@ public partial class MainWindow //: Window
       await STAScheduler.Run(() => Ui.Invoke(() => ReportSchedulerName(nameof(UiViaSTA_OnClick)
                                                                      , UiViaSta
                                                                      , Stopwatch.StartNew()
-                                                                     , "Executed"
+                                                                     , Executed
                                                                      , GetExecutingSchedulerAndThreadInfo()
                                                                       )
                                             )
@@ -200,7 +202,7 @@ public partial class MainWindow //: Window
       await Task.Run(() => Ui.Invoke(() => ReportSchedulerName(nameof(RunWithTaskRun_OnClick)
                                                              , button
                                                              , Stopwatch.StartNew()
-                                                             , "Executed"
+                                                             , Executed
                                                              , GetExecutingSchedulerAndThreadInfo()
                                                               )
                                     )
