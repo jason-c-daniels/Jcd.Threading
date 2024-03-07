@@ -3,8 +3,8 @@
 using Jcd.Threading;
 using Jcd.Threading.Tasks;
 using Jcd.Threading.Examples;
-// ReSharper disable ArrangeRedundantParentheses
 
+// ReSharper disable ArrangeRedundantParentheses
 // ReSharper disable HeapView.DelegateAllocation
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.ObjectAllocation.Evident

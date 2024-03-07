@@ -40,7 +40,7 @@ public class IdleTaskScheduler
    /// <summary>
    /// Provides access to the underlying threads.
    /// </summary>
-   public IReadOnlyList<Thread?> Threads => ProcessorList.Select(x => x.Thread).ToArray();
+   protected internal IReadOnlyList<Thread?> Threads { get; private set; }
 
    /// <summary>
    /// Creates an instance of <see cref="IdleTaskScheduler"/>
@@ -62,6 +62,7 @@ public class IdleTaskScheduler
       taskQueuer          = CreateTaskProcessor(TaskQueuerProc, $"{Name}_TaskQueuer");
       for (var i = 0; i < threadCount; i++)
          ProcessorList.Add(CreateTaskProcessor(i));
+      Threads = ProcessorList.Select(x => x.Thread).ToArray();
    }
 
    private ItemProcessor<Task> CreateTaskProcessor(int i)

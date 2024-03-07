@@ -6,7 +6,7 @@
 Provides access to the underlying threads.
 
 ```csharp
-public System.Collections.Generic.IReadOnlyList<System.Threading.Thread?> Threads { get; }
+protected internal System.Collections.Generic.IReadOnlyList<System.Threading.Thread?> Threads { get; set; }
 ```
 
 #### Property Value
