@@ -333,11 +333,10 @@ public abstract class ThreadWrapper : IDisposable
    /// </summary>
    public void Resume() { ExitPausedState(); }
 
+   // ReSharper disable once MemberCanBeProtected.Global -- intended to be called by other classes.
    /// <summary>
    /// Starts the processing of queued items.
    /// </summary>
-
-   // ReSharper disable once MemberCanBeProtected.Global -- intended to be called by other classes.
    public void Start()
    {
       if (IsStarted) return;
