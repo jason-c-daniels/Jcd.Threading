@@ -30,4 +30,5 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 
 | Methods | |
 | :--- | :--- |
+| [~IdleTaskScheduler()](IdleTaskScheduler.~IdleTaskScheduler().md 'Jcd.Threading.Tasks.IdleTaskScheduler.~IdleTaskScheduler()') | Finalizes stuff. |
 | [Dispose(bool)](IdleTaskScheduler.Dispose.M9DA/s1G+TZhfK2gYP/ajA.md 'Jcd.Threading.Tasks.IdleTaskScheduler.Dispose(bool)') | Cleans up resources and shuts down background threads. |

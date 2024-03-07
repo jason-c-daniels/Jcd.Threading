@@ -182,6 +182,9 @@ public class IdleTaskScheduler
       GC.SuppressFinalize(this);
    }
 
+   /// <summary>
+   /// Finalizes stuff.
+   /// </summary>
    ~IdleTaskScheduler() { Dispose(false); }
 
    #endregion
