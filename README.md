@@ -1,7 +1,5 @@
 # Jcd.Threading
 
-See [Jcd.Threading](https://github.com/jason-c-daniels/Jcd.Threading) for the latest code.
-
 A *netstandard2.0* library that provides utility classes to help simplify some
 aspects of multi-threading and synchronization.
 
@@ -28,7 +26,7 @@ using Jcd.Threading;
 using Jcd.Threading.Tasks;
 
 var its = new IdleTaskScheduler(4,ApartmentState.STA,"My Scheduler");
-itr.Run(()=>{/* do some work.*/});
+its.Run(()=>{/* do some work.*/});
 ```
 
 Use `SemaphoreSlimExtensions.Lock` to automatically call `Wait` and `Release`

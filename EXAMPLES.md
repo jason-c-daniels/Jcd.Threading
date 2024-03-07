@@ -113,38 +113,42 @@ time necessary, but no less time than that.
 Also, these types will pair well with other direct uses of synchronization
 primitives, such as for pausing a thread in a CPU friendly fashion. 
 When doing so, ensure that you're calling Wait and Release (on a SemaphoreSlim, 
-for example.) At the right times. If possible, write copious unit tests to force
+for example) at the right times. If possible, write copious unit tests to force
 every possible permutation of of how the lock is acquired and released. 
 
 ## Threading and TaskScheduling
 
-One noteable absence in System.Threading.Tasks is a direct way to
+One notable absence in System.Threading.Tasks is a direct way to
 run tasks on a custom TaskScheduler.
 
-In fact, Task.Run often picks TaskScheduler.Default, which uses the
-.Net `ThreadPool`. This is suboptimal when it's require to have strict
-control over which threads a `Task` runs on.
+In fact, `Task.Run` often picks `TaskScheduler.Default`, which uses the
+.Net `ThreadPool`. This is suboptimal when it's required to have strict
+control over which threads a `Task` runs on. (an uncommon case)
 
 As well, Microsoft has deprecated calls to `Thread.Sleep` and
 has advised developers to essentially _roll their own_ synchronization
 mechanisms to allow for pausing and resuming a thread.
 
 `Jcd.Threading` and `Jcd.Threading.Tasks` have classes to help
-with these needs.
+with these needs, when they arise.
 
 ### ThreadWrapper
 
 `ThreadWrapper` wraps a managed `Thread` and provides it with
-its own `ThreadStart`delegate that handles pausing, resuming. 
+its own `ThreadStart`delegate that handles pausing, resuming
+and automatic idling.
+
 Derive from this type to implement your own custom thread, while 
-having the semantics of pause and resume handled for you. All 
-typical thread creation parameters are supported, including 
+having the details of pause, resume, and idle handled for you.
+All typical thread creation parameters are supported, including 
 threading apartment model.
 
 ```csharp
 // define our own specialized thread...
 public class MyItemQueueProcessingThread : ThreadWrapper
 {
+   private ConcurrentQueue<MyItem> = new();
+   
    public MyItemQueueProcessingThread() : base(name:"MyCoolClass", autoStart:false) { }
    
    protected override bool PerformWork() 
@@ -197,13 +201,11 @@ qp.Resume(); // let the processing proceed.
 
 ```
 
-### TaskScheduling
-
-A custom `TaskScheduler`, `IdleTaskScheduler`, and mechanisms to 
-ease the use of this or other custom `TaskScheduler`s are also 
-provided in this library.
 
 ### IdleTaskScheduler
+A custom `TaskScheduler`, `IdleTaskScheduler`, and mechanisms to
+ease the use of this or other custom `TaskScheduler`s are also
+provided in this library.
 
 This task scheduler maintains its own pool of threads,
 (Built atop ThreadWrapper) to provide idle-aware,
