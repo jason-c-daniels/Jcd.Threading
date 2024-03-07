@@ -26,24 +26,22 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
    )
    {
       var expectedThreadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount - 2;
+      if (expectedThreadCount <= 0) expectedThreadCount = 1;
       var scheduler           = new IdleTaskScheduler(threadCount, expectedState);
-      testOutputHelper.WriteLine($"Created scheduler with {threadCount} Threads.");
+      testOutputHelper.WriteLine($"Created scheduler with {threadCount} threads, expecting {expectedThreadCount} threads.");
 
-      if (scheduler.Threads != null)
+      testOutputHelper.WriteLine("Comparing the thread count.");
+      Assert.Equal(expectedThreadCount, scheduler.Threads.Count);
+
+      testOutputHelper.WriteLine("Compared the thread count.");
+
+      testOutputHelper.WriteLine($"Comparing statuses of each thread.");
+
+      foreach (var thread in scheduler.Threads)
       {
-         testOutputHelper.WriteLine("Comparing the thread count.");
-         Assert.Equal(expectedThreadCount, scheduler.Threads.Count);
-
-         testOutputHelper.WriteLine("Compared the thread count.");
-
-         testOutputHelper.WriteLine($"Comparing statuses of each thread.");
-
-         foreach (var thread in scheduler.Threads)
-         {
-            if (OsSupportsThreadingApartmentModel() && thread != null)
-               Assert.Equal(expectedState, thread.GetApartmentState());
-            Assert.True(thread?.IsAlive);
-         }
+         if (OsSupportsThreadingApartmentModel() && thread != null)
+            Assert.Equal(expectedState, thread.GetApartmentState());
+         Assert.True(thread?.IsAlive);
       }
 
       testOutputHelper.WriteLine($"Exiting unit test.");
