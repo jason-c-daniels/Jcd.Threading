@@ -12,7 +12,7 @@ internal class Ticket : ITicket
    private          SpinWait   spinWait;
    public           long       TicketId { get; }
 
-   private bool isReleased;
+   public  bool IsReleased { get; private set; }
    public  bool IsCanceled { get; private set; }
 
    internal Ticket(TicketLock ticketLock, long ticketId)
@@ -24,7 +24,8 @@ internal class Ticket : ITicket
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public bool Wait()
    {
-      while (ticketLock.NowServing < TicketId && !IsCanceled) spinWait.SpinOnce();
+      while (ticketLock.NowServing < TicketId && !IsCanceled) 
+         spinWait.SpinOnce();
 
       return true;
    }
@@ -32,17 +33,11 @@ internal class Ticket : ITicket
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public bool Wait(CancellationToken token)
    {
-      while (ticketLock.NowServing < TicketId && !IsCanceled)
-      {
-         if (token.IsCancellationRequested)
-         {
-            Cancel();
-
-            break;
-         }
-
+      while (ticketLock.NowServing < TicketId && !token.IsCancellationRequested)
          spinWait.SpinOnce();
-      }
+
+      if (token.IsCancellationRequested)
+         Cancel();
 
       return !IsCanceled;
    }
@@ -50,7 +45,8 @@ internal class Ticket : ITicket
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public async Task<bool> WaitAsync()
    {
-      while (ticketLock.NowServing < TicketId && !IsCanceled) await Task.Yield();
+      while (ticketLock.NowServing < TicketId && !IsCanceled) 
+         await Task.Yield();
 
       return true;
    }
@@ -58,17 +54,11 @@ internal class Ticket : ITicket
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public async Task<bool> WaitAsync(CancellationToken token)
    {
-      while (ticketLock.NowServing < TicketId && !IsCanceled)
-      {
-         if (token.IsCancellationRequested)
-         {
-            Cancel();
-
-            break;
-         }
-
+      while (ticketLock.NowServing < TicketId && !token.IsCancellationRequested)
          await Task.Yield();
-      }
+
+      if (token.IsCancellationRequested)
+         Cancel();
 
       return !IsCanceled;
    }
@@ -81,13 +71,12 @@ internal class Ticket : ITicket
       // intentionally non-awaited.
       #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       if (ticketLock.NowServing < TicketId)
-
          // ReSharper disable once HeapView.DelegateAllocation -- there is no other way to do this...
          TaskScheduler.Current.Run(async () =>
                                    {
                                       while (ticketLock.NowServing < TicketId) await Task.Yield();
 
-                                      isReleased = true;
+                                      IsReleased = true;
                                       ticketLock.Release();
                                    }
                                   )
@@ -98,14 +87,14 @@ internal class Ticket : ITicket
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void Release()
    {
-      isReleased = true;
+      IsReleased = true;
       ticketLock.Release();
    }
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public void Dispose()
    {
-      if (!isReleased || (IsCanceled && ticketLock.NowServing < TicketId))
+      if (!IsReleased || (IsCanceled && ticketLock.NowServing < TicketId))
          Release();
    }
 }

@@ -16,6 +16,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 | Properties | |
 | :--- | :--- |
 | [IsCanceled](ITicket.IsCanceled.md 'Jcd.Threading.ITicket.IsCanceled') | Indicates if the ticket was cancelled. |
+| [IsReleased](ITicket.IsReleased.md 'Jcd.Threading.ITicket.IsReleased') | Indicates if the ticket was released. |
 | [TicketId](ITicket.TicketId.md 'Jcd.Threading.ITicket.TicketId') | The ID for the ticket. These are issued out sequentially. |
 
 | Methods | |

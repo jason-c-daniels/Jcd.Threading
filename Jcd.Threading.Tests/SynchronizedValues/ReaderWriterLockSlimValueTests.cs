@@ -98,7 +98,33 @@ public class ReaderWriterLockSlimValueTests
 
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
+   
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
+   public void ChangeValue_Returns_The_Original_Value_When_Given_Null(int value)
+   {
+      var       expectedValue = value;
+      using var sv            = new ReaderWriterLockSlimValue<int>(value);
+      var       result        = sv.ChangeValue(null);
+      Assert.Equal(expectedValue, sv.Value);
+      Assert.Equal(expectedValue, result);
+   }
 
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
+   public async Task ChangeValueAsync_Returns_The_Original_Value_When_Given_Null(int value)
+   {
+      var       expectedValue = value;
+      using var sv            = new ReaderWriterLockSlimValue<int>(value);
+      var       result        = await sv.ChangeValueAsync(null);
+      Assert.Equal(expectedValue, sv.Value);
+      Assert.Equal(expectedValue, result);
+   }
+   
    [Theory]
    [InlineData(1)]
    [InlineData(-1)]

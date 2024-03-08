@@ -98,6 +98,32 @@ public class SpinLockValueTests
    [InlineData(1)]
    [InlineData(-1)]
    [InlineData(2)]
+   public void ChangeValue_Returns_The_Original_Value_When_Given_Null(int value)
+   {
+      var expectedValue = value;
+      var sv            = new SpinLockValue<int>(value);
+      var result        = sv.ChangeValue(null);
+      Assert.Equal(expectedValue, sv.Value);
+      Assert.Equal(expectedValue, result);
+   }
+
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
+   public async Task ChangeValueAsync_Returns_The_Original_Value_When_Given_Null(int value)
+   {
+      var expectedValue = value;
+      var sv            = new SpinLockValue<int>(value);
+      var result        = await sv.ChangeValueAsync(null);
+      Assert.Equal(expectedValue, sv.Value);
+      Assert.Equal(expectedValue, result);
+   }
+
+   [Theory]
+   [InlineData(1)]
+   [InlineData(-1)]
+   [InlineData(2)]
    public void Value_Property_Set_Sets_Value_To_ExpectedValue(int expectedValue)
    {
       var sv = new SpinLockValue<int>();

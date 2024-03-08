@@ -19,6 +19,11 @@ public interface ITicket
    long TicketId { get; }
 
    /// <summary>
+   /// Indicates if the ticket was released.
+   /// </summary>
+   bool IsReleased { get; }
+
+   /// <summary>
    /// Indicates if the ticket was cancelled.
    /// </summary>
    bool IsCanceled { get; }

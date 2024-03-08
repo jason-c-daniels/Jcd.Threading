@@ -91,6 +91,11 @@
             The ID for the ticket. These are issued out sequentially.
             </summary>
         </member>
+        <member name="P:Jcd.Threading.ITicket.IsReleased">
+            <summary>
+            Indicates if the ticket was released.
+            </summary>
+        </member>
         <member name="P:Jcd.Threading.ITicket.IsCanceled">
             <summary>
             Indicates if the ticket was cancelled.
