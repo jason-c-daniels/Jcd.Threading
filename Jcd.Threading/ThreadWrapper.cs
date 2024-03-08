@@ -35,7 +35,7 @@ public abstract class ThreadWrapper : IDisposable
    /// <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
    /// <param name="autoStart">Indicates if the thread should be automatically started in the constructor.</param>
    /// <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop</param>
-   /// <param name="idleAfterEmptyQueueCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
+   /// <param name="idleAfterNoWorkDoneCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
    /// <param name="priority">The priority to start the processing thread at.</param>
    /// <param name="apartmentState">The apartment state for the underlying thread.</param>
    /// <param name="yieldEachCycle">A flag indicating if CPU time is yielded each pass through the main loop.</param>
@@ -54,34 +54,62 @@ public abstract class ThreadWrapper : IDisposable
     , bool           useBackgroundThread      = true
     , bool           yieldEachCycle           = true
     , int            timeToYieldInMs          = 15
-    , int            idleAfterEmptyQueueCount = 15
+    , int            idleAfterNoWorkDoneCount = 15
     , ThreadPriority priority                 = ThreadPriority.Normal
     , ApartmentState apartmentState           = ApartmentState.Unknown
    )
    {
       if (yieldEachCycle && timeToYieldInMs < 1)
          throw new ArgumentException("must be greater than or equal to 1", nameof(timeToYieldInMs));
-
-      Name                          = name ?? $"{GetType().Name}";
-      isIdleDetectionDisabled       = idleAfterEmptyQueueCount < 0;
-      this.useBackgroundThread      = useBackgroundThread;
-      this.yieldEachCycle           = yieldEachCycle;
-      this.timeToYieldInMs          = timeToYieldInMs;
-      this.idleAfterEmptyQueueCount = idleAfterEmptyQueueCount;
-      this.priority                 = priority;
-      this.apartmentState           = apartmentState;
-      if (autoStart) Start();
+      
+      Name                     = name ?? $"{GetType().Name}";
+      isIdleDetectionDisabled  = idleAfterNoWorkDoneCount < 0;
+      UseBackgroundThread      = useBackgroundThread;
+      YieldEachCycle           = yieldEachCycle;
+      TimeToYieldInMs          = timeToYieldInMs;
+      IdleAfterNoWorkDoneCount = idleAfterNoWorkDoneCount;
+      Priority                 = priority;
+      ApartmentState           = apartmentState;
+      AutoStart                = autoStart;
+      if (AutoStart) Start();
    }
 
    #region Thread Creation and Related
 
-   private readonly ApartmentState                     apartmentState;
-   private readonly ThreadPriority                     priority;
-   private readonly bool                               useBackgroundThread;
-   private readonly bool                               yieldEachCycle;
-   private readonly int                                timeToYieldInMs;
-   private readonly int                                idleAfterEmptyQueueCount;
-   private readonly ReaderWriterLockSlimValue<Thread?> thread = new();
+   /// <summary>
+   /// A flag indicating if the underlying thread should be immediately started.
+   /// </summary>
+   public bool AutoStart { get; }
+
+   /// <summary>
+   /// The thread apartment state used to create the underlying thread.
+   /// </summary>
+   public           ApartmentState                     ApartmentState                    { get; }
+
+   /// <summary>
+   /// The priority with which to create the underlying thread.
+   /// </summary>
+   public           ThreadPriority                     Priority                 { get; }
+
+   /// <summary>
+   /// A flag indicating if the thread will be a background thread.
+   /// </summary>
+   public           bool                               UseBackgroundThread      { get; }
+
+   /// <summary>
+   /// A flag indicating if CPU time should be yielded every CPU cycle.
+   /// </summary>
+   public           bool                               YieldEachCycle           { get; }
+
+   /// <summary>
+   /// The amount of time to yield each pass through the loop.
+   /// </summary>
+   public           int                                TimeToYieldInMs          { get; }
+
+   /// <summary>
+   /// The number of passes through the loop with no work performed before entering the idle state.
+   /// </summary>
+   public           int                                IdleAfterNoWorkDoneCount { get; }
 
    /// <summary>
    /// The name of this instance of the <see cref="ThreadWrapper"/>.
@@ -94,16 +122,17 @@ public abstract class ThreadWrapper : IDisposable
    /// Provides direct access to the underlying thread.
    /// </summary>
    public Thread? Thread => thread.Value;
+   private readonly ReaderWriterLockSlimValue<Thread?> thread = new();
 
    private Thread CreateThread()
    {
       var newThread = new Thread(ThreadProc)
                       {
-                         Name = $"{Name}.Thread", IsBackground = useBackgroundThread, Priority = priority
+                         Name = $"{Name}.Thread", IsBackground = UseBackgroundThread, Priority = Priority
                       };
 
-      if (apartmentState != ApartmentState.Unknown)
-         newThread.TrySetApartmentState(apartmentState);
+      if (ApartmentState != ApartmentState.Unknown)
+         newThread.TrySetApartmentState(ApartmentState);
 
       if (cancellationSource.IsCancellationRequested)
          cancellationSource = new CancellationTokenSource();
@@ -181,15 +210,19 @@ public abstract class ThreadWrapper : IDisposable
       else
       {
          noWorkCounter++;
-         if (idleAfterEmptyQueueCount < noWorkCounter)
+
+         if (IdleAfterNoWorkDoneCount < noWorkCounter)
+         {
             EnterIdleState();
+            noWorkCounter = 0;
+         }
       }
    }
 
    private void DoIdleOrYield(CancellationToken token)
    {
-      if (!IdleWait(token) && yieldEachCycle)
-         YieldCpuTime(timeToYieldInMs);
+      if (!IdleWait(token) && YieldEachCycle)
+         YieldCpuTime(TimeToYieldInMs);
    }
 
    /// <summary>

@@ -159,7 +159,7 @@ public class TicketLockTests
       using var ticket = await tl.LockAsync(cts.Token);
       var sw     = new SpinWait();
       while (!done.Value) sw.SpinOnce(10);
-      
+      Thread.Sleep(150);
       Assert.True(ticket.IsCanceled);
       await Task.WhenAll([task, task2 ]);
    }
