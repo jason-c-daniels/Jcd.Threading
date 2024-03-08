@@ -29,12 +29,19 @@ Resume will suspend the thread operations at the appropriate time in the main lo
 
 | Properties | |
 | :--- | :--- |
+| [ApartmentState](ThreadWrapper.ApartmentState.md 'Jcd.Threading.ThreadWrapper.ApartmentState') | The thread apartment state used to create the underlying thread. |
+| [AutoStart](ThreadWrapper.AutoStart.md 'Jcd.Threading.ThreadWrapper.AutoStart') | A flag indicating if the underlying thread should be immediately started. |
 | [CancellationToken](ThreadWrapper.CancellationToken.md 'Jcd.Threading.ThreadWrapper.CancellationToken') | Gives derived types access to the [CancellationToken](ThreadWrapper.CancellationToken.md 'Jcd.Threading.ThreadWrapper.CancellationToken') |
+| [IdleAfterNoWorkDoneCount](ThreadWrapper.IdleAfterNoWorkDoneCount.md 'Jcd.Threading.ThreadWrapper.IdleAfterNoWorkDoneCount') | The number of passes through the loop with no work performed before entering the idle state. |
 | [IsIdle](ThreadWrapper.IsIdle.md 'Jcd.Threading.ThreadWrapper.IsIdle') | Gets a flag indicating if the item processing is currently paused. |
 | [IsPaused](ThreadWrapper.IsPaused.md 'Jcd.Threading.ThreadWrapper.IsPaused') | Gets a flag indicating if the item processing is currently paused. |
 | [IsStarted](ThreadWrapper.IsStarted.md 'Jcd.Threading.ThreadWrapper.IsStarted') | Gets a flag indicating if the item processing loop has started. |
 | [Name](ThreadWrapper.Name.md 'Jcd.Threading.ThreadWrapper.Name') | The name of this instance of the [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper').<br/>By default the underlying thread will be named as follows:<br/>`$"{Name}.Thread"` |
+| [Priority](ThreadWrapper.Priority.md 'Jcd.Threading.ThreadWrapper.Priority') | The priority with which to create the underlying thread. |
 | [Thread](ThreadWrapper.Thread.md 'Jcd.Threading.ThreadWrapper.Thread') | Provides direct access to the underlying thread. |
+| [TimeToYieldInMs](ThreadWrapper.TimeToYieldInMs.md 'Jcd.Threading.ThreadWrapper.TimeToYieldInMs') | The amount of time to yield each pass through the loop. |
+| [UseBackgroundThread](ThreadWrapper.UseBackgroundThread.md 'Jcd.Threading.ThreadWrapper.UseBackgroundThread') | A flag indicating if the thread will be a background thread. |
+| [YieldEachCycle](ThreadWrapper.YieldEachCycle.md 'Jcd.Threading.ThreadWrapper.YieldEachCycle') | A flag indicating if CPU time should be yielded every CPU cycle. |
 
 | Methods | |
 | :--- | :--- |

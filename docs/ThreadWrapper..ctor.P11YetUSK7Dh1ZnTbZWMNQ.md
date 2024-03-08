@@ -6,7 +6,7 @@
 Constructs a [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper')
 
 ```csharp
-protected ThreadWrapper(bool autoStart=true, string? name=null, bool useBackgroundThread=true, bool yieldEachCycle=true, int timeToYieldInMs=15, int idleAfterEmptyQueueCount=15, System.Threading.ThreadPriority priority=System.Threading.ThreadPriority.Normal, System.Threading.ApartmentState apartmentState=System.Threading.ApartmentState.Unknown);
+protected ThreadWrapper(bool autoStart=true, string? name=null, bool useBackgroundThread=true, bool yieldEachCycle=true, int timeToYieldInMs=15, int idleAfterNoWorkDoneCount=15, System.Threading.ThreadPriority priority=System.Threading.ThreadPriority.Normal, System.Threading.ApartmentState apartmentState=System.Threading.ApartmentState.Unknown);
 ```
 #### Parameters
 
@@ -40,9 +40,9 @@ A flag indicating if CPU time is yielded each pass through the main loop.
 
 The amount of CPU time to yield per cycle through the main loop
 
-<a name='Jcd.Threading.ThreadWrapper.ThreadWrapper(bool,string,bool,bool,int,int,System.Threading.ThreadPriority,System.Threading.ApartmentState).idleAfterEmptyQueueCount'></a>
+<a name='Jcd.Threading.ThreadWrapper.ThreadWrapper(bool,string,bool,bool,int,int,System.Threading.ThreadPriority,System.Threading.ApartmentState).idleAfterNoWorkDoneCount'></a>
 
-`idleAfterEmptyQueueCount` [System.Int32](https://docs.microsoft.com/en-us/dotnet/api/System.Int32 'System.Int32')
+`idleAfterNoWorkDoneCount` [System.Int32](https://docs.microsoft.com/en-us/dotnet/api/System.Int32 'System.Int32')
 
 the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.
 

@@ -1289,7 +1289,7 @@
             <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
             <param name="autoStart">Indicates if the thread should be automatically started in the constructor.</param>
             <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop</param>
-            <param name="idleAfterEmptyQueueCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
+            <param name="idleAfterNoWorkDoneCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
             <param name="priority">The priority to start the processing thread at.</param>
             <param name="apartmentState">The apartment state for the underlying thread.</param>
             <param name="yieldEachCycle">A flag indicating if CPU time is yielded each pass through the main loop.</param>
@@ -1302,6 +1302,41 @@
             If resuming  the same thread is the desired behavior, call `Pause` and `Resume` instead.
             </para> 
             </remarks>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.AutoStart">
+            <summary>
+            A flag indicating if the underlying thread should be immediately started.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.ApartmentState">
+            <summary>
+            The thread apartment state used to create the underlying thread.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.Priority">
+            <summary>
+            The priority with which to create the underlying thread.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.UseBackgroundThread">
+            <summary>
+            A flag indicating if the thread will be a background thread.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.YieldEachCycle">
+            <summary>
+            A flag indicating if CPU time should be yielded every CPU cycle.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.TimeToYieldInMs">
+            <summary>
+            The amount of time to yield each pass through the loop.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ThreadWrapper.IdleAfterNoWorkDoneCount">
+            <summary>
+            The number of passes through the loop with no work performed before entering the idle state.
+            </summary>
         </member>
         <member name="P:Jcd.Threading.ThreadWrapper.Name">
             <summary>
