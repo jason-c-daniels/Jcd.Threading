@@ -66,8 +66,8 @@ public partial class MainWindow //: Window
 
       return list.Items.Count;
    }
-   
-   const string Executed = "Executed";
+
+   private const string Executed = "Executed";
 
    private async void RunWithMTA_OnClick(object sender, RoutedEventArgs e)
    {

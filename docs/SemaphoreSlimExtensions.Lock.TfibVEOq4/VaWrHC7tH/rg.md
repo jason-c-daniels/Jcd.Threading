@@ -3,10 +3,10 @@
 
 ## SemaphoreSlimExtensions.Lock(this SemaphoreSlim) Method
 
-Waits on the semaphore, and returns an [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') that calls Release.
+Waits on the semaphore, and returns an [SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock') that calls Release.
 
 ```csharp
-public static System.IDisposable Lock(this System.Threading.SemaphoreSlim sem);
+public static Jcd.Threading.SemaphoreSlimResourceLock Lock(this System.Threading.SemaphoreSlim sem);
 ```
 #### Parameters
 
@@ -17,5 +17,5 @@ public static System.IDisposable Lock(this System.Threading.SemaphoreSlim sem);
 the semaphore to use.
 
 #### Returns
-[System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
-an [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') that calls Release in its Dispose method.
+[SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock')  
+an [SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock') that calls Release in its Dispose method.

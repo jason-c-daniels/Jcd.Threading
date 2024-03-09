@@ -119,7 +119,7 @@ public static class TaskSchedulerExtensions
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The scheduler to execute the function with.</param>
    /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
-   public static async Task<TResult> Run<TResult>(this TaskScheduler scheduler, Func<Task<TResult>?>? function)
+   public static async Task<TResult> Run<TResult>(this TaskScheduler scheduler, Func<Task<TResult>> function)
    {
       return await scheduler.Run(function, CancellationToken.None);
    }
@@ -132,9 +132,9 @@ public static class TaskSchedulerExtensions
    /// <param name="cancellationToken">the token to check for cancellation</param>
    /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
    public static async Task<TResult> Run<TResult>(
-      this TaskScheduler?   scheduler
-    , Func<Task<TResult>?>? function
-    , CancellationToken     cancellationToken
+      this TaskScheduler?  scheduler
+    , Func<Task<TResult>>? function
+    , CancellationToken    cancellationToken
    )
    {
       if (function == null) throw new ArgumentNullException(nameof(function));
@@ -144,11 +144,11 @@ public static class TaskSchedulerExtensions
 
       // Kick off initial Task, which will call the user-supplied function and yield a Task.
       var task1 =
-         Task<Task<TResult>?>.Factory.StartNew(function
-                                             , cancellationToken
-                                             , TaskCreationOptions.DenyChildAttach
-                                             , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
-                                              );
+         Task<Task<TResult>>.Factory.StartNew(function
+                                            , cancellationToken
+                                            , TaskCreationOptions.DenyChildAttach
+                                            , scheduler ?? throw new ArgumentNullException(nameof(scheduler))
+                                             );
 
       return await task1.Unwrap();
    }

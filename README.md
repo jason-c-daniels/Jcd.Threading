@@ -9,7 +9,8 @@ Read the [API documentation](./docs/Jcd.Threading.md) carefully.
 
 - [`TaskScheduler`](./docs/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks are
   run with the desired scheduler.
-- [`IdleTaskScheduler`](./docs/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin manner with idle threads. 
+- [`IdleTaskScheduler`](./docs/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin
+  manner with idle threads.
 - [`ThreadWrapper`](./docs/ThreadWrapper.md) class to simplify the process of making a pauseable thread.
 - [`ItemProcessor<TItem>`](./docs/ItemProcessor_TItem_.md) class encapsulating a queue+worker thread.
 - Various `Lock` extension methods to simplify using synchronization primitives (
@@ -18,7 +19,7 @@ Read the [API documentation](./docs/Jcd.Threading.md) carefully.
   or setting a value. (e.g. [ReaderWriterLockSlimValue](./docs/ReaderWriterLockSlimValue_T_.md))
 
 ## Examples
-
+ 
 Execute `TaskSchedulerExtensions.Run` on a default instance of IdleTaskScheduler configured to provide 4 STA threads.
 
 ```csharp

@@ -4,7 +4,7 @@ using Nito.AsyncEx;
 
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
-public sealed class NitoAsyncOperations : IDisposable
+public class NitoAsyncOperations : IDisposable
 {
    private readonly AsyncLock     nito     = new();
    private readonly SemaphoreSlim sem      = new(1, 1);
@@ -58,5 +58,7 @@ public sealed class NitoAsyncOperations : IDisposable
       return RawValue;
    }
 
+   #pragma warning disable CA1816
    public void Dispose() { sem.Dispose(); }
+   #pragma warning restore CA1816
 }

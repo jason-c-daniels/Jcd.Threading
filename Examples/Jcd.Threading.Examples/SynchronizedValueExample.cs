@@ -6,6 +6,9 @@
 
 using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable IdentifierTypo
+
 namespace Jcd.Threading.Examples;
 
 /// <summary>
@@ -140,4 +143,17 @@ public static class SynchronizedValueExample
 
       return incrementTask;
    }
+}
+
+public struct MyStruct
+{
+   public int MyCount;
+}
+
+public ref struct MyRefStruct
+{
+   private ref MyStruct structo;
+
+   public MyRefStruct(ref MyStruct structo) { this.structo = ref structo; }
+   public int MyCount => structo.MyCount;
 }

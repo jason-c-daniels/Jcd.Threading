@@ -2,7 +2,7 @@
 
    <PropertyGroup>
       <OutputType>WinExe</OutputType>
-      <TargetFramework>net462-windows</TargetFramework>
+      <TargetFramework>net462</TargetFramework>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
       <UseWPF>true</UseWPF>

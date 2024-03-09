@@ -23,7 +23,7 @@ synchronized appropriately. This type only synchronizes access to internal data.
 
 | Constructors | |
 | :--- | :--- |
-| [ItemProcessor(Action&lt;TItem&gt;, bool, string, bool, bool, int, int, ThreadPriority, ApartmentState)](ItemProcessor_TItem_..ctor.eRZ9xDBjXorufwazyJ0kgw.md 'Jcd.Threading.ItemProcessor<TItem>.ItemProcessor(System.Action<TItem>, bool, string, bool, bool, int, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') |
+| [ItemProcessor(Action&lt;TItem&gt;, bool, string, bool, int, int, ThreadPriority, ApartmentState)](ItemProcessor_TItem_..ctor.Dy3hP/j6mEGF9KY6x9i2GA.md 'Jcd.Threading.ItemProcessor<TItem>.ItemProcessor(System.Action<TItem>, bool, string, bool, int, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') |
 
 | Properties | |
 | :--- | :--- |

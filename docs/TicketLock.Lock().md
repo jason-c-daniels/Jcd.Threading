@@ -3,12 +3,12 @@
 
 ## TicketLock.Lock() Method
 
-Creates an [ITicket](ITicket.md 'Jcd.Threading.ITicket') and waits on it.
+Creates an [TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock') and waits on it.
 
 ```csharp
-public Jcd.Threading.ITicket Lock();
+public Jcd.Threading.TicketLockResourceLock Lock();
 ```
 
 #### Returns
-[ITicket](ITicket.md 'Jcd.Threading.ITicket')  
+[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')  
 The ticket once the lock is acquired.

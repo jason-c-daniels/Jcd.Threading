@@ -10,10 +10,14 @@ namespace Jcd.Threading;
 /// Provides a naiive implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
 /// </summary>
 /// <remarks>
-/// See also: <see href="https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b">Ticket Locking Algorithm : Fair Lock Delivery Mechanism</see>
-/// For other details see the <see href="https://en.wikipedia.org/wiki/Ticket_lock">Wikipedia Article on Ticket locks</see>.
+/// <para>
+/// For a technical reference on Ticket Locks see: <see href="https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b">Ticket Locking Algorithm : Fair Lock Delivery Mechanism</see>
+/// </para> 
+/// <para>
+/// For further reading see the <see href="https://en.wikipedia.org/wiki/Ticket_lock">Wikipedia Article on Ticket locks</see>.
+/// </para> 
 /// </remarks>
-public class TicketLock
+public class TicketLock : IResourceLockFactory<TicketLockResourceLock>
 {
    private long ticketCounter;
    private long nowServing;
@@ -21,7 +25,7 @@ public class TicketLock
    /// <summary>
    /// The maximum number of possible tickets. (At 1 per 20ms this should last 350 years of continuous run time.)
    /// </summary>
-   public long MaxTicketCount => long.MaxValue;
+   public static long MaxTicketCount => long.MaxValue;
 
    /// <summary>
    /// The ticket currently holding the lock.
@@ -41,7 +45,7 @@ public class TicketLock
    internal void Release() { Interlocked.Increment(ref nowServing); }
 
    /// <summary>
-   /// Creates an <see cref="ITicket"/>.
+   /// Creates an <see cref="TicketLockResourceLock"/>.
    /// </summary>
    /// <remarks>
    /// WARNING: This is for advanced use cases only. Failing to release the lock
@@ -52,57 +56,60 @@ public class TicketLock
    /// </remarks>
    /// <returns>The new ticket.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public ITicket GetTicket() { return new Ticket(this, Interlocked.Increment(ref ticketCounter) - 1); }
+   public TicketLockResourceLock GetResourceLock()
+   {
+      return new TicketLockResourceLock(this, Interlocked.Increment(ref ticketCounter) - 1);
+   }
 
    /// <summary>
-   /// Creates an <see cref="ITicket"/> and waits on it.
+   /// Creates an <see cref="TicketLockResourceLock"/> and waits on it.
    /// </summary>
    /// <returns>The ticket once the lock is acquired.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public ITicket Lock()
+   public TicketLockResourceLock Lock()
    {
-      var ticket = GetTicket();
+      var ticket = GetResourceLock();
       ticket.Wait();
 
       return ticket;
    }
 
    /// <summary>
-   /// Creates an <see cref="ITicket"/> and waits on it.
+   /// Creates an <see cref="TicketLockResourceLock"/> and waits on it.
    /// </summary>
    /// <param name="token">The token to listen for cancellation on.</param>
    /// <returns>The ticket once the lock is acquired.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public ITicket Lock(CancellationToken token)
+   public TicketLockResourceLock Lock(CancellationToken token)
    {
-      var ticket = GetTicket();
+      var ticket = GetResourceLock();
       ticket.Wait(token);
 
       return ticket;
    }
 
    /// <summary>
-   /// Asynchronously creates an <see cref="ITicket"/> and waits on it.
+   /// Asynchronously creates an <see cref="TicketLockResourceLock"/> and waits on it.
    /// </summary>
    /// <returns>The ticket once the lock is acquired.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public async Task<ITicket> LockAsync()
+   public async Task<TicketLockResourceLock> LockAsync()
    {
-      var ticket = GetTicket();
+      var ticket = GetResourceLock();
       await ticket.WaitAsync();
 
       return ticket;
    }
 
    /// <summary>
-   /// Asynchronously creates an <see cref="ITicket"/> and waits on it.
+   /// Asynchronously creates an <see cref="TicketLockResourceLock"/> and waits on it.
    /// </summary>
    /// <param name="token">The token to listen for cancellation on.</param>
    /// <returns>The ticket once the lock is acquired.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public async Task<ITicket> LockAsync(CancellationToken token)
+   public async Task<TicketLockResourceLock> LockAsync(CancellationToken token)
    {
-      var ticket = GetTicket();
+      var ticket = GetResourceLock();
       await ticket.WaitAsync(token);
 
       return ticket;

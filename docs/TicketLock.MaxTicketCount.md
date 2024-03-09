@@ -6,7 +6,7 @@
 The maximum number of possible tickets. (At 1 per 20ms this should last 350 years of continuous run time.)
 
 ```csharp
-public long MaxTicketCount { get; }
+public static long MaxTicketCount { get; }
 ```
 
 #### Property Value

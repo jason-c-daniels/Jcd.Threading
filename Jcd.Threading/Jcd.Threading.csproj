@@ -1,26 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-   <PropertyGroup>
-      <TargetFramework>netstandard2.0</TargetFramework>
-      <LangVersion>latest</LangVersion>
-      <Nullable>enable</Nullable>
-      <AssemblyName>Jcd.Threading</AssemblyName>
-      <RootNamespace>Jcd.Threading</RootNamespace>
-   </PropertyGroup>
-
-   <ItemGroup>
-      <PackageReference Include="DefaultDocumentation" Version="0.8.2">
-         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-         <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-      <PackageReference Include="Jcd.Validations" Version="1.1.7"/>
-      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.3">
-         <PrivateAssets>all</PrivateAssets>
-         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-   </ItemGroup>
-
-   <PropertyGroup>
+   <PropertyGroup Label="Nuget Packaging Information">
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <Title>Jcd.Threading</Title>
       <Authors>Jason C. Daniels</Authors>
@@ -34,30 +14,47 @@
       <AssemblyVersion>0.2.0</AssemblyVersion>
       <FileVersion>0.2.0</FileVersion>
       <PackageIcon>Jason.C.Daniels.jpg</PackageIcon>
-      <TargetFramework>netstandard2.0</TargetFramework>
       <PackageReleaseNotes>Converted from Jcd.Tasks to Jcd.Threading</PackageReleaseNotes>
       <DefaultDocumentationFileNameFactory>NameAndMd5Mix</DefaultDocumentationFileNameFactory>
-   </PropertyGroup>
-
-   <PropertyGroup>
       <PackageReadmeFile>README.md</PackageReadmeFile>
    </PropertyGroup>
 
-   <ItemGroup>
+   <ItemGroup Label="Files To Package">
       <None Include="..\README.md" Pack="true" PackagePath="\"/>
       <None Include="..\LICENSE" Pack="false" PackagePath="\"/>
       <None Include="icon\Jason.C.Daniels.jpg" Pack="true" PackagePath="\"/>
       <None Include="..\nuget.config" Pack="false" PackagePath="\"/>
    </ItemGroup>
 
-   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+   <PropertyGroup Label="Assembly Name, TargetFrameworks, Language Settings">
+      <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+      <LangVersion>latest</LangVersion>
+      <Nullable>enable</Nullable>
+      <AssemblyName>Jcd.Threading</AssemblyName>
+      <RootNamespace>Jcd.Threading</RootNamespace>
+      <DefineConstants Condition="'$(TargetFramework)' == 'net7.0'">$(DefineConstants);REF_STRUCT_SUPPORT</DefineConstants>
+   </PropertyGroup>
+
+   <PropertyGroup Label="Debug Build Configuration" Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>..\docs\Jcd.Threading.xml</DocumentationFile>
    </PropertyGroup>
 
-   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+   <PropertyGroup Label="Release Build Configuration" Condition=" '$(Configuration)' == 'Release' ">
       <DocumentationFile>..\docs\Jcd.Threading.xml</DocumentationFile>
       <PlatformTarget>AnyCPU</PlatformTarget>
    </PropertyGroup>
+
+   <ItemGroup Label="Nuget Package References">
+      <PackageReference Include="DefaultDocumentation" Version="0.8.2">
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+         <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="Jcd.Validations" Version="1.1.7"/>
+      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net462" Version="1.0.3">
+         <PrivateAssets>all</PrivateAssets>
+         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+   </ItemGroup>
 
 </Project>
   

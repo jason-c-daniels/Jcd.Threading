@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -82,7 +83,6 @@ public class IdleTaskScheduler
       // IDLING IS NEEDED TO DO ROUND ROBIN SCHEDULING!
       return new ItemProcessor<Task>(action
                                    , name: name
-                                   , yieldEachCpuCycle: true
                                    , timeToYieldInMs: timeToYieldInMs
                                    , apartmentState: apartmentState
                                     );
@@ -146,12 +146,13 @@ public class IdleTaskScheduler
          taskQueuer.Enqueue(task);
    }
 
-   // ReSharper disable once UnusedMember.Local
+   #if DEBUG
    private static void Log(string message)
    {
       Debug.WriteLine(message);
       Console.WriteLine(message);
    }
+   #endif
 
    #endregion
 
@@ -185,6 +186,7 @@ public class IdleTaskScheduler
    /// <summary>
    /// Finalizes stuff.
    /// </summary>
+   [ExcludeFromCodeCoverage]
    ~IdleTaskScheduler() { Dispose(false); }
 
    #endregion

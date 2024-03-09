@@ -103,7 +103,7 @@ public static class CustomSchedulerTaskRunner<TScheduler>
    /// <param name="function">the function to execute.</param>
    /// <param name="scheduler">The optional scheduler to execute the function with.</param>
    /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
-   public static async Task<TResult> Run<TResult>(Func<Task<TResult>?> function, TaskScheduler? scheduler = null)
+   public static async Task<TResult> Run<TResult>(Func<Task<TResult>> function, TaskScheduler? scheduler = null)
    {
       return await (scheduler ?? Scheduler).Run(function);
    }
@@ -116,9 +116,9 @@ public static class CustomSchedulerTaskRunner<TScheduler>
    /// <param name="scheduler">The optional scheduler to execute the function with.</param>
    /// <returns>The <see cref="Task"/> representing the result of the execution.</returns>
    public static async Task<TResult> Run<TResult>(
-      Func<Task<TResult>?> function
-    , CancellationToken    cancellationToken
-    , TaskScheduler?       scheduler = null
+      Func<Task<TResult>> function
+    , CancellationToken   cancellationToken
+    , TaskScheduler?      scheduler = null
    )
    {
       return await (scheduler ?? Scheduler).Run(function, cancellationToken);

@@ -6,81 +6,78 @@ using System.Threading.Tasks;
 namespace Jcd.Threading;
 
 /// <summary>
-/// A set of extension methods to simplify using a <see cref="SemaphoreSlim"/>
+/// Provides extension methods to simplify using a <see cref="SemaphoreSlim"/>
 /// to ensure that Release is called for every Wait or WaitAsync. Useful for
 /// ensuring synchronized access to data for short lived operations.
 /// </summary>
 public static class SemaphoreSlimExtensions
 {
-   private sealed class SemLock : IDisposable
+   /// <summary>
+   /// Waits on the semaphore, and returns an <see cref="SemaphoreSlimResourceLock"/> that calls Release.
+   /// </summary>
+   /// <param name="sem">the semaphore to use.</param>
+   /// <returns>an <see cref="SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public static SemaphoreSlimResourceLock Lock(this SemaphoreSlim sem)
    {
-      private readonly SemaphoreSlim sem;
-      internal SemLock(SemaphoreSlim sem) { this.sem = sem; }
+      var rl = GetResourceLock(sem);
+      rl.Wait();
 
-      public void Dispose() { sem.Release(); }
+      return rl;
    }
 
    /// <summary>
-   /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
-   /// </summary>
-   /// <param name="sem">the semaphore to use.</param>
-   /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static IDisposable Lock(this SemaphoreSlim sem) { return sem.Lock(CancellationToken.None); }
-
-   /// <summary>
-   /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
+   /// Waits on the semaphore, and returns an <see cref="SemaphoreSlimResourceLock"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>
    /// <param name="token">A cancellation token to use during the wait.</param>
-   /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
+   /// <returns>an <see cref="SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static IDisposable Lock(this SemaphoreSlim sem, CancellationToken token)
+   public static SemaphoreSlimResourceLock Lock(this SemaphoreSlim sem, CancellationToken token)
    {
-      sem.Wait(token);
+      var rl = GetResourceLock(sem);
+      rl.Wait(token);
 
-      return new SemLock(sem);
+      return rl;
    }
 
    /// <summary>
-   /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
+   /// Asynchronously waits on the semaphore, and returns an <see cref="SemaphoreSlimResourceLock"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>
-   /// <param name="action">the action to execute</param>
-   /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
+   /// <returns>A <see cref="Task{T}"/> for an <see cref="SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static void Lock(this SemaphoreSlim sem, Action action)
+   public static async Task<SemaphoreSlimResourceLock> LockAsync(this SemaphoreSlim sem)
    {
-      try
-      {
-         sem.Wait();
-         action();
-      }
-      finally
-      {
-         sem.Release();
-      }
+      var rl = GetResourceLock(sem);
+      await rl.WaitAsync();
+
+      return rl;
    }
 
    /// <summary>
-   /// Asynchronously waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
-   /// </summary>
-   /// <param name="sem">the semaphore to use.</param>
-   /// <returns>A <see cref="Task{T}"/> for an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
-   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static Task<IDisposable> LockAsync(this SemaphoreSlim sem) { return sem.LockAsync(CancellationToken.None); }
-
-   /// <summary>
-   /// Asynchronously waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
+   /// Asynchronously waits on the semaphore, and returns an <see cref="SemaphoreSlimResourceLock"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>
    /// <param name="token">A cancellation token to use during the wait.</param>
-   /// <returns>A <see cref="Task{T}"/> for an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
+   /// <returns>A <see cref="Task{T}"/> for an <see cref="SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static async Task<IDisposable> LockAsync(this SemaphoreSlim sem, CancellationToken token)
+   public static async Task<SemaphoreSlimResourceLock> LockAsync(this SemaphoreSlim sem, CancellationToken token)
    {
-      await sem.WaitAsync(token);
+      var rl = GetResourceLock(sem);
+      await rl.WaitAsync(token);
 
-      return new SemLock(sem);
+      return rl;
+   }
+
+   /// <summary>
+   /// Gets a resource lock bound to the instance of a <see cref="SemaphoreSlim"/>
+   /// </summary>
+   /// <param name="sem">The <see cref="SemaphoreSlim"/> to create the resource lock for.</param>
+   /// <returns>A resource lock bound to the instance of a <see cref="SemaphoreSlim"/></returns>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+   public static SemaphoreSlimResourceLock GetResourceLock(this SemaphoreSlim sem)
+   {
+      return new SemaphoreSlimResourceLock(sem);
    }
 }

@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
    <PropertyGroup>
-      <TargetFramework>net8.0</TargetFramework>
       <ImplicitUsings>enable</ImplicitUsings>
       <Nullable>enable</Nullable>
       <IsPackable>false</IsPackable>
@@ -10,6 +9,9 @@
       <RootNamespace>Jcd.Threading.Tests</RootNamespace>
       <IsPackable>false</IsPackable>
       <LangVersion>latest</LangVersion>
+      <OutputType>Library</OutputType>
+      <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+      <DefineConstants Condition="'$(TargetFramework)' == 'net8.0'">$(DefineConstants);REF_STRUCT_SUPPORT</DefineConstants>
    </PropertyGroup>
 
    <ItemGroup>
