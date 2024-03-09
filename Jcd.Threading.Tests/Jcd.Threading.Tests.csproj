@@ -10,8 +10,8 @@
       <IsPackable>false</IsPackable>
       <LangVersion>latest</LangVersion>
       <OutputType>Library</OutputType>
-      <TargetFrameworks>net7.0;net462</TargetFrameworks>
-      <DefineConstants Condition="'$(TargetFramework)' == 'net7.0'">$(DefineConstants);REF_STRUCT_SUPPORT</DefineConstants>
+      <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+      <DefineConstants Condition="'$(TargetFramework)' == 'net8.0'">$(DefineConstants);REF_STRUCT_SUPPORT</DefineConstants>
    </PropertyGroup>
 
    <ItemGroup>
