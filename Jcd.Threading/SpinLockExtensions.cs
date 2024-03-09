@@ -18,6 +18,7 @@ internal static class SpinLockExtensions
    /// <param name="spinLock">The <see cref="SpinLock"/> to use for locking.</param>
    /// <param name="action">The action to perform</param>
    /// <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static void Lock(this ref SpinLock spinLock, Action action, bool useMemoryBarrierOnExit = false)
    {
       var lockTaken = false;
@@ -40,6 +41,7 @@ internal static class SpinLockExtensions
    /// <param name="spinLock">The <see cref="SpinLock"/> to use for locking.</param>
    /// <param name="action">The action to perform</param>
    /// <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
+   [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static Task LockAsync(this ref SpinLock spinLock, Action action, bool useMemoryBarrierOnExit = false)
    {
       var lockTaken = false;
@@ -61,7 +63,6 @@ internal static class SpinLockExtensions
    #region requires ref struct support
 
    #if REF_STRUCT_SUPPORT
-
    /// <summary>
    /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
    /// </summary>

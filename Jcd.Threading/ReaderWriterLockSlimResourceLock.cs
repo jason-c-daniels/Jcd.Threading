@@ -58,6 +58,7 @@ public class ReaderWriterLockSlimResourceLock
    {
       if (token.IsCancellationRequested) return false;
       Wait();
+
       return true;
    }
 

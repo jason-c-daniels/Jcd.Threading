@@ -5,6 +5,8 @@
 // ReSharper disable HeapView.ObjectAllocation.Evident
 
 using Jcd.Threading.SynchronizedValues;
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable IdentifierTypo
 
 namespace Jcd.Threading.Examples;
 

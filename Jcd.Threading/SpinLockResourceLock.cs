@@ -3,13 +3,13 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+// ReSharper disable EmptyNamespace
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedMember.Global
 
 namespace Jcd.Threading;
 
 #if REF_STRUCT_SUPPORT
-
 /// <summary>
 /// Acquires a lock on the <see cref="SpinLock"/> it was created with.
 /// </summary>
@@ -150,7 +150,7 @@ public ref struct SpinLockResourceLock
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    private void ReleaseLock()
    {
-      IsLocked   = false;
+      IsLocked = false;
       IsReleased = true;
    }
 
@@ -177,7 +177,7 @@ public ref struct SpinLockResourceLock
          throw new
             InvalidOperationException($"{nameof(BeginWait)} may not be waited on twice in a row, without first calling Release."
                                      );
-      IsWaiting  = true;
+      IsWaiting = true;
       IsReleased = false;
    }
 

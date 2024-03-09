@@ -1,5 +1,6 @@
 ﻿using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable MethodHasAsyncOverload
 // ReSharper disable HeapView.ObjectAllocation
 // ReSharper disable HeapView.ClosureAllocation
 // ReSharper disable HeapView.DelegateAllocation
@@ -72,7 +73,7 @@ public class TicketLockResourceLockTests
       are.WaitOne();
       using var ticket = tl.Lock(cts.Token);
       var       sw     = new SpinWait();
-      while (!done.Value) 
+      while (!done.Value)
          sw.SpinOnce();
 
       Assert.True(ticket.IsCanceled);
@@ -163,7 +164,7 @@ public class TicketLockResourceLockTests
       are.WaitOne();
       using var ticket = await tl.LockAsync(cts.Token);
       var       sw     = new SpinWait();
-      while (!done.Value) 
+      while (!done.Value)
          sw.SpinOnce();
       Thread.Sleep(150);
       Assert.True(ticket.IsCanceled);
