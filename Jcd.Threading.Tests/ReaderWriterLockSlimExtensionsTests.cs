@@ -38,13 +38,15 @@ public class ReaderWriterLockSlimExtensionsTests
    [InlineData(ReaderWriterLockSlimIntent.Read)]
    [InlineData(ReaderWriterLockSlimIntent.Write)]
    [InlineData(ReaderWriterLockSlimIntent.UpgradeableRead)]
-   public void Lock_With_CancellationToken_Holds_The_Lock_With_The_Provided_Method_And_Releases_It(ReaderWriterLockSlimIntent intent)
+   public void Lock_With_CancellationToken_Holds_The_Lock_With_The_Provided_Method_And_Releases_It(
+      ReaderWriterLockSlimIntent intent
+   )
    {
       ReaderWriterLockSlim        rwls = new();
       ReaderWriterLockSlimIntent? lockType;
-      ReaderWriterLockSlimIntent? expectedLockType = intent;
-      CancellationTokenSource     cts              = new ();
-      using (rwls.Lock(intent, cts.Token)) lockType           = GetIntent(rwls);
+      ReaderWriterLockSlimIntent? expectedLockType  = intent;
+      CancellationTokenSource     cts               = new();
+      using (rwls.Lock(intent, cts.Token)) lockType = GetIntent(rwls);
 
       Assert.NotNull(lockType);
       Assert.Equal(expectedLockType, lockType);
@@ -61,13 +63,13 @@ public class ReaderWriterLockSlimExtensionsTests
       ReaderWriterLockSlim        rwls = new();
       ReaderWriterLockSlimIntent? lockType;
       ReaderWriterLockSlimIntent? expectedLockType             = intent;
-      CancellationTokenSource     cts                          = new ();
+      CancellationTokenSource     cts                          = new();
       using (await rwls.LockAsync(intent, cts.Token)) lockType = GetIntent(rwls);
 
       Assert.NotNull(lockType);
       Assert.Equal(expectedLockType, lockType);
    }
-   
+
    private static ReaderWriterLockSlimIntent? GetIntent(ReaderWriterLockSlim rwls)
    {
       if (rwls.IsUpgradeableReadLockHeld) return ReaderWriterLockSlimIntent.UpgradeableRead;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,7 +45,7 @@ public sealed class ItemProcessor<TItem> : ThreadWrapper
     , int            idleAfterEmptyQueueCount = 15
     , ThreadPriority priority                 = ThreadPriority.Normal
     , ApartmentState apartmentState           = ApartmentState.Unknown
-   ) : base(false
+   ) : base(autoStart
           , name
           , useBackgroundThread
           , timeToYieldInMs
@@ -71,7 +72,7 @@ public sealed class ItemProcessor<TItem> : ThreadWrapper
       {
          case true when TryPeek(token, out var item):
             action(item);
-            Dequeue(token);
+            Dequeue();
 
             break;
       }
@@ -156,13 +157,10 @@ public sealed class ItemProcessor<TItem> : ThreadWrapper
       ExitIdleState();
    }
 
-   private void Dequeue(CancellationToken cancellationSource)
+   private void Dequeue()
    {
       using (GetQueueLock())
       {
-         if (cancellationSource.IsCancellationRequested)
-            return;
-
          if (itemQueue.Count == 0)
             return;
 
@@ -170,7 +168,14 @@ public sealed class ItemProcessor<TItem> : ThreadWrapper
       }
    }
 
-   private IResourceLock GetQueueLock() { return queueSem.Lock(CancellationToken); }
+   private IResourceLock GetQueueLock()
+   {
+      #if DEBUG
+      StackTrace st = new();
+      Console.WriteLine(st.ToString());
+      #endif
+      return queueSem.Lock(CancellationToken);
+   }
 
    private async Task<IResourceLock> GetQueueLockAsync() { return await queueSem.LockAsync(CancellationToken); }
 
@@ -204,18 +209,8 @@ public sealed class ItemProcessor<TItem> : ThreadWrapper
    {
       if (!disposing) return;
 
-      try
-      {
-         using (GetQueueLock())
-         {
-            Stop();
-            Clear();
-         }
-      }
-      catch
-      {
-         // intentionally ignored
-      }
+      Stop();
+      Clear();
 
       base.Dispose(disposing);
       queueSem.Dispose();

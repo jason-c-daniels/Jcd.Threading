@@ -1,4 +1,9 @@
-﻿namespace Jcd.Threading.Tests;
+﻿// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.BoxingAllocation
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.ObjectAllocation
+
+namespace Jcd.Threading.Tests;
 
 public class ResourceLockBaseTests
 {
@@ -36,68 +41,60 @@ public class ResourceLockBaseTests
    public void LockAcquired_Throws_InvalidOperationException_When_Called_Twice_In_A_Row()
    {
       var sut = Harness.Create()
-                      .CallBeginWait()
-                      .CallLockAcquired()
-                      .CallLockAcquired()
-                      .Build();
+                       .CallBeginWait()
+                       .CallLockAcquired()
+                       .CallLockAcquired()
+                       .Build();
       Assert.Throws<InvalidOperationException>(() => sut.Wait());
    }
-   
-#region Harness
-public class Harness : ResourceLockBase
-{
-   private readonly List<Action> waitActionSequence = new();
 
-   public static Builder Create()
+   #region Harness
+
+   public class Harness : ResourceLockBase
    {
-      return new Builder();
-   }
-   
-   public override bool Wait()
-   {
-      foreach (var action in waitActionSequence)
+      private readonly List<Action> waitActionSequence = [];
+
+      public static Builder Create() { return new Builder(); }
+
+      public override bool Wait()
       {
-         action?.Invoke();
+         foreach (var action in waitActionSequence) action.Invoke();
+
+         return true;
       }
-      return true;
-   }
 
-   public override bool Wait(CancellationToken token)
-   {
-      return Wait();
-   }
+      public override bool Wait(CancellationToken token) { return Wait(); }
 
-   public override Task<bool> WaitAsync()
-   {
-      return Task.FromResult(Wait());
-   }
+      public override Task<bool> WaitAsync() { return Task.FromResult(Wait()); }
 
-   public override Task<bool> WaitAsync(CancellationToken token)
-   {
-      return Task.FromResult(Wait(token));
-   }
+      public override Task<bool> WaitAsync(CancellationToken token) { return Task.FromResult(Wait(token)); }
 
-   public override void Release() {  }
+      public override void Release() { }
 
-   public override void Dispose() {  }
+      #pragma warning disable CA1816
+      public override void Dispose() { }
+      #pragma warning restore CA1816
 
-   public class Builder
-   {
-      private readonly Harness harness = new ();
-      public Builder AddAction(Action action)
+      public class Builder
       {
-         harness.waitActionSequence.Add(action);
-         return this;
-      }
-      
-      public Builder CallBeginWait()    => AddAction(() => harness.BeginWait());
-      public Builder CallLockAcquired() => AddAction(() => harness.LockAcquired());
-      public Builder CallEndWait()      => AddAction(() => harness.EndWait());
-      
-      public Builder CallRelease()      => AddAction(() => harness.Release());
-      public Harness Build()            => harness;
+         private readonly Harness harness = new();
 
+         public Builder AddAction(Action action)
+         {
+            harness.waitActionSequence.Add(action);
+
+            return this;
+         }
+
+         public Builder CallBeginWait() { return AddAction(() => harness.BeginWait()); }
+
+         public Builder CallLockAcquired() { return AddAction(() => harness.LockAcquired()); }
+
+         public Builder CallEndWait() { return AddAction(() => harness.EndWait()); }
+
+         public Harness Build() { return harness; }
+      }
    }
-}
-#endregion
+
+   #endregion
 }

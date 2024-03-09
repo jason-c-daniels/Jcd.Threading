@@ -52,7 +52,8 @@ public static class SemaphoreSlimExtensions
       var rl = GetResourceLock(sem);
       await rl.WaitAsync();
 
-      return rl;   }
+      return rl;
+   }
 
    /// <summary>
    /// Asynchronously waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.

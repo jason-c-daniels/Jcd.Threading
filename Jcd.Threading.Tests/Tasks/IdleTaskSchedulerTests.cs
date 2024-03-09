@@ -80,12 +80,9 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
       using var scheduler = new IdleTaskScheduler(4);
 
       // run some faulting tasks.
-      List<Task> tasks = new List<Task>();
+      List<Task> tasks = [];
 
-      for (var i = 0; i < 6; i++)
-      {
-         tasks.Add(RunAFaultingTaskAndWait(scheduler));
-      }
+      for (var i = 0; i < 6; i++) tasks.Add(RunAFaultingTaskAndWait(scheduler));
 
       await Task.WhenAll(tasks);
       var workRan = false;
@@ -111,11 +108,7 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
 
    private static async Task RunAFaultingTaskAndWait(TaskScheduler scheduler)
    {
-      var task = scheduler.Run(() =>
-                               {
-                                  //Thread.Sleep(100);
-                                  throw new ArgumentException("dummy exception");
-                               });
+      var task = scheduler.Run(() => throw new ArgumentException("dummy exception"));
 
       // wait for task to end, this ignores the exception we're throwing.
       // awaiting the task will propagate the exception

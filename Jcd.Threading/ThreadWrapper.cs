@@ -195,8 +195,6 @@ public abstract class ThreadWrapper : IDisposable
    {
       var meaningfulWorkPerformed = PerformWork(token);
 
-      if (isIdleDetectionDisabled) return;
-
       if (meaningfulWorkPerformed)
       {
          noWorkCounter = 0;
@@ -206,6 +204,7 @@ public abstract class ThreadWrapper : IDisposable
          noWorkCounter++;
 
          if (IdleAfterNoWorkDoneCount >= noWorkCounter) return;
+         if (isIdleDetectionDisabled) return;
          EnterIdleState();
          noWorkCounter = 0;
       }
@@ -246,7 +245,7 @@ public abstract class ThreadWrapper : IDisposable
    private readonly SemaphoreSlim           idleSem            = new(1, 1);
 
    private readonly ReaderWriterLockSlimValue<bool> isPaused = new();
-   private readonly ReaderWriterLockSlimValue<bool> isIdle   = new(true);
+   private readonly ReaderWriterLockSlimValue<bool> isIdle   = new();
    private readonly bool                            isIdleDetectionDisabled;
 
    /// <summary>
@@ -364,7 +363,7 @@ public abstract class ThreadWrapper : IDisposable
          // So let's not write more code than we need.
       }
    }
-   
+
    #endregion
 
    #region Public Thread Management

@@ -153,7 +153,7 @@ public class IdleTaskScheduler
       Console.WriteLine(message);
    }
    #endif
-   
+
    #endregion
 
    #region Dispose pattern

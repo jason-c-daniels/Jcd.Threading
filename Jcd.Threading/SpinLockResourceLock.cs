@@ -150,7 +150,7 @@ public ref struct SpinLockResourceLock
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    private void ReleaseLock()
    {
-      IsLocked = false;
+      IsLocked   = false;
       IsReleased = true;
    }
 
@@ -177,7 +177,7 @@ public ref struct SpinLockResourceLock
          throw new
             InvalidOperationException($"{nameof(BeginWait)} may not be waited on twice in a row, without first calling Release."
                                      );
-      IsWaiting = true;
+      IsWaiting  = true;
       IsReleased = false;
    }
 

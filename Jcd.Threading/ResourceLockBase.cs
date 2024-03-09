@@ -84,7 +84,8 @@ public abstract class ResourceLockBase : IResourceLock
    {
       if (IsLocked || IsWaiting)
          throw new
-            InvalidOperationException($"{nameof(BeginWait)} may not be waited on twice in a row, without first calling Release.");
+            InvalidOperationException($"{nameof(BeginWait)} may not be waited on twice in a row, without first calling Release."
+                                     );
       IsWaiting  = true;
       IsReleased = false;
    }

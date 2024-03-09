@@ -70,7 +70,7 @@ public class ThreadWrapperTests
       Thread.Sleep(100);
       Assert.True(t.IsStarted);
    }
-   
+
    [Fact]
    public void Start_Can_Be_Called_Multiple_Times_In_A_Row()
    {
@@ -84,6 +84,7 @@ public class ThreadWrapperTests
       t.Start();
       Assert.True(t.IsStarted);
    }
+
    [Fact]
    public void Stop_Shuts_Down_The_Thread_Then_Start_Restarts_It_With_A_New_Thread()
    {

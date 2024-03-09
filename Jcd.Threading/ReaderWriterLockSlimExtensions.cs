@@ -151,16 +151,16 @@ public static class ReaderWriterLockSlimExtensions
    public static async Task<ReaderWriterLockSlimResourceLock> LockAsync(
       this ReaderWriterLockSlim  rwls
     , ReaderWriterLockSlimIntent intent
-    , CancellationToken         token
+    , CancellationToken          token
    )
    {
       var rl = rwls.GetResourceLock(intent);
-      
+
       await rl.WaitAsync(token);
 
       return rl;
    }
-   
+
    /// <summary>
    /// Gets a resource lock bound to the instance of a <see cref="SemaphoreSlim"/>
    /// </summary>
