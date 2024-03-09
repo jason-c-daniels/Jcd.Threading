@@ -36,11 +36,11 @@
    </PropertyGroup>
 
    <PropertyGroup Label="Debug Build Configuration" Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>..\docs\Jcd.Threading.xml</DocumentationFile>
+      <DocumentationFile Condition="'$(TargetFramework)' == 'net7.0'">..\docs\api\Jcd.Threading.xml</DocumentationFile>
    </PropertyGroup>
 
    <PropertyGroup Label="Release Build Configuration" Condition=" '$(Configuration)' == 'Release' ">
-      <DocumentationFile>..\docs\Jcd.Threading.xml</DocumentationFile>
+      <DocumentationFile Condition="'$(TargetFramework)' == 'net7.0'">..\docs\api\Jcd.Threading.xml</DocumentationFile>
       <PlatformTarget>AnyCPU</PlatformTarget>
    </PropertyGroup>
 

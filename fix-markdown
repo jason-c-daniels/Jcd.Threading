@@ -1,0 +1,5 @@
+#!/bin/bash
+pushd "$(git rev-parse --show-toplevel)/docs" || exit
+find . -type f -name '*.md' -exec sed -i 's/[ ]+(?:$)//g' {} \;
+# shellcheck disable=SC2164
+popd
