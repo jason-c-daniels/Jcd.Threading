@@ -77,11 +77,17 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
    public async Task Scheduled_Work_That_Throws_An_Exception_Does_Not_Kill_The_Thread()
    {
       // ensure we have only one thread. This will make our verification trivial.
-      using var scheduler = new IdleTaskScheduler(1);
+      using var scheduler = new IdleTaskScheduler(4);
 
       // run some faulting tasks.
-      for (var i = 0; i < 1; i++)
-         await RunAFaultingTaskAndWait(scheduler);
+      List<Task> tasks = new List<Task>();
+
+      for (var i = 0; i < 6; i++)
+      {
+         tasks.Add(RunAFaultingTaskAndWait(scheduler));
+      }
+
+      await Task.WhenAll(tasks);
       var workRan = false;
       await scheduler.Run(() => { workRan = true; });
       Assert.True(workRan);
@@ -105,9 +111,17 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
 
    private static async Task RunAFaultingTaskAndWait(TaskScheduler scheduler)
    {
-      var task = scheduler.Run(() => throw new ArgumentException("dummy exception"));
+      var task = scheduler.Run(() =>
+                               {
+                                  //Thread.Sleep(100);
+                                  throw new ArgumentException("dummy exception");
+                               });
 
       // wait for task to end, this ignores the exception we're throwing.
+      // awaiting the task will propagate the exception
+      // and end the test. We don't want that.
+      // we want to check on the status of the scheduler
+      // after the exception.
       while (!task.IsCompleted) await Task.Yield();
    }
 }

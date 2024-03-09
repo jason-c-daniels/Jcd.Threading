@@ -73,7 +73,7 @@
             synchronized appropriately. This type only synchronizes access to internal data.
             </remarks>
         </member>
-        <member name="M:Jcd.Threading.ItemProcessor`1.#ctor(System.Action{`0},System.Boolean,System.String,System.Boolean,System.Boolean,System.Int32,System.Int32,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
+        <member name="M:Jcd.Threading.ItemProcessor`1.#ctor(System.Action{`0},System.Boolean,System.String,System.Boolean,System.Int32,System.Int32,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
             <summary>
             Constructs a <see cref="T:Jcd.Threading.ItemProcessor`1"/>
             </summary>
@@ -81,11 +81,10 @@
             <param name="name">The name of this ItemProcessor, propagated to the underlying thread.</param>
             <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
             <param name="autoStart">Indicates if the thread should be automatically started.</param>
-            <param name="timeToYieldInMs">Indicates the amount of time to yiel when yielded each pas through the main loop.</param>
+            <param name="timeToYieldInMs">Indicates the amount of time to yield pass through the main loop. Only positive values will cause a yield.</param>
             <param name="idleAfterEmptyQueueCount">the number of iterations with no items in the queue before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
             <param name="priority">The priority to start the processing thread at.</param>
             <param name="apartmentState">The apartment state for the underlying thread.</param>
-            <param name="yieldEachCpuCycle">Indicates if CPU time will be yielded each pass through the main loop.</param>
         </member>
         <member name="M:Jcd.Threading.ItemProcessor`1.PerformWork(System.Threading.CancellationToken)">
             <summary>
@@ -177,7 +176,7 @@
              </code>
              </remarks>
         </member>
-        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,System.Threading.CancellationToken,Jcd.Threading.ReaderWriterLockSlimIntent)">
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent,System.Threading.CancellationToken)">
             <summary>
             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
             calls the appropriate exit method on the lock during disposal. 
@@ -194,8 +193,9 @@
             <code>
             // example usage.
             var rwls = new ReaderWriterLockSlim();
+            var cts = new CancellationTokenSource();
             
-            using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
+            using (rwls.Lock(ReaderWriterLockSlimIntent.Write, cts.Token))
             {
                // write to a critical set of values here.
                // ..
@@ -228,7 +228,7 @@
              </code>
              </remarks>
         </member>
-        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,System.Threading.CancellationToken,Jcd.Threading.ReaderWriterLockSlimIntent)">
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent,System.Threading.CancellationToken)">
             <summary>
             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
             calls the appropriate exit method on the lock during disposal. 
@@ -245,8 +245,9 @@
             <code>
             // example usage.
             var rwls = new ReaderWriterLockSlim();
+            var cts = new CancellationTokenSource();
             
-            using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
+            using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write, cts.Token))
             {
                // write to a critical set of values here.
                // ..
@@ -1600,18 +1601,17 @@
             Resume will suspend the thread operations at the appropriate time in the main loop.
             </remarks>
         </member>
-        <member name="M:Jcd.Threading.ThreadWrapper.#ctor(System.Boolean,System.String,System.Boolean,System.Boolean,System.Int32,System.Int32,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
+        <member name="M:Jcd.Threading.ThreadWrapper.#ctor(System.Boolean,System.String,System.Boolean,System.Int32,System.Int32,System.Threading.ThreadPriority,System.Threading.ApartmentState)">
             <summary>
             Constructs a <see cref="T:Jcd.Threading.ThreadWrapper"/>
             </summary>
             <param name="name">The name of this <see cref="T:Jcd.Threading.ThreadWrapper"/>, propagated to the underlying thread as "{name}.Thread".</param>
             <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
             <param name="autoStart">Indicates if the thread should be automatically started in the constructor.</param>
-            <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop</param>
+            <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop. Only positive numbers will trigger a yield.</param>
             <param name="idleAfterNoWorkDoneCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
             <param name="priority">The priority to start the processing thread at.</param>
             <param name="apartmentState">The apartment state for the underlying thread.</param>
-            <param name="yieldEachCycle">A flag indicating if CPU time is yielded each pass through the main loop.</param>
             <remarks>
             <para>
             NOTE: The underlying thread is not created until the first call to `Start` and will change when calling `Stop`
@@ -1770,6 +1770,12 @@
             <summary>
             Causes the thread to exit the paused state. This must be called by
             an external thread.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ThreadWrapper.CancelAllProcessing">
+            <summary>
+            Cancels the internally managed <see cref="P:Jcd.Threading.ThreadWrapper.CancellationToken"/>
+            and ignores any exceptions. 
             </summary>
         </member>
         <member name="M:Jcd.Threading.ThreadWrapper.Pause">

@@ -65,8 +65,9 @@ public static class ReaderWriterLockSlimExtensions
    /// <code>
    /// // example usage.
    /// var rwls = new ReaderWriterLockSlim();
+   /// var cts = new CancellationTokenSource();
    /// 
-   /// using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
+   /// using (rwls.Lock(ReaderWriterLockSlimIntent.Write, cts.Token))
    /// {
    ///    // write to a critical set of values here.
    ///    // ..
@@ -76,8 +77,8 @@ public static class ReaderWriterLockSlimExtensions
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static IDisposable Lock(
       this ReaderWriterLockSlim  rwls
+    , ReaderWriterLockSlimIntent intent
     , CancellationToken          token
-    , ReaderWriterLockSlimIntent intent = ReaderWriterLockSlimIntent.Read
    )
    {
       var rl = rwls.GetResourceLock(intent);
@@ -137,8 +138,9 @@ public static class ReaderWriterLockSlimExtensions
    /// <code>
    /// // example usage.
    /// var rwls = new ReaderWriterLockSlim();
+   /// var cts = new CancellationTokenSource();
    /// 
-   /// using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
+   /// using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write, cts.Token))
    /// {
    ///    // write to a critical set of values here.
    ///    // ..
@@ -148,16 +150,17 @@ public static class ReaderWriterLockSlimExtensions
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static async Task<ReaderWriterLockSlimResourceLock> LockAsync(
       this ReaderWriterLockSlim  rwls
-    , CancellationToken          token
-    , ReaderWriterLockSlimIntent intent = ReaderWriterLockSlimIntent.Read
+    , ReaderWriterLockSlimIntent intent
+    , CancellationToken         token
    )
    {
       var rl = rwls.GetResourceLock(intent);
+      
       await rl.WaitAsync(token);
 
       return rl;
    }
-
+   
    /// <summary>
    /// Gets a resource lock bound to the instance of a <see cref="SemaphoreSlim"/>
    /// </summary>
@@ -167,7 +170,7 @@ public static class ReaderWriterLockSlimExtensions
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static ReaderWriterLockSlimResourceLock GetResourceLock(
       this ReaderWriterLockSlim  rwls
-    , ReaderWriterLockSlimIntent intent = ReaderWriterLockSlimIntent.Read
+    , ReaderWriterLockSlimIntent intent
    )
    {
       return new ReaderWriterLockSlimResourceLock(rwls, intent);

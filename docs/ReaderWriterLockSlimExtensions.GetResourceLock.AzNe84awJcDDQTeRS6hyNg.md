@@ -6,7 +6,7 @@
 Gets a resource lock bound to the instance of a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim')
 
 ```csharp
-public static Jcd.Threading.ReaderWriterLockSlimResourceLock GetResourceLock(this System.Threading.ReaderWriterLockSlim rwls, Jcd.Threading.ReaderWriterLockSlimIntent intent=Jcd.Threading.ReaderWriterLockSlimIntent.Read);
+public static Jcd.Threading.ReaderWriterLockSlimResourceLock GetResourceLock(this System.Threading.ReaderWriterLockSlim rwls, Jcd.Threading.ReaderWriterLockSlimIntent intent);
 ```
 #### Parameters
 

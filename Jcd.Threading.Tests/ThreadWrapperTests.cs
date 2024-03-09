@@ -40,7 +40,6 @@ public class ThreadWrapperTests
       using var t = new ThreadWrapperHarness(autoStart: autoStart
                                            , name: name
                                            , useBackgroundThread: useBackgroundThread
-                                           , yieldEachCycle: yieldEachCycle
                                            , timeToYieldInMs: timeToYieldInMs
                                            , idleAfterNoWorkDoneCount: idleAfterNoWorkDoneCount
                                            , priority: priority
@@ -64,19 +63,32 @@ public class ThreadWrapperTests
    [Fact]
    public void Start_Creates_And_Starts_The_Thread()
    {
-      var t = new ThreadWrapperHarness(autoStart: false);
+      using var t = new ThreadWrapperHarness(autoStart: false);
       Assert.Null(t.Thread);
       t.Start();
       Assert.NotNull(t.Thread);
       Thread.Sleep(100);
       Assert.True(t.IsStarted);
    }
-
+   
+   [Fact]
+   public void Start_Can_Be_Called_Multiple_Times_In_A_Row()
+   {
+      using var t = new ThreadWrapperHarness(autoStart: false);
+      Assert.Null(t.Thread);
+      t.Start();
+      Assert.NotNull(t.Thread);
+      Thread.Sleep(100);
+      t.Start();
+      t.Start();
+      t.Start();
+      Assert.True(t.IsStarted);
+   }
    [Fact]
    public void Stop_Shuts_Down_The_Thread_Then_Start_Restarts_It_With_A_New_Thread()
    {
-      SpinWait sw = new();
-      var      t  = new ThreadWrapperHarness(autoStart: false);
+      SpinWait  sw = new();
+      using var t  = new ThreadWrapperHarness(autoStart: false);
       Assert.Null(t.Thread);
       t.Start();
       Thread.Sleep(100);
@@ -95,8 +107,8 @@ public class ThreadWrapperTests
    [Fact]
    public void Pause_Causes_Thread_To_Become_Paused_And_Resume_Resumes_It()
    {
-      SpinWait sw = new();
-      var      t  = new ThreadWrapperHarness();
+      SpinWait  sw = new();
+      using var t  = new ThreadWrapperHarness(timeToYieldInMs: 0);
       while (!t.IsStarted) sw.SpinOnce();
       t.Pause();
       t.Pause(); // ensure it behaves fine with multiple successive calls.
@@ -113,14 +125,14 @@ public class ThreadWrapperTests
    {
       SpinWait sw        = new();
       var      callCount = 0;
-      var t = new ThreadWrapperHarness(() =>
-                                       {
-                                          callCount++;
+      using var t = new ThreadWrapperHarness(() =>
+                                             {
+                                                callCount++;
 
-                                          return callCount % 5 != 0;
-                                       }
-                                     , idleAfterNoWorkDoneCount: 0
-                                      );
+                                                return callCount % 5 != 0;
+                                             }
+                                           , idleAfterNoWorkDoneCount: 0
+                                            );
       while (!t.IsStarted) sw.SpinOnce();
       t.Pause();
       Thread.Sleep(100);

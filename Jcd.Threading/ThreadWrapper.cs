@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 using Jcd.Threading.SynchronizedValues;
@@ -34,11 +35,10 @@ public abstract class ThreadWrapper : IDisposable
    /// <param name="name">The name of this <see cref="ThreadWrapper"/>, propagated to the underlying thread as "{name}.Thread".</param>
    /// <param name="useBackgroundThread">Indicates if the processing thread is a background thread.</param>
    /// <param name="autoStart">Indicates if the thread should be automatically started in the constructor.</param>
-   /// <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop</param>
+   /// <param name="timeToYieldInMs">The amount of CPU time to yield per cycle through the main loop. Only positive numbers will trigger a yield.</param>
    /// <param name="idleAfterNoWorkDoneCount">the number of iterations with no work before transitioning to the idle state. Set to -1 to disable idle state detection and transition.</param>
    /// <param name="priority">The priority to start the processing thread at.</param>
    /// <param name="apartmentState">The apartment state for the underlying thread.</param>
-   /// <param name="yieldEachCycle">A flag indicating if CPU time is yielded each pass through the main loop.</param>
    /// <remarks>
    /// <para>
    /// NOTE: The underlying thread is not created until the first call to `Start` and will change when calling `Stop`
@@ -52,20 +52,16 @@ public abstract class ThreadWrapper : IDisposable
       bool           autoStart                = true
     , string?        name                     = null
     , bool           useBackgroundThread      = true
-    , bool           yieldEachCycle           = true
     , int            timeToYieldInMs          = 15
     , int            idleAfterNoWorkDoneCount = 15
     , ThreadPriority priority                 = ThreadPriority.Normal
     , ApartmentState apartmentState           = ApartmentState.Unknown
    )
    {
-      if (yieldEachCycle && timeToYieldInMs < 1)
-         throw new ArgumentException("must be greater than or equal to 1", nameof(timeToYieldInMs));
-
       Name                     = name ?? $"{GetType().Name}";
       isIdleDetectionDisabled  = idleAfterNoWorkDoneCount < 0;
       UseBackgroundThread      = useBackgroundThread;
-      YieldEachCycle           = yieldEachCycle;
+      YieldEachCycle           = timeToYieldInMs > 0;
       TimeToYieldInMs          = timeToYieldInMs;
       IdleAfterNoWorkDoneCount = idleAfterNoWorkDoneCount;
       Priority                 = priority;
@@ -166,20 +162,17 @@ public abstract class ThreadWrapper : IDisposable
 
          do
          {
+            PauseWait(token);
+
+            if (token.IsCancellationRequested)
+               return;
+
             DoWorkAndIdleDetection(token);
 
             if (token.IsCancellationRequested)
                return;
 
             DoIdleOrYield(token);
-
-            if (token.IsCancellationRequested)
-               return;
-
-            PauseWait(token);
-
-            if (token.IsCancellationRequested)
-               return;
          }
          while (GetShouldContinue(token));
       }
@@ -289,9 +282,8 @@ public abstract class ThreadWrapper : IDisposable
    /// </summary>
    protected void PerformThreadStateCleanup()
    {
+      CancelAllProcessing();
       #if CANCEL_STATES
-      if (!cancellationSource.IsCancellationRequested)
-         cancellationSource.Cancel();
       if (IsIdle) ExitIdleState();
       if (IsPaused) ExitPausedState();
       #endif
@@ -353,6 +345,26 @@ public abstract class ThreadWrapper : IDisposable
       isPaused.Value = false;
    }
 
+   /// <summary>
+   /// Cancels the internally managed <see cref="CancellationToken"/>
+   /// and ignores any exceptions. 
+   /// </summary>
+   [ExcludeFromCodeCoverage]
+   protected void CancelAllProcessing()
+   {
+      try
+      {
+         if (!cancellationSource.IsCancellationRequested)
+            cancellationSource.Cancel();
+      }
+      catch
+      {
+         // With certain race conditions this is guaranteed.
+         // It also doesn't change how we proceed.
+         // So let's not write more code than we need.
+      }
+   }
+   
    #endregion
 
    #region Public Thread Management
@@ -385,8 +397,8 @@ public abstract class ThreadWrapper : IDisposable
    public void Stop()
    {
       if (!IsStarted) return;
-      if (!cancellationSource.IsCancellationRequested)
-         cancellationSource.Cancel();
+      IsStarted = false;
+      CancelAllProcessing();
    }
 
    #endregion
@@ -401,14 +413,7 @@ public abstract class ThreadWrapper : IDisposable
    {
       if (!disposing) return;
 
-      try
-      {
-         Stop();
-      }
-      catch
-      {
-         // intentionally ignored
-      }
+      Stop();
 
       isPaused.Dispose();
       isIdle.Dispose();
@@ -428,6 +433,7 @@ public abstract class ThreadWrapper : IDisposable
    /// <summary>
    /// finalizes the object.
    /// </summary>
+   [ExcludeFromCodeCoverage]
    ~ThreadWrapper() { Dispose(false); }
 
    #endregion

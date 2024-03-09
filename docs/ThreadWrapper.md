@@ -25,7 +25,7 @@ Resume will suspend the thread operations at the appropriate time in the main lo
 
 | Constructors | |
 | :--- | :--- |
-| [ThreadWrapper(bool, string, bool, bool, int, int, ThreadPriority, ApartmentState)](ThreadWrapper..ctor.P11YetUSK7Dh1ZnTbZWMNQ.md 'Jcd.Threading.ThreadWrapper.ThreadWrapper(bool, string, bool, bool, int, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') |
+| [ThreadWrapper(bool, string, bool, int, int, ThreadPriority, ApartmentState)](ThreadWrapper..ctor.yS0P2oMxyzToT2DfFJKAkA.md 'Jcd.Threading.ThreadWrapper.ThreadWrapper(bool, string, bool, int, int, System.Threading.ThreadPriority, System.Threading.ApartmentState)') | Constructs a [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') |
 
 | Properties | |
 | :--- | :--- |
@@ -46,6 +46,7 @@ Resume will suspend the thread operations at the appropriate time in the main lo
 | Methods | |
 | :--- | :--- |
 | [~ThreadWrapper()](ThreadWrapper.~ThreadWrapper().md 'Jcd.Threading.ThreadWrapper.~ThreadWrapper()') | finalizes the object. |
+| [CancelAllProcessing()](ThreadWrapper.CancelAllProcessing().md 'Jcd.Threading.ThreadWrapper.CancelAllProcessing()') | Cancels the internally managed [CancellationToken](ThreadWrapper.CancellationToken.md 'Jcd.Threading.ThreadWrapper.CancellationToken')<br/>and ignores any exceptions. |
 | [Dispose(bool)](ThreadWrapper.Dispose.07rvTSxJ7U5BNNbZhR87jQ.md 'Jcd.Threading.ThreadWrapper.Dispose(bool)') | Disposes of resources. |
 | [EnterIdleState()](ThreadWrapper.EnterIdleState().md 'Jcd.Threading.ThreadWrapper.EnterIdleState()') | Sets the thread into the idle state. |
 | [EnterPausedState()](ThreadWrapper.EnterPausedState().md 'Jcd.Threading.ThreadWrapper.EnterPausedState()') | Puts the thread into the Paused state. |

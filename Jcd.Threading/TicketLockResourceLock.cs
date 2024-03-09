@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -145,6 +146,12 @@ public sealed class TicketLockResourceLock : ResourceLockBase
       IsCanceled = true;
 
       // intentionally non-awaited.
+      RunCancellationWaitRoutine();
+   }
+
+   [ExcludeFromCodeCoverage]
+   private void RunCancellationWaitRoutine()
+   {
       #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
       if (ticketLock.NowServing < TicketId)
 

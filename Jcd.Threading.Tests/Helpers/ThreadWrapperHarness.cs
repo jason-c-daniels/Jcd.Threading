@@ -6,7 +6,6 @@ public class ThreadWrapperHarness
  , bool           autoStart                = true
  , string?        name                     = null
  , bool           useBackgroundThread      = true
- , bool           yieldEachCycle           = true
  , int            timeToYieldInMs          = 15
  , int            idleAfterNoWorkDoneCount = 15
  , ThreadPriority priority                 = ThreadPriority.Normal
@@ -14,7 +13,6 @@ public class ThreadWrapperHarness
 ) : ThreadWrapper(autoStart
                 , name
                 , useBackgroundThread
-                , yieldEachCycle
                 , timeToYieldInMs
                 , idleAfterNoWorkDoneCount
                 , priority

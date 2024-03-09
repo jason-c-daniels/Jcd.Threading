@@ -98,7 +98,8 @@ public class SemaphoreSlimResourceLock(SemaphoreSlim internalLock) : ResourceLoc
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public override void Release()
    {
-      internalLock.Release();
+      if (IsLocked)
+         internalLock.Release();
       ReleaseLock();
    }
 

@@ -18,7 +18,13 @@ public static class SemaphoreSlimExtensions
    /// <param name="sem">the semaphore to use.</param>
    /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static SemaphoreSlimResourceLock Lock(this SemaphoreSlim sem) { return sem.Lock(CancellationToken.None); }
+   public static SemaphoreSlimResourceLock Lock(this SemaphoreSlim sem)
+   {
+      var rl = GetResourceLock(sem);
+      rl.Wait();
+
+      return rl;
+   }
 
    /// <summary>
    /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
@@ -41,10 +47,12 @@ public static class SemaphoreSlimExtensions
    /// <param name="sem">the semaphore to use.</param>
    /// <returns>A <see cref="Task{T}"/> for an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static Task<SemaphoreSlimResourceLock> LockAsync(this SemaphoreSlim sem)
+   public static async Task<SemaphoreSlimResourceLock> LockAsync(this SemaphoreSlim sem)
    {
-      return sem.LockAsync(CancellationToken.None);
-   }
+      var rl = GetResourceLock(sem);
+      await rl.WaitAsync();
+
+      return rl;   }
 
    /// <summary>
    /// Asynchronously waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
