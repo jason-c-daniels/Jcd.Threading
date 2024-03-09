@@ -6,7 +6,7 @@
     <members>
         <member name="T:Jcd.Threading.IResourceLock">
             <summary>
-            Provides an interface for establishing and releasing locks on a resource.
+            Provides a mechanism for establishing and releasing locks on a resource.
             </summary>
         </member>
         <member name="P:Jcd.Threading.IResourceLock.IsWaiting">
@@ -146,19 +146,19 @@
         </member>
         <member name="T:Jcd.Threading.ReaderWriterLockSlimExtensions">
             <summary>
-            A set of extension methods to simplify using a <see cref="T:System.Threading.ReaderWriterLockSlim"/>
+            Provides extension methods to simplify using a <see cref="T:System.Threading.ReaderWriterLockSlim"/>
             to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,
             and EnterWrite+ExitWrite are called.
             </summary>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
              <summary>
-             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
              calls the appropriate exit method on the lock during disposal. 
              </summary>
              <param name="rwls">The lock to acquire and release.</param>
              <param name="intent">The type of lock being acquired. By default this is a Read</param>
-             <returns>the IDisposable to release the resources.</returns>
+             <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
              <remarks>
              <para>
              This method is intended to be used with a using block.
@@ -178,13 +178,13 @@
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent,System.Threading.CancellationToken)">
             <summary>
-            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
             calls the appropriate exit method on the lock during disposal. 
             </summary>
             <param name="rwls">The lock to acquire and release.</param>
             <param name="intent">The type of lock being acquired. By default this is a Read</param>
             <param name="token">The <see cref="T:System.Threading.CancellationToken"/> to inspect for cancellation requests</param>
-            <returns>the IDisposable to release the resources.</returns>
+            <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
             <remarks>
             <para>
             This method is intended to be used with a using block.
@@ -205,12 +205,12 @@
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
              <summary>
-             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
              calls the appropriate exit method on the lock during disposal. 
              </summary>
              <param name="rwls">The lock to acquire and release.</param>
              <param name="intent">The type of lock being acquired. By default this is a Read</param>
-             <returns>the IDisposable to release the resources.</returns>
+             <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
              <remarks>
              <para>
              This method is intended to be used with a using block.
@@ -230,13 +230,13 @@
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent,System.Threading.CancellationToken)">
             <summary>
-            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
             calls the appropriate exit method on the lock during disposal. 
             </summary>
             <param name="rwls">The lock to acquire and release.</param>
             <param name="token">the <see cref="T:System.Threading.CancellationToken"/> to inspect for cancellation requests.</param>
             <param name="intent">The type of lock being acquired. By default this is a Read</param>
-            <returns>the IDisposable to release the resources.</returns>
+            <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
             <remarks>
             <para>
             This method is intended to be used with a using block.
@@ -337,7 +337,7 @@
         </member>
         <member name="T:Jcd.Threading.ResourceLockBase">
             <summary>
-            Provides a base mechanism for managing the state of an <see cref="T:Jcd.Threading.IResourceLock"/>
+            Provides a base mechanism for managing the state of <see cref="T:Jcd.Threading.IResourceLock"/> implementations.
             </summary>
         </member>
         <member name="P:Jcd.Threading.ResourceLockBase.IsWaiting">
@@ -390,40 +390,40 @@
         </member>
         <member name="T:Jcd.Threading.SemaphoreSlimExtensions">
             <summary>
-            A set of extension methods to simplify using a <see cref="T:System.Threading.SemaphoreSlim"/>
+            Provides extension methods to simplify using a <see cref="T:System.Threading.SemaphoreSlim"/>
             to ensure that Release is called for every Wait or WaitAsync. Useful for
             ensuring synchronized access to data for short lived operations.
             </summary>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim)">
             <summary>
-            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            Waits on the semaphore, and returns an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
-            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+            <returns>an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
             <summary>
-            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            Waits on the semaphore, and returns an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <param name="token">A cancellation token to use during the wait.</param>
-            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+            <returns>an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim)">
             <summary>
-            Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            Asynchronously waits on the semaphore, and returns an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.LockAsync(System.Threading.SemaphoreSlim,System.Threading.CancellationToken)">
             <summary>
-            Asynchronously waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            Asynchronously waits on the semaphore, and returns an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <param name="token">A cancellation token to use during the wait.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:Jcd.Threading.SemaphoreSlimResourceLock"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.GetResourceLock(System.Threading.SemaphoreSlim)">
             <summary>
@@ -503,18 +503,18 @@
         </member>
         <member name="M:Jcd.Threading.SpinLockExtensions.Lock(System.Threading.SpinLock@)">
             <summary>
-            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            Waits on the semaphore, and returns an <see cref="T:Jcd.Threading.SpinLockResourceLock"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
-            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+            <returns>an <see cref="T:Jcd.Threading.SpinLockResourceLock"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="M:Jcd.Threading.SpinLockExtensions.Lock(System.Threading.SpinLock@,System.Threading.CancellationToken)">
             <summary>
-            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            Waits on the semaphore, and returns an <see cref="T:Jcd.Threading.SpinLockResourceLock"/> that calls Release.
             </summary>
             <param name="sem">the semaphore to use.</param>
             <param name="token">A cancellation token to use during the wait.</param>
-            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+            <returns>an <see cref="T:Jcd.Threading.SpinLockResourceLock"/> that calls Release in its Dispose method.</returns>
         </member>
         <member name="M:Jcd.Threading.SpinLockExtensions.GetResourceLock(System.Threading.SpinLock@)">
             <summary>

@@ -3,7 +3,7 @@
 
 ## ResourceLockBase Class
 
-Provides a base mechanism for managing the state of an [IResourceLock](IResourceLock.md 'Jcd.Threading.IResourceLock')
+Provides a base mechanism for managing the state of [IResourceLock](IResourceLock.md 'Jcd.Threading.IResourceLock') implementations.
 
 ```csharp
 public abstract class ResourceLockBase :

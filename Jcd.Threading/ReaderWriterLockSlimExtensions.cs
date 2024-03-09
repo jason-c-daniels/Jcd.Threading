@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 namespace Jcd.Threading;
 
 /// <summary>
-/// A set of extension methods to simplify using a <see cref="ReaderWriterLockSlim"/>
+/// Provides extension methods to simplify using a <see cref="ReaderWriterLockSlim"/>
 /// to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,
 /// and EnterWrite+ExitWrite are called.
 /// </summary>
 public static class ReaderWriterLockSlimExtensions
 {
    /// <summary>
-   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns an IDisposable that
+   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns a <see cref="ReaderWriterLockSlimResourceLock"/> that
    /// calls the appropriate exit method on the lock during disposal. 
    /// </summary>
    /// <param name="rwls">The lock to acquire and release.</param>
    /// <param name="intent">The type of lock being acquired. By default this is a Read</param>
-   /// <returns>the IDisposable to release the resources.</returns>
+   /// <returns>the <see cref="ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
    /// <remarks>
    /// <para>
    /// This method is intended to be used with a using block.
@@ -38,7 +38,7 @@ public static class ReaderWriterLockSlimExtensions
    /// </code>
    /// </remarks>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static IDisposable Lock(
+   public static ReaderWriterLockSlimResourceLock Lock(
       this ReaderWriterLockSlim  rwls
     , ReaderWriterLockSlimIntent intent = ReaderWriterLockSlimIntent.Read
    )
@@ -50,13 +50,13 @@ public static class ReaderWriterLockSlimExtensions
    }
 
    /// <summary>
-   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns an IDisposable that
+   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns a <see cref="ReaderWriterLockSlimResourceLock"/> that
    /// calls the appropriate exit method on the lock during disposal. 
    /// </summary>
    /// <param name="rwls">The lock to acquire and release.</param>
    /// <param name="intent">The type of lock being acquired. By default this is a Read</param>
    /// <param name="token">The <see cref="CancellationToken"/> to inspect for cancellation requests</param>
-   /// <returns>the IDisposable to release the resources.</returns>
+   /// <returns>the <see cref="ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
    /// <remarks>
    /// <para>
    /// This method is intended to be used with a using block.
@@ -75,7 +75,7 @@ public static class ReaderWriterLockSlimExtensions
    /// </code>
    /// </remarks>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-   public static IDisposable Lock(
+   public static ReaderWriterLockSlimResourceLock Lock(
       this ReaderWriterLockSlim  rwls
     , ReaderWriterLockSlimIntent intent
     , CancellationToken          token
@@ -88,12 +88,12 @@ public static class ReaderWriterLockSlimExtensions
    }
 
    /// <summary>
-   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns an IDisposable that
+   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns a <see cref="ReaderWriterLockSlimResourceLock"/> that
    /// calls the appropriate exit method on the lock during disposal. 
    /// </summary>
    /// <param name="rwls">The lock to acquire and release.</param>
    /// <param name="intent">The type of lock being acquired. By default this is a Read</param>
-   /// <returns>the IDisposable to release the resources.</returns>
+   /// <returns>the <see cref="ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
    /// <remarks>
    /// <para>
    /// This method is intended to be used with a using block.
@@ -123,13 +123,13 @@ public static class ReaderWriterLockSlimExtensions
    }
 
    /// <summary>
-   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns an IDisposable that
+   /// Waits on a <see cref="ReaderWriterLockSlim"/> and returns a <see cref="ReaderWriterLockSlimResourceLock"/> that
    /// calls the appropriate exit method on the lock during disposal. 
    /// </summary>
    /// <param name="rwls">The lock to acquire and release.</param>
    /// <param name="token">the <see cref="CancellationToken"/> to inspect for cancellation requests.</param>
    /// <param name="intent">The type of lock being acquired. By default this is a Read</param>
-   /// <returns>the IDisposable to release the resources.</returns>
+   /// <returns>the <see cref="ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
    /// <remarks>
    /// <para>
    /// This method is intended to be used with a using block.

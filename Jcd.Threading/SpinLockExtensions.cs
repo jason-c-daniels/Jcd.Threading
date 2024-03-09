@@ -64,19 +64,19 @@ internal static class SpinLockExtensions
 
    #if REF_STRUCT_SUPPORT
    /// <summary>
-   /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
+   /// Waits on the semaphore, and returns an <see cref="SpinLockResourceLock"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>
-   /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
+   /// <returns>an <see cref="SpinLockResourceLock"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static SpinLockResourceLock Lock(this ref SpinLock sem) { return sem.Lock(CancellationToken.None); }
 
    /// <summary>
-   /// Waits on the semaphore, and returns an <see cref="IDisposable"/> that calls Release.
+   /// Waits on the semaphore, and returns an <see cref="SpinLockResourceLock"/> that calls Release.
    /// </summary>
    /// <param name="sem">the semaphore to use.</param>
    /// <param name="token">A cancellation token to use during the wait.</param>
-   /// <returns>an <see cref="IDisposable"/> that calls Release in its Dispose method.</returns>
+   /// <returns>an <see cref="SpinLockResourceLock"/> that calls Release in its Dispose method.</returns>
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public static SpinLockResourceLock Lock(this ref SpinLock sem, CancellationToken token)
    {

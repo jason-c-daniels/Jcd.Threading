@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Jcd.Threading;
 
 /// <summary>
-/// Provides a base mechanism for managing the state of an <see cref="IResourceLock"/>
+/// Provides a base mechanism for managing the state of <see cref="IResourceLock"/> implementations.
 /// </summary>
 public abstract class ResourceLockBase : IResourceLock
 {

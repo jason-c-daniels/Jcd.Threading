@@ -3,7 +3,7 @@
 
 ## SpinLockExtensions.Lock(this SpinLock) Method
 
-Waits on the semaphore, and returns an [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') that calls Release.
+Waits on the semaphore, and returns an [SpinLockResourceLock](SpinLockResourceLock.md 'Jcd.Threading.SpinLockResourceLock') that calls Release.
 
 ```csharp
 public static Jcd.Threading.SpinLockResourceLock Lock(this ref System.Threading.SpinLock sem);
@@ -18,4 +18,4 @@ the semaphore to use.
 
 #### Returns
 [SpinLockResourceLock](SpinLockResourceLock.md 'Jcd.Threading.SpinLockResourceLock')  
-an [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') that calls Release in its Dispose method.
+an [SpinLockResourceLock](SpinLockResourceLock.md 'Jcd.Threading.SpinLockResourceLock') that calls Release in its Dispose method.

@@ -3,7 +3,7 @@
 
 ## SemaphoreSlimExtensions.Lock(this SemaphoreSlim, CancellationToken) Method
 
-Waits on the semaphore, and returns an [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') that calls Release.
+Waits on the semaphore, and returns an [SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock') that calls Release.
 
 ```csharp
 public static Jcd.Threading.SemaphoreSlimResourceLock Lock(this System.Threading.SemaphoreSlim sem, System.Threading.CancellationToken token);
@@ -24,4 +24,4 @@ A cancellation token to use during the wait.
 
 #### Returns
 [SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock')  
-an [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') that calls Release in its Dispose method.
+an [SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock') that calls Release in its Dispose method.

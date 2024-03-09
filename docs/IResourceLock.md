@@ -3,7 +3,7 @@
 
 ## IResourceLock Interface
 
-Provides an interface for establishing and releasing locks on a resource.
+Provides a mechanism for establishing and releasing locks on a resource.
 
 ```csharp
 public interface IResourceLock :

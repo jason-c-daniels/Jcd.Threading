@@ -8,10 +8,10 @@ management of unstarted [System.Threading.Tasks.Task](https://docs.microsoft.com
 | Classes | |
 | :--- | :--- |
 | [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>') | Provides the ability to call a delegate on each item in an internally managed queue<br/>from its own background thread. |
-| [ReaderWriterLockSlimExtensions](ReaderWriterLockSlimExtensions.md 'Jcd.Threading.ReaderWriterLockSlimExtensions') | A set of extension methods to simplify using a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim')<br/>to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,<br/>and EnterWrite+ExitWrite are called. |
+| [ReaderWriterLockSlimExtensions](ReaderWriterLockSlimExtensions.md 'Jcd.Threading.ReaderWriterLockSlimExtensions') | Provides extension methods to simplify using a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim')<br/>to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,<br/>and EnterWrite+ExitWrite are called. |
 | [ReaderWriterLockSlimResourceLock](ReaderWriterLockSlimResourceLock.md 'Jcd.Threading.ReaderWriterLockSlimResourceLock') | Provides a mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim'). |
-| [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase') | Provides a base mechanism for managing the state of an [IResourceLock](IResourceLock.md 'Jcd.Threading.IResourceLock') |
-| [SemaphoreSlimExtensions](SemaphoreSlimExtensions.md 'Jcd.Threading.SemaphoreSlimExtensions') | A set of extension methods to simplify using a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim')<br/>to ensure that Release is called for every Wait or WaitAsync. Useful for<br/>ensuring synchronized access to data for short lived operations. |
+| [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase') | Provides a base mechanism for managing the state of [IResourceLock](IResourceLock.md 'Jcd.Threading.IResourceLock') implementations. |
+| [SemaphoreSlimExtensions](SemaphoreSlimExtensions.md 'Jcd.Threading.SemaphoreSlimExtensions') | Provides extension methods to simplify using a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim')<br/>to ensure that Release is called for every Wait or WaitAsync. Useful for<br/>ensuring synchronized access to data for short lived operations. |
 | [SemaphoreSlimResourceLock](SemaphoreSlimResourceLock.md 'Jcd.Threading.SemaphoreSlimResourceLock') | Provides a mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim'). |
 | [SpinLockExtensions](SpinLockExtensions.md 'Jcd.Threading.SpinLockExtensions') | Provides extension methods to aid in working with SpinLocks |
 | [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') | Provides basic thread management facilities such as Pause, Resume, Stop, Start and<br/>entering and exiting the idle state. |
@@ -24,7 +24,7 @@ management of unstarted [System.Threading.Tasks.Task](https://docs.microsoft.com
 
 | Interfaces | |
 | :--- | :--- |
-| [IResourceLock](IResourceLock.md 'Jcd.Threading.IResourceLock') | Provides an interface for establishing and releasing locks on a resource. |
+| [IResourceLock](IResourceLock.md 'Jcd.Threading.IResourceLock') | Provides a mechanism for establishing and releasing locks on a resource. |
 | [IResourceLockFactory&lt;T&gt;](IResourceLockFactory_T_.md 'Jcd.Threading.IResourceLockFactory<T>') | Provides a mechanism for acquiring resource locks bound to a specific instance of a synchronization primitive. |
 
 | Enums | |

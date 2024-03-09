@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Jcd.Threading;
 
 /// <summary>
-/// Provides an interface for establishing and releasing locks on a resource.
+/// Provides a mechanism for establishing and releasing locks on a resource.
 /// </summary>
 public interface IResourceLock : IDisposable
 {
