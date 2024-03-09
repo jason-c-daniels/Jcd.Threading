@@ -18,7 +18,7 @@ const int delay     = 125;
 var       taskCount = cpuCount;
 var       q         = 0;
 const int count     = 5000;
-
+Foo();
 await RunTicketLock();
 Console.ReadLine();
 await RunSemaphoreLock();
@@ -26,6 +26,21 @@ RunItemProcessorExample();
 await RunTaskSchedulerExamples();
 
 return;
+
+void Foo()
+{
+   MyStruct ms;
+   ms.MyCount = 10;
+   var mrs  = GitEet(ref ms);
+   var mrs2 = Geet(mrs);
+   Console.WriteLine($"{ms.MyCount} | {mrs.MyCount} | {mrs2.MyCount}");
+   ms.MyCount = 20;
+   Console.WriteLine($"{ms.MyCount} | {mrs.MyCount} | {mrs2.MyCount}");
+}
+
+MyRefStruct Geet(MyRefStruct mrs) { return mrs; }
+
+MyRefStruct GitEet(ref MyStruct ms) { return new MyRefStruct(ref ms); }
 
 async Task RunSemaphoreLock()
 {

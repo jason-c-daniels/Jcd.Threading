@@ -4,47 +4,46 @@ BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3155/23H2/2023Update/SunValley3
 12th Gen Intel Core i7-12700H, 1 CPU, 20 logical and 14 physical cores
 .NET SDK 8.0.102
   [Host]     : .NET 8.0.2 (8.0.224.6711), X64 RyuJIT AVX2
-  Job-SWTUPK : .NET 8.0.2 (8.0.224.6711), X64 RyuJIT AVX2
-  Job-VBTVTX : .NET Framework 4.8.1 (4.8.9181.0), X64 RyuJIT VectorSize=256
+  Job-TMZHUX : .NET 8.0.2 (8.0.224.6711), X64 RyuJIT AVX2
+  Job-AAPCYZ : .NET Framework 4.8.1 (4.8.9181.0), X64 RyuJIT VectorSize=256
 
-MaxIterationCount=10  MinIterationCount=5  WarmupCount=1  
+MaxIterationCount=11  MinIterationCount=9  WarmupCount=1  
 
 ```
-
-| Method                                 | Runtime              |      Mean |    Error |   StdDev | Ratio | RatioSD |
-|----------------------------------------|----------------------|----------:|---------:|---------:|------:|--------:|
-| DirectCallsToTicket_ReadValue          | .NET 8.0             |  13.36 ns | 0.111 ns | 0.017 ns |  1.00 |    0.00 |
-| DirectCallsToTicket_ReadValue          | .NET Framework 4.6.2 |  15.68 ns | 0.279 ns | 0.124 ns |  1.17 |    0.01 |
+| Method                                 | Runtime              | Mean      | Error    | StdDev   | Ratio | RatioSD |
+|--------------------------------------- |--------------------- |----------:|---------:|---------:|------:|--------:|
+| DirectCallsToTicket_ReadValue          | .NET 8.0             |  13.71 ns | 0.368 ns | 0.266 ns |  1.00 |    0.00 |
+| DirectCallsToTicket_ReadValue          | .NET Framework 4.6.2 |  17.83 ns | 1.090 ns | 0.788 ns |  1.30 |    0.07 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToTicket_WriteValue         | .NET 8.0             |  13.49 ns | 0.242 ns | 0.063 ns |  1.00 |    0.00 |
-| DirectCallsToTicket_WriteValue         | .NET Framework 4.6.2 |  15.93 ns | 0.257 ns | 0.114 ns |  1.18 |    0.01 |
+| DirectCallsToTicket_WriteValue         | .NET 8.0             |  14.68 ns | 0.811 ns | 0.586 ns |  1.00 |    0.00 |
+| DirectCallsToTicket_WriteValue         | .NET Framework 4.6.2 |  17.18 ns | 0.795 ns | 0.575 ns |  1.17 |    0.05 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToTicket_ReadValueAsync     | .NET 8.0             |  29.00 ns | 0.429 ns | 0.255 ns |  1.00 |    0.00 |
-| DirectCallsToTicket_ReadValueAsync     | .NET Framework 4.6.2 |  94.64 ns | 1.699 ns | 0.888 ns |  3.26 |    0.04 |
+| DirectCallsToTicket_ReadValueAsync     | .NET 8.0             |  26.21 ns | 0.380 ns | 0.226 ns |  1.00 |    0.00 |
+| DirectCallsToTicket_ReadValueAsync     | .NET Framework 4.6.2 | 105.96 ns | 2.087 ns | 1.380 ns |  4.05 |    0.08 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToTicket_WriteValueAsync    | .NET 8.0             |  28.22 ns | 0.575 ns | 0.342 ns |  1.00 |    0.00 |
-| DirectCallsToTicket_WriteValueAsync    | .NET Framework 4.6.2 |  94.93 ns | 1.708 ns | 1.017 ns |  3.36 |    0.05 |
+| DirectCallsToTicket_WriteValueAsync    | .NET 8.0             |  27.00 ns | 0.943 ns | 0.682 ns |  1.00 |    0.00 |
+| DirectCallsToTicket_WriteValueAsync    | .NET Framework 4.6.2 | 105.26 ns | 3.674 ns | 2.657 ns |  3.90 |    0.16 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToLock_ReadValue            | .NET 8.0             |  13.31 ns | 0.243 ns | 0.087 ns |  1.00 |    0.00 |
-| DirectCallsToLock_ReadValue            | .NET Framework 4.6.2 |  15.47 ns | 0.290 ns | 0.152 ns |  1.16 |    0.01 |
+| DirectCallsToLock_ReadValue            | .NET 8.0             |  13.68 ns | 0.323 ns | 0.192 ns |  1.00 |    0.00 |
+| DirectCallsToLock_ReadValue            | .NET Framework 4.6.2 |  17.37 ns | 0.281 ns | 0.147 ns |  1.27 |    0.02 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToLock_WriteValue           | .NET 8.0             |  13.59 ns | 0.224 ns | 0.058 ns |  1.00 |    0.00 |
-| DirectCallsToLock_WriteValue           | .NET Framework 4.6.2 |  15.95 ns | 0.152 ns | 0.024 ns |  1.18 |    0.00 |
+| DirectCallsToLock_WriteValue           | .NET 8.0             |  14.69 ns | 1.260 ns | 0.911 ns |  1.00 |    0.00 |
+| DirectCallsToLock_WriteValue           | .NET Framework 4.6.2 |  16.62 ns | 0.149 ns | 0.078 ns |  1.13 |    0.07 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToLock_ReadValueAsync       | .NET 8.0             |  37.83 ns | 0.842 ns | 0.557 ns |  1.00 |    0.00 |
-| DirectCallsToLock_ReadValueAsync       | .NET Framework 4.6.2 | 140.10 ns | 2.124 ns | 0.552 ns |  3.69 |    0.05 |
+| DirectCallsToLock_ReadValueAsync       | .NET 8.0             |  33.32 ns | 1.965 ns | 1.421 ns |  1.00 |    0.00 |
+| DirectCallsToLock_ReadValueAsync       | .NET Framework 4.6.2 | 143.45 ns | 1.909 ns | 0.998 ns |  4.39 |    0.13 |
 |                                        |                      |           |          |          |       |         |
-| DirectCallsToLock_WriteValueAsync      | .NET 8.0             |  37.51 ns | 1.260 ns | 0.834 ns |  1.00 |    0.00 |
-| DirectCallsToLock_WriteValueAsync      | .NET Framework 4.6.2 | 140.77 ns | 2.098 ns | 0.748 ns |  3.76 |    0.06 |
+| DirectCallsToLock_WriteValueAsync      | .NET 8.0             |  36.69 ns | 2.014 ns | 1.456 ns |  1.00 |    0.00 |
+| DirectCallsToLock_WriteValueAsync      | .NET Framework 4.6.2 | 141.77 ns | 0.795 ns | 0.416 ns |  3.87 |    0.18 |
 |                                        |                      |           |          |          |       |         |
-| UsingTicketLockedValue_ReadValue       | .NET 8.0             |  13.23 ns | 0.219 ns | 0.057 ns |  1.00 |    0.00 |
-| UsingTicketLockedValue_ReadValue       | .NET Framework 4.6.2 |  16.38 ns | 0.288 ns | 0.103 ns |  1.24 |    0.01 |
+| UsingTicketLockedValue_ReadValue       | .NET 8.0             |  14.74 ns | 0.868 ns | 0.628 ns |  1.00 |    0.00 |
+| UsingTicketLockedValue_ReadValue       | .NET Framework 4.6.2 |  16.58 ns | 0.285 ns | 0.149 ns |  1.11 |    0.04 |
 |                                        |                      |           |          |          |       |         |
-| UsingTicketLockedValue_WriteValue      | .NET 8.0             |  14.37 ns | 0.282 ns | 0.148 ns |  1.00 |    0.00 |
-| UsingTicketLockedValue_WriteValue      | .NET Framework 4.6.2 |  17.03 ns | 0.264 ns | 0.068 ns |  1.19 |    0.02 |
+| UsingTicketLockedValue_WriteValue      | .NET 8.0             |  14.68 ns | 0.211 ns | 0.094 ns |  1.00 |    0.00 |
+| UsingTicketLockedValue_WriteValue      | .NET Framework 4.6.2 |  17.17 ns | 0.221 ns | 0.131 ns |  1.17 |    0.01 |
 |                                        |                      |           |          |          |       |         |
-| UsingTicketLockedValue_ReadValueAsync  | .NET 8.0             |  36.50 ns | 1.010 ns | 0.601 ns |  1.00 |    0.00 |
-| UsingTicketLockedValue_ReadValueAsync  | .NET Framework 4.6.2 | 140.51 ns | 2.346 ns | 0.836 ns |  3.85 |    0.07 |
+| UsingTicketLockedValue_ReadValueAsync  | .NET 8.0             |  32.68 ns | 0.979 ns | 0.708 ns |  1.00 |    0.00 |
+| UsingTicketLockedValue_ReadValueAsync  | .NET Framework 4.6.2 | 142.44 ns | 2.094 ns | 1.246 ns |  4.40 |    0.06 |
 |                                        |                      |           |          |          |       |         |
-| UsingTicketLockedValue_WriteValueAsync | .NET 8.0             |  37.31 ns | 0.930 ns | 0.615 ns |  1.00 |    0.00 |
-| UsingTicketLockedValue_WriteValueAsync | .NET Framework 4.6.2 | 139.13 ns | 2.548 ns | 0.909 ns |  3.72 |    0.08 |
+| UsingTicketLockedValue_WriteValueAsync | .NET 8.0             |  35.07 ns | 1.366 ns | 0.813 ns |  1.00 |    0.00 |
+| UsingTicketLockedValue_WriteValueAsync | .NET Framework 4.6.2 | 147.38 ns | 3.714 ns | 2.210 ns |  4.21 |    0.14 |

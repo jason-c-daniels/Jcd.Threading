@@ -123,11 +123,9 @@ public class SemaphoreSlimOperations : IDisposable
 
    protected virtual void Dispose(bool disposing)
    {
-      if (disposing)
-      {
-         sv.Dispose();
-         sem.Dispose();
-      }
+      if (!disposing) return;
+      sv.Dispose();
+      sem.Dispose();
    }
 
    public void Dispose()

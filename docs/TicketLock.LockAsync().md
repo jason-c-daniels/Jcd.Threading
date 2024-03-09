@@ -3,12 +3,12 @@
 
 ## TicketLock.LockAsync() Method
 
-Asynchronously creates an [ITicket](ITicket.md 'Jcd.Threading.ITicket') and waits on it.
+Asynchronously creates an [TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock') and waits on it.
 
 ```csharp
-public System.Threading.Tasks.Task<Jcd.Threading.ITicket> LockAsync();
+public System.Threading.Tasks.Task<Jcd.Threading.TicketLockResourceLock> LockAsync();
 ```
 
 #### Returns
-[System.Threading.Tasks.Task&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1')[ITicket](ITicket.md 'Jcd.Threading.ITicket')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1')  
+[System.Threading.Tasks.Task&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1')[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task-1 'System.Threading.Tasks.Task`1')  
 The ticket once the lock is acquired.

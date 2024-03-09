@@ -139,17 +139,19 @@ public class TaskSchedulerExtensionsTests
    [Fact]
    public async Task Run_With_Null_Function_And_Valid_CancellationToken_Throws_An_ArgumentNullException()
    {
-      var               scheduler = new CallingThreadTaskScheduler();
-      using var         cts       = new CancellationTokenSource();
-      Func<Task<int>?>? func      = null;
+      var              scheduler = new CallingThreadTaskScheduler();
+      using var        cts       = new CancellationTokenSource();
+      Func<Task<int>>? func      = null;
       await Assert.ThrowsAsync<ArgumentNullException>(async () => await scheduler.Run(func, cts.Token));
    }
 
    [Fact]
    public async Task Run_With_Null_Function_Throws_An_ArgumentNullException()
    {
-      var               scheduler = new CallingThreadTaskScheduler();
-      Func<Task<int>?>? func      = null;
+      var              scheduler = new CallingThreadTaskScheduler();
+      Func<Task<int>>? func      = null;
+      #pragma warning disable CS8604 // Suppress null reference argument. Reason: intentional for unit testing. 
       await Assert.ThrowsAsync<ArgumentNullException>(async () => await scheduler.Run(func));
+      #pragma warning restore CS8604 // Restore Possible null reference argument.
    }
 }

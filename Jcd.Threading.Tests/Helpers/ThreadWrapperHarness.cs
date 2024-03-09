@@ -2,9 +2,7 @@
 
 public class ThreadWrapperHarness
 (
-   Func<bool>?    getShouldContinueHook    = null,
-   Func<bool>?    performWorkHook          = null,
-   Action?        threadProcHook           = null
+   Func<bool>?    performWorkHook          = null
  , bool           autoStart                = true
  , string?        name                     = null
  , bool           useBackgroundThread      = true
@@ -26,16 +24,5 @@ public class ThreadWrapperHarness
    protected override bool PerformWork(CancellationToken token)
    {
       return performWorkHook?.Invoke() ?? base.PerformWork(token);
-   }
-
-   protected override void ThreadProc()
-   {
-      if (threadProcHook != null) threadProcHook();
-      base.ThreadProc();
-   }
-
-   protected override bool GetShouldContinue(CancellationToken token)
-   {
-      return getShouldContinueHook?.Invoke() ?? base.GetShouldContinue(token);
    }
 }

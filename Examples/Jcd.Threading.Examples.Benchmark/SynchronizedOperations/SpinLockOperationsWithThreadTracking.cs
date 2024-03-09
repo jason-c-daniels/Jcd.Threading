@@ -11,7 +11,7 @@ public class SpinLockOperationsWithThreadTracking
 {
    public int ReadMe = 10;
 
-   private readonly SpinLockValue<int> spinLockValue = new(17);
+   private readonly SpinLockValue<int> spinLockValue = new(17, false, true);
    private          SpinLock           sl            = new(true);
 
    [Benchmark]

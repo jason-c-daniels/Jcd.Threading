@@ -13,7 +13,7 @@ public class TicketLockOperations
    [Benchmark]
    public int DirectCallsToTicket_ReadValue()
    {
-      using var t = tl.GetTicket();
+      using var t = tl.GetResourceLock();
 
       t.Wait();
 
@@ -23,7 +23,7 @@ public class TicketLockOperations
    [Benchmark]
    public int DirectCallsToTicket_WriteValue()
    {
-      using var t = tl.GetTicket();
+      using var t = tl.GetResourceLock();
 
       t.Wait();
 
@@ -33,7 +33,7 @@ public class TicketLockOperations
    [Benchmark]
    public async Task<int> DirectCallsToTicket_ReadValueAsync()
    {
-      using var t = tl.GetTicket();
+      using var t = tl.GetResourceLock();
 
       await t.WaitAsync();
 
@@ -43,7 +43,7 @@ public class TicketLockOperations
    [Benchmark]
    public async Task<int> DirectCallsToTicket_WriteValueAsync()
    {
-      using var t = tl.GetTicket();
+      using var t = tl.GetResourceLock();
 
       await t.WaitAsync();
 

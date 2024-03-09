@@ -173,9 +173,9 @@ public sealed class ItemProcessor<TItem> : ThreadWrapper
       }
    }
 
-   private IDisposable GetQueueLock() { return queueSem.Lock(CancellationToken); }
+   private IResourceLock GetQueueLock() { return queueSem.Lock(CancellationToken); }
 
-   private Task<IDisposable> GetQueueLockAsync() { return queueSem.LockAsync(CancellationToken); }
+   private async Task<IResourceLock> GetQueueLockAsync() { return await queueSem.LockAsync(CancellationToken); }
 
    private bool TryPeek(CancellationToken cancellationSource, out TItem? item)
    {

@@ -58,5 +58,7 @@ public class NitoAsyncOperations : IDisposable
       return RawValue;
    }
 
+   #pragma warning disable CA1816
    public void Dispose() { sem.Dispose(); }
+   #pragma warning restore CA1816
 }

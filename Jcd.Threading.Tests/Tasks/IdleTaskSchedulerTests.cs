@@ -3,6 +3,8 @@ using Jcd.Threading.Tests.Helpers;
 
 using Xunit.Abstractions;
 
+// ReSharper disable HeapView.ObjectAllocation
+
 // ReSharper disable HeapView.ObjectAllocation.Possible
 
 // ReSharper disable HeapView.ObjectAllocation.Evident
@@ -36,7 +38,7 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
 
       testOutputHelper.WriteLine("Compared the thread count.");
 
-      testOutputHelper.WriteLine($"Comparing statuses of each thread.");
+      testOutputHelper.WriteLine("Comparing statuses of each thread.");
 
       foreach (var thread in scheduler.Threads)
       {
@@ -45,7 +47,7 @@ public class IdleTaskSchedulerTests(ITestOutputHelper testOutputHelper)
          Assert.True(thread?.IsAlive);
       }
 
-      testOutputHelper.WriteLine($"Exiting unit test.");
+      testOutputHelper.WriteLine("Exiting unit test.");
    }
 
    private static bool OsSupportsThreadingApartmentModel()

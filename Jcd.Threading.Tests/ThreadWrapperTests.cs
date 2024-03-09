@@ -1,5 +1,8 @@
 ﻿using Jcd.Threading.Tests.Helpers;
 
+// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+
 namespace Jcd.Threading.Tests;
 
 public class ThreadWrapperTests
@@ -61,32 +64,32 @@ public class ThreadWrapperTests
    [Fact]
    public void Start_Creates_And_Starts_The_Thread()
    {
-      var      t   = new ThreadWrapperHarness(autoStart:false);
+      var t = new ThreadWrapperHarness(autoStart: false);
       Assert.Null(t.Thread);
       t.Start();
       Assert.NotNull(t.Thread);
       Thread.Sleep(100);
       Assert.True(t.IsStarted);
    }
-   
+
    [Fact]
    public void Stop_Shuts_Down_The_Thread_Then_Start_Restarts_It_With_A_New_Thread()
    {
-      SpinWait sw  = new();
-      var      t   = new ThreadWrapperHarness(autoStart:false);
+      SpinWait sw = new();
+      var      t  = new ThreadWrapperHarness(autoStart: false);
       Assert.Null(t.Thread);
       t.Start();
       Thread.Sleep(100);
       var thd = t.Thread;
       Assert.NotNull(thd);
-      while (!t.IsStarted) sw.SpinOnce(15);
+      while (!t.IsStarted) sw.SpinOnce();
       t.Stop();
       Thread.Sleep(100);
       Assert.False(t.IsStarted);
       t.Start();
       Thread.Sleep(100);
       Assert.True(t.IsStarted);
-      Assert.NotSame(thd,t.Thread);
+      Assert.NotSame(thd, t.Thread);
    }
 
    [Fact]
@@ -94,7 +97,7 @@ public class ThreadWrapperTests
    {
       SpinWait sw = new();
       var      t  = new ThreadWrapperHarness();
-      while (!t.IsStarted) sw.SpinOnce(15);
+      while (!t.IsStarted) sw.SpinOnce();
       t.Pause();
       t.Pause(); // ensure it behaves fine with multiple successive calls.
       t.Pause();
@@ -108,17 +111,17 @@ public class ThreadWrapperTests
    [Fact]
    public void IsIdle_Gets_Set_After_No_Work_Is_Done()
    {
-      SpinWait sw = new();
-      int      callCount=0;
-      var t = new ThreadWrapperHarness(performWorkHook: () =>
-                                                        {
-                                                           callCount++;
+      SpinWait sw        = new();
+      var      callCount = 0;
+      var t = new ThreadWrapperHarness(() =>
+                                       {
+                                          callCount++;
 
-                                                           return callCount % 5 != 0;
-                                                        }
+                                          return callCount % 5 != 0;
+                                       }
                                      , idleAfterNoWorkDoneCount: 0
                                       );
-      while (!t.IsStarted) sw.SpinOnce(15);
+      while (!t.IsStarted) sw.SpinOnce();
       t.Pause();
       Thread.Sleep(100);
       Assert.True(t.IsPaused);

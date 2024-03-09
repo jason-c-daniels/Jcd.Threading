@@ -2,6 +2,9 @@
 
 using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable HeapView.ClosureAllocation
+
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
 public class SpinLockOperationsWithoutThreadTracking

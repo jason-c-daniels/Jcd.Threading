@@ -5,8 +5,10 @@ public class SemaphoreSlimExtensionsTests
    [Fact]
    public void Lock_Holds_And_Releases_The_Lock()
    {
-      SemaphoreSlim sem     = new(1, 1);
-      var           wasHeld = false;
+      SemaphoreSlim sem = new(1, 1);
+
+      // ReSharper disable once RedundantAssignment
+      var wasHeld = false;
 
       using (sem.Lock()) wasHeld = sem.CurrentCount == 0;
 
@@ -17,8 +19,10 @@ public class SemaphoreSlimExtensionsTests
    [Fact]
    public async Task LockAsync_Holds_And_Releases_The_Lock()
    {
-      SemaphoreSlim sem     = new(1, 1);
-      var           wasHeld = false;
+      SemaphoreSlim sem = new(1, 1);
+
+      // ReSharper disable once RedundantAssignment
+      var wasHeld = false;
 
       using (await sem.LockAsync()) wasHeld = sem.CurrentCount == 0;
 

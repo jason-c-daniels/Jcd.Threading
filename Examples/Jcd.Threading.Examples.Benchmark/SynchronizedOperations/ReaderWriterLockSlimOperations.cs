@@ -1,5 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
+
 namespace Jcd.Threading.Examples.Benchmark.SynchronizedOperations;
 
 public class ReaderWriterLockSlimOperations : IDisposable

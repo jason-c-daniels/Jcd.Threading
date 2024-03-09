@@ -3,10 +3,10 @@
 
 ## TicketLock.Lock(CancellationToken) Method
 
-Creates an [ITicket](ITicket.md 'Jcd.Threading.ITicket') and waits on it.
+Creates an [TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock') and waits on it.
 
 ```csharp
-public Jcd.Threading.ITicket Lock(System.Threading.CancellationToken token);
+public Jcd.Threading.TicketLockResourceLock Lock(System.Threading.CancellationToken token);
 ```
 #### Parameters
 
@@ -17,5 +17,5 @@ public Jcd.Threading.ITicket Lock(System.Threading.CancellationToken token);
 The token to listen for cancellation on.
 
 #### Returns
-[ITicket](ITicket.md 'Jcd.Threading.ITicket')  
+[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')  
 The ticket once the lock is acquired.

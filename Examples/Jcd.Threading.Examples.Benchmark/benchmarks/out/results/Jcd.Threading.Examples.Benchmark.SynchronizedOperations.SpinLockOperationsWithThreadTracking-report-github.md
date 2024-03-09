@@ -4,35 +4,34 @@ BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3155/23H2/2023Update/SunValley3
 12th Gen Intel Core i7-12700H, 1 CPU, 20 logical and 14 physical cores
 .NET SDK 8.0.102
   [Host]     : .NET 8.0.2 (8.0.224.6711), X64 RyuJIT AVX2
-  Job-SWTUPK : .NET 8.0.2 (8.0.224.6711), X64 RyuJIT AVX2
-  Job-VBTVTX : .NET Framework 4.8.1 (4.8.9181.0), X64 RyuJIT VectorSize=256
+  Job-TMZHUX : .NET 8.0.2 (8.0.224.6711), X64 RyuJIT AVX2
+  Job-AAPCYZ : .NET Framework 4.8.1 (4.8.9181.0), X64 RyuJIT VectorSize=256
 
-MaxIterationCount=10  MinIterationCount=5  WarmupCount=1  
+MaxIterationCount=11  MinIterationCount=9  WarmupCount=1  
 
 ```
-
-| Method                                           | Runtime              |      Mean |     Error |    StdDev | Ratio |
-|--------------------------------------------------|----------------------|----------:|----------:|----------:|------:|
-| DirectSpinLockCalls_ReadValue_NoMemoryBarrier    | .NET 8.0             | 53.677 ns | 0.4500 ns | 0.1169 ns |  1.00 |
-| DirectSpinLockCalls_ReadValue_NoMemoryBarrier    | .NET Framework 4.6.2 | 62.284 ns | 0.9293 ns | 0.3314 ns |  1.16 |
-|                                                  |                      |           |           |           |       |
-| DirectSpinLockCalls_WriteValue_NoMemoryBarrier   | .NET 8.0             | 53.777 ns | 0.9494 ns | 0.2465 ns |  1.00 |
-| DirectSpinLockCalls_WriteValue_NoMemoryBarrier   | .NET Framework 4.6.2 | 61.749 ns | 1.2058 ns | 0.1866 ns |  1.15 |
-|                                                  |                      |           |           |           |       |
-| DirectSpinLockCalls_ReadValue_WithMemoryBarrier  | .NET 8.0             | 59.299 ns | 1.1798 ns | 0.3064 ns |  1.00 |
-| DirectSpinLockCalls_ReadValue_WithMemoryBarrier  | .NET Framework 4.6.2 | 67.278 ns | 0.8457 ns | 0.2196 ns |  1.13 |
-|                                                  |                      |           |           |           |       |
-| DirectSpinLockCalls_WriteValue_WithMemoryBarrier | .NET 8.0             | 59.401 ns | 0.8925 ns | 0.2318 ns |  1.00 |
-| DirectSpinLockCalls_WriteValue_WithMemoryBarrier | .NET Framework 4.6.2 | 66.986 ns | 0.4233 ns | 0.1099 ns |  1.13 |
-|                                                  |                      |           |           |           |       |
-| UsingExtensions_ReadValue                        | .NET 8.0             | 64.470 ns | 1.1680 ns | 0.4165 ns |  1.00 |
-| UsingExtensions_ReadValue                        | .NET Framework 4.6.2 | 70.322 ns | 1.0232 ns | 0.2657 ns |  1.09 |
-|                                                  |                      |           |           |           |       |
-| UsingExtensions_WriteValue                       | .NET 8.0             | 60.888 ns | 1.1331 ns | 0.5031 ns |  1.00 |
-| UsingExtensions_WriteValue                       | .NET Framework 4.6.2 | 67.675 ns | 0.9292 ns | 0.3314 ns |  1.11 |
-|                                                  |                      |           |           |           |       |
-| UsingSpinLockValue_ReadValue                     | .NET 8.0             |  9.208 ns | 0.1489 ns | 0.0531 ns |  1.00 |
-| UsingSpinLockValue_ReadValue                     | .NET Framework 4.6.2 | 10.144 ns | 0.2169 ns | 0.0963 ns |  1.10 |
-|                                                  |                      |           |           |           |       |
-| UsingSpinLockValue_WriteValue                    | .NET 8.0             |  9.387 ns | 0.1318 ns | 0.0342 ns |  1.00 |
-| UsingSpinLockValue_WriteValue                    | .NET Framework 4.6.2 | 10.595 ns | 0.1898 ns | 0.0993 ns |  1.12 |
+| Method                                           | Runtime              | Mean     | Error    | StdDev   | Ratio | RatioSD |
+|------------------------------------------------- |--------------------- |---------:|---------:|---------:|------:|--------:|
+| DirectSpinLockCalls_ReadValue_NoMemoryBarrier    | .NET 8.0             | 53.63 ns | 0.125 ns | 0.074 ns |  1.00 |    0.00 |
+| DirectSpinLockCalls_ReadValue_NoMemoryBarrier    | .NET Framework 4.6.2 | 62.33 ns | 1.606 ns | 1.062 ns |  1.16 |    0.02 |
+|                                                  |                      |          |          |          |       |         |
+| DirectSpinLockCalls_WriteValue_NoMemoryBarrier   | .NET 8.0             | 53.67 ns | 0.129 ns | 0.077 ns |  1.00 |    0.00 |
+| DirectSpinLockCalls_WriteValue_NoMemoryBarrier   | .NET Framework 4.6.2 | 62.86 ns | 1.110 ns | 0.661 ns |  1.17 |    0.01 |
+|                                                  |                      |          |          |          |       |         |
+| DirectSpinLockCalls_ReadValue_WithMemoryBarrier  | .NET 8.0             | 61.42 ns | 1.009 ns | 0.528 ns |  1.00 |    0.00 |
+| DirectSpinLockCalls_ReadValue_WithMemoryBarrier  | .NET Framework 4.6.2 | 67.43 ns | 1.033 ns | 0.615 ns |  1.10 |    0.01 |
+|                                                  |                      |          |          |          |       |         |
+| DirectSpinLockCalls_WriteValue_WithMemoryBarrier | .NET 8.0             | 59.24 ns | 0.258 ns | 0.135 ns |  1.00 |    0.00 |
+| DirectSpinLockCalls_WriteValue_WithMemoryBarrier | .NET Framework 4.6.2 | 66.92 ns | 1.299 ns | 0.773 ns |  1.13 |    0.01 |
+|                                                  |                      |          |          |          |       |         |
+| UsingExtensions_ReadValue                        | .NET 8.0             | 61.97 ns | 1.223 ns | 0.809 ns |  1.00 |    0.00 |
+| UsingExtensions_ReadValue                        | .NET Framework 4.6.2 | 67.36 ns | 1.602 ns | 1.159 ns |  1.09 |    0.03 |
+|                                                  |                      |          |          |          |       |         |
+| UsingExtensions_WriteValue                       | .NET 8.0             | 58.56 ns | 0.358 ns | 0.159 ns |  1.00 |    0.00 |
+| UsingExtensions_WriteValue                       | .NET Framework 4.6.2 | 64.54 ns | 1.260 ns | 0.750 ns |  1.11 |    0.01 |
+|                                                  |                      |          |          |          |       |         |
+| UsingSpinLockValue_ReadValue                     | .NET 8.0             | 54.79 ns | 0.882 ns | 0.525 ns |  1.00 |    0.00 |
+| UsingSpinLockValue_ReadValue                     | .NET Framework 4.6.2 | 62.50 ns | 1.103 ns | 0.730 ns |  1.14 |    0.02 |
+|                                                  |                      |          |          |          |       |         |
+| UsingSpinLockValue_WriteValue                    | .NET 8.0             | 56.17 ns | 0.877 ns | 0.522 ns |  1.00 |    0.00 |
+| UsingSpinLockValue_WriteValue                    | .NET Framework 4.6.2 | 61.60 ns | 0.376 ns | 0.224 ns |  1.10 |    0.01 |

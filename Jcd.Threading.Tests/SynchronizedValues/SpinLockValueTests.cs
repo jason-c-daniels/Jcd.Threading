@@ -1,5 +1,9 @@
 ﻿using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable InlineTemporaryVariable
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable UseObjectOrCollectionInitializer
+
 namespace Jcd.Threading.Tests.SynchronizedValues;
 
 public class SpinLockValueTests

@@ -4,6 +4,65 @@
         <name>Jcd.Threading</name>
     </assembly>
     <members>
+        <member name="T:Jcd.Threading.IResourceLock">
+            <summary>
+            Provides an interface for establishing and releasing locks on a resource.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.IResourceLock.IsWaiting">
+            <summary>
+            Indicates if the lock is currently waiting to be acquired.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.IResourceLock.IsLocked">
+            <summary>
+            Indicates if the lock was acquired by this <see cref="T:Jcd.Threading.IResourceLock"/>
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.IResourceLock.IsReleased">
+            <summary>
+            Indicates if the lock was released.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.IResourceLock.Wait">
+            <summary>
+            Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.IResourceLock.Wait(System.Threading.CancellationToken)">
+            <summary>
+            Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+            <param name="token">The token to inspect for cancellation.</param>
+        </member>
+        <member name="M:Jcd.Threading.IResourceLock.WaitAsync">
+            <summary>
+            Asynchronously Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.IResourceLock.WaitAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+            <param name="token">The token to inspect for cancellation.</param>
+        </member>
+        <member name="M:Jcd.Threading.IResourceLock.Release">
+            <summary>
+            Releases the lock on the resource.
+            </summary>
+        </member>
+        <member name="T:Jcd.Threading.IResourceLockFactory`1">
+            <summary>
+            Provides a mechanism for acquiring resource locks bound to a specific instance of a synchronization primitive.
+            </summary>
+            <typeparam name="T">The type of the resource lock.</typeparam>
+        </member>
+        <member name="M:Jcd.Threading.IResourceLockFactory`1.GetResourceLock">
+            <summary>
+            Acquires a resource lock bound to a synchronization primitive instance.
+            </summary>
+            <returns>A resource lock bound to a synchronization primitive instance.</returns>
+        </member>
         <member name="T:Jcd.Threading.ItemProcessor`1">
             <summary>
             Provides the ability to call a delegate on each item in an internally managed queue
@@ -80,67 +139,6 @@
             </summary>
             <param name="disposing"></param>
         </member>
-        <member name="T:Jcd.Threading.ITicket">
-            <summary>
-            The supported interface guaranteed to be returned from
-            the appropriate methods of <see cref="T:Jcd.Threading.TicketLock"/>
-            </summary>
-        </member>
-        <member name="P:Jcd.Threading.ITicket.TicketId">
-            <summary>
-            The ID for the ticket. These are issued out sequentially.
-            </summary>
-        </member>
-        <member name="P:Jcd.Threading.ITicket.IsReleased">
-            <summary>
-            Indicates if the ticket was released.
-            </summary>
-        </member>
-        <member name="P:Jcd.Threading.ITicket.IsCanceled">
-            <summary>
-            Indicates if the ticket was cancelled.
-            </summary>
-        </member>
-        <member name="M:Jcd.Threading.ITicket.Wait">
-            <summary>
-            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
-            to match its own `TicketId`
-            </summary>
-            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
-        </member>
-        <member name="M:Jcd.Threading.ITicket.Wait(System.Threading.CancellationToken)">
-            <summary>
-            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
-            to match its own `TicketId`
-            </summary>
-            <param name="token">the token to observe for cancellation.</param>
-            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
-        </member>
-        <member name="M:Jcd.Threading.ITicket.WaitAsync">
-            <summary>
-            Asynchronously Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
-            to match its own `TicketId`
-            </summary>
-            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
-        </member>
-        <member name="M:Jcd.Threading.ITicket.WaitAsync(System.Threading.CancellationToken)">
-            <summary>
-            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
-            to match its own `TicketId`
-            </summary>
-            <param name="token">the token to observe for cancellation.</param>
-            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
-        </member>
-        <member name="M:Jcd.Threading.ITicket.Cancel">
-            <summary>
-            Cancels the ticket. This will register a background thread to do cleanup.
-            </summary>
-        </member>
-        <member name="M:Jcd.Threading.ITicket.Release">
-            <summary>
-            Releases the lock, if acquired.
-            </summary>
-        </member>
         <member name="T:Jcd.Threading.NamespaceDoc">
             <summary>
             Provides types and extension methods to assist with the creation, execution, and
@@ -159,7 +157,7 @@
              Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
              calls the appropriate exit method on the lock during disposal. 
              </summary>
-             <param name="lock">The lock to acquire and release.</param>
+             <param name="rwls">The lock to acquire and release.</param>
              <param name="intent">The type of lock being acquired. By default this is a Read</param>
              <returns>the IDisposable to release the resources.</returns>
              <remarks>
@@ -179,12 +177,38 @@
              </code>
              </remarks>
         </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,System.Threading.CancellationToken,Jcd.Threading.ReaderWriterLockSlimIntent)">
+            <summary>
+            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+            calls the appropriate exit method on the lock during disposal. 
+            </summary>
+            <param name="rwls">The lock to acquire and release.</param>
+            <param name="intent">The type of lock being acquired. By default this is a Read</param>
+            <param name="token">The <see cref="T:System.Threading.CancellationToken"/> to inspect for cancellation requests</param>
+            <returns>the IDisposable to release the resources.</returns>
+            <remarks>
+            <para>
+            This method is intended to be used with a using block.
+            There is little value in using it otherwise.
+            </para>
+            <code>
+            // example usage.
+            var rwls = new ReaderWriterLockSlim();
+            
+            using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
+            {
+               // write to a critical set of values here.
+               // ..
+            }
+            </code>
+            </remarks>
+        </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
              <summary>
              Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
              calls the appropriate exit method on the lock during disposal. 
              </summary>
-             <param name="lock">The lock to acquire and release.</param>
+             <param name="rwls">The lock to acquire and release.</param>
              <param name="intent">The type of lock being acquired. By default this is a Read</param>
              <returns>the IDisposable to release the resources.</returns>
              <remarks>
@@ -203,6 +227,40 @@
              }
              </code>
              </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,System.Threading.CancellationToken,Jcd.Threading.ReaderWriterLockSlimIntent)">
+            <summary>
+            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns an IDisposable that
+            calls the appropriate exit method on the lock during disposal. 
+            </summary>
+            <param name="rwls">The lock to acquire and release.</param>
+            <param name="token">the <see cref="T:System.Threading.CancellationToken"/> to inspect for cancellation requests.</param>
+            <param name="intent">The type of lock being acquired. By default this is a Read</param>
+            <returns>the IDisposable to release the resources.</returns>
+            <remarks>
+            <para>
+            This method is intended to be used with a using block.
+            There is little value in using it otherwise.
+            </para>
+            <code>
+            // example usage.
+            var rwls = new ReaderWriterLockSlim();
+            
+            using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
+            {
+               // write to a critical set of values here.
+               // ..
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.GetResourceLock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
+            <summary>
+            Gets a resource lock bound to the instance of a <see cref="T:System.Threading.SemaphoreSlim"/>
+            </summary>
+            <param name="rwls">The <see cref="T:System.Threading.SemaphoreSlim"/> to create the resource lock for.</param>
+            <param name="intent">The intended purpose of the lock.</param>
+            <returns>A resource lock bound to the instance of a <see cref="T:System.Threading.SemaphoreSlim"/></returns>
         </member>
         <member name="T:Jcd.Threading.ReaderWriterLockSlimIntent">
             <summary>
@@ -223,6 +281,111 @@
             <summary>
             The lock is being used for writing.
             </summary>
+        </member>
+        <member name="T:Jcd.Threading.ReaderWriterLockSlimResourceLock">
+            <summary>
+            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.ReaderWriterLockSlim"/>.
+            </summary>
+            <param name="internalLock">The <see cref="T:System.Threading.ReaderWriterLockSlim"/> to lock and release. </param>
+            <param name="intent">The intent of the lock (Read, UpgradeableRead, Write)</param>
+            <remarks>
+            <para>
+            Do not share instances of this type across threads or synchronization contexts.
+            Behavior can be unpredictable. These are provided and meant to be used in conjunction
+            with the extension classes to create a more consistent experience when using
+            synchronization primitives.
+            </para> 
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.#ctor(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
+            <summary>
+            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.ReaderWriterLockSlim"/>.
+            </summary>
+            <param name="internalLock">The <see cref="T:System.Threading.ReaderWriterLockSlim"/> to lock and release. </param>
+            <param name="intent">The intent of the lock (Read, UpgradeableRead, Write)</param>
+            <remarks>
+            <para>
+            Do not share instances of this type across threads or synchronization contexts.
+            Behavior can be unpredictable. These are provided and meant to be used in conjunction
+            with the extension classes to create a more consistent experience when using
+            synchronization primitives.
+            </para> 
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.Wait">
+            <summary>
+            Acquires a lock on the ReaderWriterLockSlim according to the intent it was created with.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.Wait(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.WaitAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.WaitAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.Release">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.Dispose">
+            <summary>
+            Releases any locks held.
+            </summary>
+        </member>
+        <member name="T:Jcd.Threading.ResourceLockBase">
+            <summary>
+            Provides a base mechanism for managing the state of an <see cref="T:Jcd.Threading.IResourceLock"/>
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.ResourceLockBase.IsWaiting">
+            <inheritdoc />
+        </member>
+        <member name="P:Jcd.Threading.ResourceLockBase.IsLocked">
+            <inheritdoc />
+        </member>
+        <member name="P:Jcd.Threading.ResourceLockBase.IsReleased">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.Wait">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.Wait(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.WaitAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.WaitAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.LockAcquired">
+            <summary>
+            Sets IsLocked to true and returns true.
+            </summary>
+            <returns>true</returns>
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.Release">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.ReleaseLock">
+            <summary>
+            Sets flags indicated the lock has been released.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.EndWait">
+            <summary>
+            Removes the lock from the IsWaiting state. Call at the end of your Release method.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.BeginWait">
+            <summary>
+            Removes the lock from the IsWaiting state. 
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.ResourceLockBase.Dispose">
+            <inheritdoc />
         </member>
         <member name="T:Jcd.Threading.SemaphoreSlimExtensions">
             <summary>
@@ -261,6 +424,61 @@
             <param name="token">A cancellation token to use during the wait.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> for an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
         </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimExtensions.GetResourceLock(System.Threading.SemaphoreSlim)">
+            <summary>
+            Gets a resource lock bound to the instance of a <see cref="T:System.Threading.SemaphoreSlim"/>
+            </summary>
+            <param name="sem">The <see cref="T:System.Threading.SemaphoreSlim"/> to create the resource lock for.</param>
+            <returns>A resource lock bound to the instance of a <see cref="T:System.Threading.SemaphoreSlim"/></returns>
+        </member>
+        <member name="T:Jcd.Threading.SemaphoreSlimResourceLock">
+            <summary>
+            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SemaphoreSlim"/>.
+            </summary>
+            <param name="internalLock">The <see cref="T:System.Threading.SemaphoreSlim"/> to lock and release. </param>
+            <remarks>
+            <para>
+            Do not share instances of this type across threads or synchronization contexts.
+            Behavior can be unpredictable. These are provided and meant to be used in conjunction
+            with the extension classes to create a more consistent experience when using
+            synchronization primitives.
+            </para> 
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.#ctor(System.Threading.SemaphoreSlim)">
+            <summary>
+            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SemaphoreSlim"/>.
+            </summary>
+            <param name="internalLock">The <see cref="T:System.Threading.SemaphoreSlim"/> to lock and release. </param>
+            <remarks>
+            <para>
+            Do not share instances of this type across threads or synchronization contexts.
+            Behavior can be unpredictable. These are provided and meant to be used in conjunction
+            with the extension classes to create a more consistent experience when using
+            synchronization primitives.
+            </para> 
+            </remarks>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.Wait">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.Wait(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.WaitAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.WaitAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.Release">
+            <inheritdoc/>
+        </member>
+        <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.Dispose">
+            <summary>
+            Releases any locks held.
+            </summary>
+        </member>
         <member name="T:Jcd.Threading.SpinLockExtensions">
             <summary>
             Provides extension methods to aid in working with SpinLocks
@@ -281,6 +499,107 @@
             <param name="spinLock">The <see cref="T:System.Threading.SpinLock"/> to use for locking.</param>
             <param name="action">The action to perform</param>
             <param name="useMemoryBarrierOnExit">Passed to `Exit` when releasing the lock.</param>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockExtensions.Lock(System.Threading.SpinLock@)">
+            <summary>
+            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockExtensions.Lock(System.Threading.SpinLock@,System.Threading.CancellationToken)">
+            <summary>
+            Waits on the semaphore, and returns an <see cref="T:System.IDisposable"/> that calls Release.
+            </summary>
+            <param name="sem">the semaphore to use.</param>
+            <param name="token">A cancellation token to use during the wait.</param>
+            <returns>an <see cref="T:System.IDisposable"/> that calls Release in its Dispose method.</returns>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockExtensions.GetResourceLock(System.Threading.SpinLock@)">
+            <summary>
+            Gets a resource lock bound to the instance of a <see cref="T:System.Threading.SpinLock"/>
+            </summary>
+            <param name="sem">The <see cref="T:System.Threading.SpinLock"/> to create the resource lock for.</param>
+            <returns>A resource lock bound to the instance of a <see cref="T:System.Threading.SpinLock"/></returns>
+        </member>
+        <member name="T:Jcd.Threading.SpinLockResourceLock">
+            <summary>
+            Acquires a lock on the <see cref="T:System.Threading.SpinLock"/> it was created with.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.#ctor(System.Threading.SpinLock@)">
+            <summary>
+            Creates an instance of <see cref="T:Jcd.Threading.SpinLockResourceLock"/> bound to a specific <see cref="T:System.Threading.SpinLock"/>
+            </summary>
+            <param name="internalLock">The <see cref="T:System.Threading.SpinLock"/> to bind to.</param>
+        </member>
+        <member name="P:Jcd.Threading.SpinLockResourceLock.IsWaiting">
+            <summary>
+            Indicates if the lock is currently waiting to acquire the resource.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.SpinLockResourceLock.IsLocked">
+            <summary>
+            Indicates if the lock was acquired by this <see cref="T:Jcd.Threading.SpinLockResourceLock"/>
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.SpinLockResourceLock.IsReleased">
+            <summary>
+            Indicates if the lock was released.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.Wait">
+            <summary>
+            Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.Wait(System.Threading.CancellationToken)">
+            <summary>
+            Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+            <param name="token">The token to inspect for cancellation.</param>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.WaitAsync">
+            <summary>
+            Asynchronously Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.WaitAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously Locks the resource. Blocks other calls to Lock until Release is called.
+            </summary>
+            <param name="token">The token to inspect for cancellation.</param>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.LockAcquired">
+            <summary>
+            Sets IsLocked to true and returns true.
+            </summary>
+            <returns>true</returns>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.ReleaseLock">
+            <summary>
+            Sets flags indicated the lock has been released.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.EndWait">
+            <summary>
+            Removes the lock from the IsWaiting state. Call at the end of your Release method.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.BeginWait">
+            <summary>
+            Removes the lock from the IsWaiting state. 
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.Release">
+            <summary>
+            Releases the lock on the resource.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.SpinLockResourceLock.Dispose">
+            <summary>
+            Releases the lock on the resource.
+            </summary>
         </member>
         <member name="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1">
             <summary>
@@ -1492,8 +1811,12 @@
             Provides a naiive implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
             </summary>
             <remarks>
-            See also: <see href="https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b">Ticket Locking Algorithm : Fair Lock Delivery Mechanism</see>
-            For other details see the <see href="https://en.wikipedia.org/wiki/Ticket_lock">Wikipedia Article on Ticket locks</see>.
+            <para>
+            For a technical reference on Ticket Locks see: <see href="https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b">Ticket Locking Algorithm : Fair Lock Delivery Mechanism</see>
+            </para> 
+            <para>
+            For further reading see the <see href="https://en.wikipedia.org/wiki/Ticket_lock">Wikipedia Article on Ticket locks</see>.
+            </para> 
             </remarks>
         </member>
         <member name="P:Jcd.Threading.TicketLock.MaxTicketCount">
@@ -1517,9 +1840,9 @@
             can begin processing.
             </summary>
         </member>
-        <member name="M:Jcd.Threading.TicketLock.GetTicket">
+        <member name="M:Jcd.Threading.TicketLock.GetResourceLock">
             <summary>
-            Creates an <see cref="T:Jcd.Threading.ITicket"/>.
+            Creates an <see cref="T:Jcd.Threading.TicketLockResourceLock"/>.
             </summary>
             <remarks>
             WARNING: This is for advanced use cases only. Failing to release the lock
@@ -1532,29 +1855,93 @@
         </member>
         <member name="M:Jcd.Threading.TicketLock.Lock">
             <summary>
-            Creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            Creates an <see cref="T:Jcd.Threading.TicketLockResourceLock"/> and waits on it.
             </summary>
             <returns>The ticket once the lock is acquired.</returns>
         </member>
         <member name="M:Jcd.Threading.TicketLock.Lock(System.Threading.CancellationToken)">
             <summary>
-            Creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            Creates an <see cref="T:Jcd.Threading.TicketLockResourceLock"/> and waits on it.
             </summary>
             <param name="token">The token to listen for cancellation on.</param>
             <returns>The ticket once the lock is acquired.</returns>
         </member>
         <member name="M:Jcd.Threading.TicketLock.LockAsync">
             <summary>
-            Asynchronously creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            Asynchronously creates an <see cref="T:Jcd.Threading.TicketLockResourceLock"/> and waits on it.
             </summary>
             <returns>The ticket once the lock is acquired.</returns>
         </member>
         <member name="M:Jcd.Threading.TicketLock.LockAsync(System.Threading.CancellationToken)">
             <summary>
-            Asynchronously creates an <see cref="T:Jcd.Threading.ITicket"/> and waits on it.
+            Asynchronously creates an <see cref="T:Jcd.Threading.TicketLockResourceLock"/> and waits on it.
             </summary>
             <param name="token">The token to listen for cancellation on.</param>
             <returns>The ticket once the lock is acquired.</returns>
+        </member>
+        <member name="T:Jcd.Threading.TicketLockResourceLock">
+            <summary>
+            Provides a mechanism for establishing and releasing locks on a <see cref="T:Jcd.Threading.TicketLock"/>.
+            </summary>
+            <para>
+            Do not share instances of this type across threads. Behavior can be unpredictable.
+            Instances of this type are created by <see cref="T:Jcd.Threading.TicketLock"/> to create a more
+            consistent experience when using synchronization primitives with other
+            <see cref="T:Jcd.Threading.IResourceLock"/> types.
+            </para> 
+        </member>
+        <member name="P:Jcd.Threading.TicketLockResourceLock.TicketId">
+            <summary>
+            The ticked Id for this instance.
+            </summary>
+        </member>
+        <member name="P:Jcd.Threading.TicketLockResourceLock.IsCanceled">
+            <summary>
+            Indicates if the ticket has been canceled.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.Wait">
+            <summary>
+            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.Wait(System.Threading.CancellationToken)">
+            <summary>
+            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <param name="token">the token to observe for cancellation.</param>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.WaitAsync">
+            <summary>
+            Asynchronously Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.WaitAsync(System.Threading.CancellationToken)">
+            <summary>
+            Waits for the `NowServing` on the owning <see cref="T:Jcd.Threading.TicketLock"/>
+            to match its own `TicketId`
+            </summary>
+            <param name="token">the token to observe for cancellation.</param>
+            <returns>true if the lock was acquired, false otherwise (usually a cancellation)</returns>
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.Cancel">
+            <summary>
+            Cancels the ticket. This will register a background thread to do cleanup.
+            </summary>
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.Release">
+            <inheritdoc />
+        </member>
+        <member name="M:Jcd.Threading.TicketLockResourceLock.Dispose">
+            <summary>
+            Releases any locks held.
+            </summary>
         </member>
     </members>
 </doc>

@@ -1,5 +1,9 @@
 ﻿using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable UseObjectOrCollectionInitializer
+// ReSharper disable HeapView.DelegateAllocation
+// ReSharper disable InlineTemporaryVariable
+
 namespace Jcd.Threading.Tests.SynchronizedValues;
 
 public class TicketLockValueTests
@@ -93,7 +97,7 @@ public class TicketLockValueTests
 
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
-   
+
    [Theory]
    [InlineData(1)]
    [InlineData(-1)]
@@ -119,7 +123,7 @@ public class TicketLockValueTests
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
    }
-   
+
    [Theory]
    [InlineData(1)]
    [InlineData(-1)]

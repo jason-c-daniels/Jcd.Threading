@@ -61,7 +61,7 @@ public abstract class ThreadWrapper : IDisposable
    {
       if (yieldEachCycle && timeToYieldInMs < 1)
          throw new ArgumentException("must be greater than or equal to 1", nameof(timeToYieldInMs));
-      
+
       Name                     = name ?? $"{GetType().Name}";
       isIdleDetectionDisabled  = idleAfterNoWorkDoneCount < 0;
       UseBackgroundThread      = useBackgroundThread;
@@ -84,32 +84,32 @@ public abstract class ThreadWrapper : IDisposable
    /// <summary>
    /// The thread apartment state used to create the underlying thread.
    /// </summary>
-   public           ApartmentState                     ApartmentState                    { get; }
+   public ApartmentState ApartmentState { get; }
 
    /// <summary>
    /// The priority with which to create the underlying thread.
    /// </summary>
-   public           ThreadPriority                     Priority                 { get; }
+   public ThreadPriority Priority { get; }
 
    /// <summary>
    /// A flag indicating if the thread will be a background thread.
    /// </summary>
-   public           bool                               UseBackgroundThread      { get; }
+   public bool UseBackgroundThread { get; }
 
    /// <summary>
    /// A flag indicating if CPU time should be yielded every CPU cycle.
    /// </summary>
-   public           bool                               YieldEachCycle           { get; }
+   public bool YieldEachCycle { get; }
 
    /// <summary>
    /// The amount of time to yield each pass through the loop.
    /// </summary>
-   public           int                                TimeToYieldInMs          { get; }
+   public int TimeToYieldInMs { get; }
 
    /// <summary>
    /// The number of passes through the loop with no work performed before entering the idle state.
    /// </summary>
-   public           int                                IdleAfterNoWorkDoneCount { get; }
+   public int IdleAfterNoWorkDoneCount { get; }
 
    /// <summary>
    /// The name of this instance of the <see cref="ThreadWrapper"/>.
@@ -122,6 +122,7 @@ public abstract class ThreadWrapper : IDisposable
    /// Provides direct access to the underlying thread.
    /// </summary>
    public Thread? Thread => thread.Value;
+
    private readonly ReaderWriterLockSlimValue<Thread?> thread = new();
 
    private Thread CreateThread()
@@ -211,11 +212,9 @@ public abstract class ThreadWrapper : IDisposable
       {
          noWorkCounter++;
 
-         if (IdleAfterNoWorkDoneCount < noWorkCounter)
-         {
-            EnterIdleState();
-            noWorkCounter = 0;
-         }
+         if (IdleAfterNoWorkDoneCount >= noWorkCounter) return;
+         EnterIdleState();
+         noWorkCounter = 0;
       }
    }
 

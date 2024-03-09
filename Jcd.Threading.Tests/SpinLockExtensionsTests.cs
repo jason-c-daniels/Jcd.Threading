@@ -1,4 +1,7 @@
-﻿namespace Jcd.Threading.Tests;
+﻿// ReSharper disable HeapView.ClosureAllocation
+// ReSharper disable HeapView.DelegateAllocation
+
+namespace Jcd.Threading.Tests;
 
 public class SpinLockExtensionsTests
 {

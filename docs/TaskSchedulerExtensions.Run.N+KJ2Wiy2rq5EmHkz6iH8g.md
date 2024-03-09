@@ -6,7 +6,7 @@
 Schedules work with the provided [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler')
 
 ```csharp
-public static System.Threading.Tasks.Task<TResult> Run<TResult>(this System.Threading.Tasks.TaskScheduler? scheduler, System.Func<System.Threading.Tasks.Task<TResult>?>? function, System.Threading.CancellationToken cancellationToken);
+public static System.Threading.Tasks.Task<TResult> Run<TResult>(this System.Threading.Tasks.TaskScheduler? scheduler, System.Func<System.Threading.Tasks.Task<TResult>>? function, System.Threading.CancellationToken cancellationToken);
 ```
 #### Type parameters
 

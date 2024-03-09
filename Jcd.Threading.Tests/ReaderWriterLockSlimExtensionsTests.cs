@@ -34,7 +34,7 @@ public class ReaderWriterLockSlimExtensionsTests
       Assert.Equal(expectedLockType, lockType);
    }
 
-   private ReaderWriterLockSlimIntent? GetIntent(ReaderWriterLockSlim rwls)
+   private static ReaderWriterLockSlimIntent? GetIntent(ReaderWriterLockSlim rwls)
    {
       if (rwls.IsUpgradeableReadLockHeld) return ReaderWriterLockSlimIntent.UpgradeableRead;
       if (rwls.IsWriteLockHeld) return ReaderWriterLockSlimIntent.Write;

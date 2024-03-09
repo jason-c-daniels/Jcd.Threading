@@ -1,5 +1,8 @@
 ﻿using Jcd.Threading.SynchronizedValues;
 
+// ReSharper disable InlineTemporaryVariable
+// ReSharper disable HeapView.DelegateAllocation
+
 namespace Jcd.Threading.Tests.SynchronizedValues;
 
 public class SemaphoreSlimValueTests
@@ -93,7 +96,7 @@ public class SemaphoreSlimValueTests
 
       Task<int> MultiplyByTenAsync(int i) { return Task.FromResult(i * 10); }
    }
-   
+
    [Theory]
    [InlineData(1)]
    [InlineData(-1)]
@@ -119,7 +122,7 @@ public class SemaphoreSlimValueTests
       Assert.Equal(expectedValue, sv.Value);
       Assert.Equal(expectedValue, result);
    }
-   
+
    [Theory]
    [InlineData(1)]
    [InlineData(-1)]
