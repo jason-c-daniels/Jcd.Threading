@@ -19,7 +19,7 @@ Read the [API documentation](./docs/Jcd.Threading.md) carefully.
   or setting a value. (e.g. [ReaderWriterLockSlimValue](./docs/ReaderWriterLockSlimValue_T_.md))
 
 ## Examples
-
+ 
 Execute `TaskSchedulerExtensions.Run` on a default instance of IdleTaskScheduler configured to provide 4 STA threads.
 
 ```csharp
