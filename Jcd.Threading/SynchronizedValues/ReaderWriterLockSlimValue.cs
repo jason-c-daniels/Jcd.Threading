@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 namespace Jcd.Threading.SynchronizedValues;
 
 /// <summary>
-/// Provides a simple async-safe and thread-safe method of setting, getting, acting on,
-/// and altering values shared among tasks and threads.
+/// Provides a generic mechanism for setting, getting, acting on, and altering values
+/// shared among tasks and threads, utilizing a <see cref="ReaderWriterLock"/> for synchronization.
 /// </summary>
 /// <param name="val">The value to initialize this to</param>
 /// <typeparam name="T">The data type to synchronize access to.</typeparam>
@@ -32,10 +32,16 @@ namespace Jcd.Threading.SynchronizedValues;
 /// that in a <see cref="ReaderWriterLockSlimValue{T}"/> instead of each individual field/property.
 /// </para>
 /// <para>
-/// As well this implementation uses <see cref="SemaphoreSlim"/> and requires Dispose to be
+/// As well this implementation uses <see cref="ReaderWriterLockSlim"/> and requires `Dispose` to be
 /// called. Either implement <see cref="IDisposable"/> or call it directly at the appropriate
 /// time. See the documentation for <see cref="ChangeValue"/>, <see cref="ChangeValueAsync"/>,
 /// for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+/// </para>
+/// <para>
+/// NB: If using a reference type for the underlying value, ensure your reference
+/// type appropriately synchronizes access to its own data. In this case these
+/// types only restrict access to the reference, not the data contained within
+/// the reference type.
 /// </para>
 /// </remarks>
 public sealed class ReaderWriterLockSlimValue<T>

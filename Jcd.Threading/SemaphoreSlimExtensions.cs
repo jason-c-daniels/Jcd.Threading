@@ -7,9 +7,59 @@ namespace Jcd.Threading;
 
 /// <summary>
 /// Provides extension methods to simplify using a <see cref="SemaphoreSlim"/>
-/// to ensure that Release is called for every Wait or WaitAsync. Useful for
-/// ensuring synchronized access to data for short lived operations.
+/// to ensure the correct pairing of calls to of Enter and Exit.
 /// </summary>
+/// <remarks>
+/// <para>
+/// These methods are intended to be used with a using block as illustrated below. 
+/// This will ensure the lock is held for no more time than necessary.
+/// 
+/// Contrast this with a using declaration where an method may grow in length over time,
+/// and and execution time. Usually most of the lines in those methods shouldn't hold
+/// the lock. The reason is the longer a lock is held, the more contention there will be.
+/// And large scale contention for resources adversely impacts performance application
+/// performance.
+/// </para>
+/// <code>
+/// // problem illustration:
+/// void DoNotDoThis()
+/// {
+///    using _ = sem.Lock();                     // acquire the lock. But don't use the value. Just dispose it.
+///    AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+///    AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+///    AShortActionRequiringNoSynchronization(); // reasonable but unwanted: done in 5 milliseconds.
+///    ALongActionRequiringNoSynchronization();  // slow: done in 500 milliseconds.    
+/// } // the lock is disposed (and released) here. 
+/// </code>
+/// <para>
+/// The reason the above code is problematic is the lock is held until disposal. 
+/// The result of Lock is an <see cref="IDisposable"/> bound to the <see cref="SemaphoreSlim"/>
+/// which exits the lock when `Dispose` is called. `Dispose` won't be called until
+/// the method is exited, which is the very nature of a using declaration.
+/// </para>
+/// <para>
+/// Instead, use a traditional using block. Below is the corrected code.
+/// </para>
+/// <para>
+/// <code>
+/// // problem resolution:
+/// void DefinitelyDoThis()
+/// {
+///    using (sem.Lock())                           // acquire the lock. But don't use the value.
+///    { 
+///       AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+///       AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+///    } 
+///    AShortActionRequiringNoSynchronization();    // the lock is no longer held. This won't cause contention.
+///    ALongActionRequiringNoSynchronization();     // the lock is no longer held. This won't cause contention.
+/// } 
+/// </code>
+/// </para>
+/// <para>
+/// As you can see, a using block clearly describes the scope for which
+/// the lock needs to be held.
+/// </para>
+/// </remarks>
 public static class SemaphoreSlimExtensions
 {
    /// <summary>

@@ -54,7 +54,7 @@ public class SpinLockExtensionsTests
    [Fact]
    public void Lock_With_Cancellation_Token_Holds_And_Releases_The_Lock()
    {
-      SpinLock sl  = new(false);
+      SpinLock sl = new(false);
       var      cts = new CancellationTokenSource();
 
       // ReSharper disable once RedundantAssignment
@@ -68,7 +68,7 @@ public class SpinLockExtensionsTests
    [Fact]
    public void Lock_With_Canceled_Token_Does_Not_Acquire_The_Lock()
    {
-      SpinLock sl  = new(false);
+      SpinLock sl = new(false);
       var      cts = new CancellationTokenSource();
       cts.Cancel();
       bool wasHeld;

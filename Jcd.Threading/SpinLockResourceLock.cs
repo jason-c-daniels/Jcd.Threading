@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if REF_STRUCT_SUPPORT
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,10 +10,16 @@ using System.Threading.Tasks;
 
 namespace Jcd.Threading;
 
-#if REF_STRUCT_SUPPORT
 /// <summary>
-/// Acquires a lock on the <see cref="SpinLock"/> it was created with.
+/// Provides a single-use mechanism for establishing and releasing locks on a <see cref="SpinLock"/>.
 /// </summary>
+/// <param name="internalLock">The <see cref="SpinLock"/> to lock and release. </param>
+/// <remarks>
+/// <para>
+/// This struct exists to be used in conjunction with the .Lock extension method for
+/// <see cref="SpinLock"/> and advanced use cases.
+/// </para> 
+/// </remarks>
 public ref struct SpinLockResourceLock
 {
    private ref SpinLock internalLock;
@@ -150,7 +157,7 @@ public ref struct SpinLockResourceLock
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    private void ReleaseLock()
    {
-      IsLocked   = false;
+      IsLocked = false;
       IsReleased = true;
    }
 
@@ -177,7 +184,7 @@ public ref struct SpinLockResourceLock
          throw new
             InvalidOperationException($"{nameof(BeginWait)} may not be waited on twice in a row, without first calling Release."
                                      );
-      IsWaiting  = true;
+      IsWaiting = true;
       IsReleased = false;
    }
 

@@ -3,23 +3,23 @@
 A *netstandard2.0* library that provides utility classes to help simplify some
 aspects of multi-threading and synchronization.
 
-Read the [API documentation](./docs/Jcd.Threading.md) carefully.
+Read the [API documentation](./docs/api/index.md) carefully.
 
 ## Features Provided
 
-- [`TaskScheduler`](./docs/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks are
-  run with the desired scheduler.
-- [`IdleTaskScheduler`](./docs/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin
+- [`TaskScheduler`](./docs/api/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks
+  are run with the desired scheduler.
+- [`IdleTaskScheduler`](./docs/api/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin
   manner with idle threads.
-- [`ThreadWrapper`](./docs/ThreadWrapper.md) class to simplify the process of making a pauseable thread.
-- [`ItemProcessor<TItem>`](./docs/ItemProcessor_TItem_.md) class encapsulating a queue+worker thread.
+- [`ThreadWrapper`](./docs/api/ThreadWrapper.md) class to simplify the process of making a pauseable thread.
+- [`ItemProcessor<TItem>`](./docs/api/ItemProcessor_TItem_.md) class encapsulating a queue+worker thread.
 - Various `Lock` extension methods to simplify using synchronization primitives (
-  e.g. [SemaphoreSlimExtensions](./docs/SemaphoreSlimExtensions.md))
+  e.g. [SemaphoreSlimExtensions](./docs/api/SemaphoreSlimExtensions.md))
 - Various synchronized value holder generics to automatically use and release a specific locking mechanism when getting
-  or setting a value. (e.g. [ReaderWriterLockSlimValue](./docs/ReaderWriterLockSlimValue_T_.md))
+  or setting a value. (e.g. [ReaderWriterLockSlimValue](./docs/api/ReaderWriterLockSlimValue_T_.md))
 
 ## Examples
- 
+
 Execute `TaskSchedulerExtensions.Run` on a default instance of IdleTaskScheduler configured to provide 4 STA threads.
 
 ```csharp
@@ -100,7 +100,7 @@ await Task.WhenAll(new[]{wt,rt1,rt2});
 
 These were just an overview of what's available. See [EXAMPLES.md](./EXAMPLES.md) for more and detailed examples.
 
-And as always, read the [API documentation](./docs/Jcd.Threading.md)
+And as always, read the [API documentation](./docs/api/index.md)
 
 ## Badges
 
@@ -112,4 +112,4 @@ And as always, read the [API documentation](./docs/Jcd.Threading.md)
 [![MyGet](https://img.shields.io/myget/jason-c-daniels/v/Jcd.Threading?logo=nuget)](https://www.myget.org/feed/jason-c-daniels/package/nuget/Jcd.Threading)
 [![Nuget](https://img.shields.io/nuget/v/Jcd.Threading?logo=nuget)](https://www.nuget.org/packages/Jcd.Threading)
 
-[![API Docs](https://img.shields.io/badge/Read-The%20API%20Documentation-blue?style=for-the-badge)](https://github.com/jason-c-daniels/Jcd.Threading/blob/main/docs/Jcd.Threading.md)
+[![API Docs](https://img.shields.io/badge/Read-The%20API%20Documentation-blue?style=for-the-badge)](https://github.com/jason-c-daniels/Jcd.Threading/blob/main/docs/api/index.md)

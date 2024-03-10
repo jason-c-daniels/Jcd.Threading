@@ -1,0 +1,8 @@
+#!/bin/bash
+pushd "$(git rev-parse --show-toplevel)/docs" || exit
+echo finding files
+find . -type f -name '*.md'
+echo editing files
+find . -type f -name '*.md' -exec sed -i -Ee 's/[ ]+$//g' {} \;
+find . -type f -name '*.md' -exec sed -i -Ee 's:[\<]br[/][\>]: :g' {} \;
+popd || exit

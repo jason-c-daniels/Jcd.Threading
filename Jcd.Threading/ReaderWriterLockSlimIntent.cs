@@ -1,7 +1,7 @@
 ﻿namespace Jcd.Threading;
 
 /// <summary>
-/// Indicates the intent of a call to ReaderWriterLockSLimExtensions.Lock.
+/// Indicates the intent of a call to <see cref="ReaderWriterLockSlimExtensions"/>`Lock`.
 /// </summary>
 public enum ReaderWriterLockSlimIntent
 {
