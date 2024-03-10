@@ -3,7 +3,7 @@
 
 ## ThreadWrapper.PerformThreadStateCleanup() Method
 
-Ensures thread state is reset to final, including cancellation.
+Ensures thread state is reset to final, including cancellation.  
 This is called as a thread is exiting..
 
 ```csharp

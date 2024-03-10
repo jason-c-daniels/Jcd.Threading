@@ -3,8 +3,8 @@
 
 ## ThreadWrapper.Name Property
 
-The name of this instance of the [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper').
-By default the underlying thread will be named as follows:
+The name of this instance of the [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper').  
+By default the underlying thread will be named as follows:  
 `$"{Name}.Thread"`
 
 ```csharp

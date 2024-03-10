@@ -17,5 +17,5 @@ protected override bool PerformWork(System.Threading.CancellationToken token);
 The token to inspect for cancellation.
 
 #### Returns
-[System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
+[System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')  
 True if there are pending items after the work is performed.

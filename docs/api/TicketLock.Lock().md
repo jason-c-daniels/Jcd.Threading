@@ -10,5 +10,5 @@ public Jcd.Threading.TicketLockResourceLock Lock();
 ```
 
 #### Returns
-[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')
+[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')  
 The ticket once the lock is acquired.

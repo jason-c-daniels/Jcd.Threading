@@ -3,7 +3,7 @@
 
 ## ThreadWrapper.YieldCpuTime(int) Method
 
-Yields very small amounts of CPU time. This can approach 1ms.
+Yields very small amounts of CPU time. This can approach 1ms.  
 Thread.Sleep and Task.Delay will wait at least 15ms.
 
 ```csharp

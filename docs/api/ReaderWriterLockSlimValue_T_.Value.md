@@ -13,13 +13,13 @@ public T Value { get; set; }
 [T](ReaderWriterLockSlimValue_T_.md#Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue_T_.T 'Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue<T>.T')
 
 ### Example
-
-```csharp
-var sv = new ReaderWriterLockSlimValue<int>(15);
-
-// get the value
-var theValue = sv.Value;
-
-// set the value
-sv.Value = theValue + 10;
+  
+```csharp  
+var sv = new ReaderWriterLockSlimValue<int>(15);  
+  
+// get the value  
+var theValue = sv.Value;  
+  
+// set the value  
+sv.Value = theValue + 10;  
 ```

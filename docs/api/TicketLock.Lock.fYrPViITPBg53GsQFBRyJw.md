@@ -17,5 +17,5 @@ public Jcd.Threading.TicketLockResourceLock Lock(System.Threading.CancellationTo
 The token to listen for cancellation on.
 
 #### Returns
-[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')
+[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')  
 The ticket once the lock is acquired.

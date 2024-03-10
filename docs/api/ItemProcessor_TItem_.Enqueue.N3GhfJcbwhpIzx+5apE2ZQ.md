@@ -3,7 +3,7 @@
 
 ## ItemProcessor<TItem>.Enqueue(TItem) Method
 
-Enqueues an item. Control is immediately
+Enqueues an item. Control is immediately  
 returned to the caller.
 
 ```csharp

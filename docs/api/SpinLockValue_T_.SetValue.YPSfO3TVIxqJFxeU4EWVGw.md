@@ -17,17 +17,17 @@ public T SetValue(T value);
 The provided value.
 
 #### Returns
-[T](SpinLockValue_T_.md#Jcd.Threading.SynchronizedValues.SpinLockValue_T_.T 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.T')
+[T](SpinLockValue_T_.md#Jcd.Threading.SynchronizedValues.SpinLockValue_T_.T 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.T')  
 The provided value.
 
 ### Example
-
-```csharp
-var sv = new SpinLockValue<int>();
-
-// set the value to 10.
-var result = sv.SetValue(10);
-
-// set the value to 20.
-setValue = sv.SetValue(20);
+  
+```csharp  
+var sv = new SpinLockValue<int>();  
+  
+// set the value to 10.  
+var result = sv.SetValue(10);  
+  
+// set the value to 20.  
+setValue = sv.SetValue(20);  
 ```
