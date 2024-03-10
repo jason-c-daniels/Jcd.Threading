@@ -17,17 +17,17 @@ public T SetValue(T value);
 The provided value.
 
 #### Returns
-[T](ReaderWriterLockSlimValue_T_.md#Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue_T_.T 'Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue<T>.T')  
+[T](ReaderWriterLockSlimValue_T_.md#Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue_T_.T 'Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue<T>.T')
 The provided value.
 
 ### Example
-  
-```csharp  
-var sv = new ReaderWriterLockSlimValue<int>();  
-  
-// set the value to 10.  
-var result = sv.SetValue(10);  
-  
-// set the value to 20.  
-result = sv.SetValue(20);  
+
+```csharp
+var sv = new ReaderWriterLockSlimValue<int>();
+
+// set the value to 10.
+var result = sv.SetValue(10);
+
+// set the value to 20.
+result = sv.SetValue(20);
 ```

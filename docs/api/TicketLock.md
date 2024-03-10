@@ -15,9 +15,9 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 Implements [Jcd.Threading.IResourceLockProvider&lt;](IResourceLockProvider_T_.md 'Jcd.Threading.IResourceLockProvider<T>')[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')[&gt;](IResourceLockProvider_T_.md 'Jcd.Threading.IResourceLockProvider<T>')
 
 ### Remarks
-  
-For a technical reference on Ticket Locks see: [Ticket Locking Algorithm : Fair Lock Delivery Mechanism](https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b 'https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b')  
-  
+
+For a technical reference on Ticket Locks see: [Ticket Locking Algorithm : Fair Lock Delivery Mechanism](https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b 'https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b')
+
 For further reading see the [Wikipedia Article on Ticket locks](https://en.wikipedia.org/wiki/Ticket_lock 'https://en.wikipedia.org/wiki/Ticket_lock').
 
 | Properties | |
@@ -33,4 +33,4 @@ For further reading see the [Wikipedia Article on Ticket locks](https://en.wikip
 | [Lock(CancellationToken)](TicketLock.Lock.fYrPViITPBg53GsQFBRyJw.md 'Jcd.Threading.TicketLock.Lock(System.Threading.CancellationToken)') | Creates an [TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock') and waits on it. |
 | [LockAsync()](TicketLock.LockAsync().md 'Jcd.Threading.TicketLock.LockAsync()') | Asynchronously creates an [TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock') and waits on it. |
 | [LockAsync(CancellationToken)](TicketLock.LockAsync.YvBodh5bW+w7Ka09w0RHRw.md 'Jcd.Threading.TicketLock.LockAsync(System.Threading.CancellationToken)') | Asynchronously creates an [TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock') and waits on it. |
-| [Release()](TicketLock.Release().md 'Jcd.Threading.TicketLock.Release()') | Increment's NowServing so that the next thread<br/>can begin processing. |
+| [Release()](TicketLock.Release().md 'Jcd.Threading.TicketLock.Release()') | Increment's NowServing so that the next thread can begin processing. |

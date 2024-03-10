@@ -3,7 +3,7 @@
 
 ## TicketLock.Release() Method
 
-Increment's NowServing so that the next thread  
+Increment's NowServing so that the next thread
 can begin processing.
 
 ```csharp

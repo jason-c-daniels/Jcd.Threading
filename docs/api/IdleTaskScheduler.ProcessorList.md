@@ -3,7 +3,7 @@
 
 ## IdleTaskScheduler.ProcessorList Field
 
-The list of underlying queue+thread task processors.  
+The list of underlying queue+thread task processors.
 This is provided for advanced use cases.
 
 ```csharp

@@ -10,7 +10,7 @@ public interface IResourceLock :
 System.IDisposable
 ```
 
-Derived  
+Derived
 &#8627; [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase')
 
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')

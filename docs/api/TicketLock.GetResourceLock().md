@@ -12,12 +12,12 @@ public Jcd.Threading.TicketLockResourceLock GetResourceLock();
 Implements [GetResourceLock()](IResourceLockProvider_T_.GetResourceLock().md 'Jcd.Threading.IResourceLockProvider<T>.GetResourceLock()')
 
 #### Returns
-[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')  
+[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')
 The new ticket.
 
 ### Remarks
-WARNING: This is for advanced use cases only. Failing to release the lock  
-will deadlock all other tickets with a larger TicketId. However, calling release  
-on the ticket before this [TicketLock](TicketLock.md 'Jcd.Threading.TicketLock') has NowServing set to the  
-new ticket's ID will cause a race condition between the code locked by  
+WARNING: This is for advanced use cases only. Failing to release the lock
+will deadlock all other tickets with a larger TicketId. However, calling release
+on the ticket before this [TicketLock](TicketLock.md 'Jcd.Threading.TicketLock') has NowServing set to the
+new ticket's ID will cause a race condition between the code locked by
 this specific ticket and the next immediately higher lock.

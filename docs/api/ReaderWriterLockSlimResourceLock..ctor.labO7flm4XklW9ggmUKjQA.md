@@ -23,8 +23,8 @@ The [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dot
 The intent of the lock (Read, UpgradeableRead, Write)
 
 ### Remarks
-  
-Do not share instances of this type across threads or synchronization contexts.  
-Behavior can be unpredictable. This exists to be used in conjunction  
-with the .Lock extension method for [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') and  
+
+Do not share instances of this type across threads or synchronization contexts.
+Behavior can be unpredictable. This exists to be used in conjunction
+with the .Lock extension method for [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') and
 advanced use cases.

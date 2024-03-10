@@ -3,7 +3,7 @@
 
 ## ItemProcessor<TItem> Class
 
-Provides the ability to call a delegate on each item in an internally managed queue  
+Provides the ability to call a delegate on each item in an internally managed queue
 from its own background thread.
 
 ```csharp
@@ -18,7 +18,7 @@ public sealed class ItemProcessor<TItem> : Jcd.Threading.ThreadWrapper
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') &#129106; ItemProcessor<TItem>
 
 ### Remarks
-You must ensure all shared resources owned by the enqueued items have their access  
+You must ensure all shared resources owned by the enqueued items have their access
 synchronized appropriately. This type only synchronizes access to internal data.
 
 | Constructors | |
@@ -36,6 +36,6 @@ synchronized appropriately. This type only synchronizes access to internal data.
 | [Clear()](ItemProcessor_TItem_.Clear().md 'Jcd.Threading.ItemProcessor<TItem>.Clear()') | Clears all items out of the queue. USE AT YOUR OWN RISK! |
 | [ClearAsync()](ItemProcessor_TItem_.ClearAsync().md 'Jcd.Threading.ItemProcessor<TItem>.ClearAsync()') | Asynchronously clears all items out of the queue. USE AT YOUR OWN RISK! |
 | [Dispose(bool)](ItemProcessor_TItem_.Dispose.R9oK3S7Odlhv6x2YZ2IuYQ.md 'Jcd.Threading.ItemProcessor<TItem>.Dispose(bool)') | Cleans up other disposables. |
-| [Enqueue(TItem)](ItemProcessor_TItem_.Enqueue.N3GhfJcbwhpIzx+5apE2ZQ.md 'Jcd.Threading.ItemProcessor<TItem>.Enqueue(TItem)') | Enqueues an item. Control is immediately<br/>returned to the caller. |
-| [EnqueueAsync(TItem)](ItemProcessor_TItem_.EnqueueAsync.mVMQ00UOgrbxulMCDWdHGw.md 'Jcd.Threading.ItemProcessor<TItem>.EnqueueAsync(TItem)') | Enqueues an item asynchronously. Control is immediately<br/>returned to the caller. |
+| [Enqueue(TItem)](ItemProcessor_TItem_.Enqueue.N3GhfJcbwhpIzx+5apE2ZQ.md 'Jcd.Threading.ItemProcessor<TItem>.Enqueue(TItem)') | Enqueues an item. Control is immediately returned to the caller. |
+| [EnqueueAsync(TItem)](ItemProcessor_TItem_.EnqueueAsync.mVMQ00UOgrbxulMCDWdHGw.md 'Jcd.Threading.ItemProcessor<TItem>.EnqueueAsync(TItem)') | Enqueues an item asynchronously. Control is immediately returned to the caller. |
 | [PerformWork(CancellationToken)](ItemProcessor_TItem_.PerformWork.+Mbrb8EbUB5C59WBBSfo+A.md 'Jcd.Threading.ItemProcessor<TItem>.PerformWork(System.Threading.CancellationToken)') | Grabs the first item in the queue and performs the user provided action on it. |

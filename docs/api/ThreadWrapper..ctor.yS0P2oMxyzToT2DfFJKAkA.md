@@ -53,8 +53,8 @@ The priority to start the processing thread at.
 The apartment state for the underlying thread.
 
 ### Remarks
-  
-NOTE: The underlying thread is not created until the first call to `Start` and will change when calling `Stop`  
-followed by `Start`. This is because the thread ends completely with a call to `Stop`.  
-  
+
+NOTE: The underlying thread is not created until the first call to `Start` and will change when calling `Stop`
+followed by `Start`. This is because the thread ends completely with a call to `Stop`.
+
 If resuming  the same thread is the desired behavior, call `Pause` and `Resume` instead.

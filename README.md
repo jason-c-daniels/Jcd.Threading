@@ -3,20 +3,20 @@
 A *netstandard2.0* library that provides utility classes to help simplify some
 aspects of multi-threading and synchronization.
 
-Read the [API documentation](./docs/api/index.md) carefully.
+Read the [API documentation](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/index.md) carefully.
 
-## Features Provided
+## Features
 
-- [`TaskScheduler`](./docs/api/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks
+- [`TaskScheduler`](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks
   are run with the desired scheduler.
-- [`IdleTaskScheduler`](./docs/api/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin
+- [`IdleTaskScheduler`](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin
   manner with idle threads.
-- [`ThreadWrapper`](./docs/api/ThreadWrapper.md) class to simplify the process of making a pauseable thread.
-- [`ItemProcessor<TItem>`](./docs/api/ItemProcessor_TItem_.md) class encapsulating a queue+worker thread.
+- [`ThreadWrapper`](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/ThreadWrapper.md) class to simplify the process of making a pauseable thread.
+- [`ItemProcessor<TItem>`](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/ItemProcessor_TItem_.md) class encapsulating a queue+worker thread.
 - Various `Lock` extension methods to simplify using synchronization primitives (
-  e.g. [SemaphoreSlimExtensions](./docs/api/SemaphoreSlimExtensions.md))
+  e.g. [SemaphoreSlimExtensions](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/SemaphoreSlimExtensions.md))
 - Various synchronized value holder generics to automatically use and release a specific locking mechanism when getting
-  or setting a value. (e.g. [ReaderWriterLockSlimValue](./docs/api/ReaderWriterLockSlimValue_T_.md))
+  or setting a value. (e.g. [ReaderWriterLockSlimValue](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/ReaderWriterLockSlimValue_T_.md))
 
 ## Examples
 
@@ -98,9 +98,9 @@ var rt1 = Task.Run(()=>{
 await Task.WhenAll(new[]{wt,rt1,rt2});
 ```
 
-These were just an overview of what's available. See [EXAMPLES.md](./EXAMPLES.md) for more and detailed examples.
+These were just an overview of what's available. See [EXAMPLES.md](https://github.com/jason-c-daniels/Jcd.Threading/tree/main//EXAMPLES.md) for more and detailed examples.
 
-And as always, read the [API documentation](./docs/api/index.md)
+And as always, read the [API documentation](https://github.com/jason-c-daniels/Jcd.Threading/tree/main/docs/api/index.md)
 
 ## Badges
 
