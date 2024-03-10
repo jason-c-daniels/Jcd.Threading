@@ -3,7 +3,7 @@
 
 ## ItemProcessor<TItem> Class
 
-Provides the ability to call a delegate on each item in an internally managed queue
+Provides the ability to call a delegate on each item in an internally managed queue  
 from its own background thread.
 
 ```csharp
@@ -18,7 +18,7 @@ public sealed class ItemProcessor<TItem> : Jcd.Threading.ThreadWrapper
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [ThreadWrapper](ThreadWrapper.md 'Jcd.Threading.ThreadWrapper') &#129106; ItemProcessor<TItem>
 
 ### Remarks
-You must ensure all shared resources owned by the enqueued items have their access
+You must ensure all shared resources owned by the enqueued items have their access  
 synchronized appropriately. This type only synchronizes access to internal data.
 
 | Constructors | |

@@ -1,5 +1,4 @@
 ﻿#if REF_STRUCT_SUPPORT
-
 // ReSharper disable once RedundantUsingDirective
 using Jcd.Threading.SynchronizedValues;
 
@@ -39,7 +38,7 @@ public class SpinLockResourceLockTests
    [Fact]
    public void Wait_Sets_IsHeld_To_True_On_SpinLock()
    {
-      var sl   = new SpinLock(false);
+      var sl = new SpinLock(false);
       var cde1 = new AutoResetEvent(false);
       var cde2 = new AutoResetEvent(false);
       Task.Run(() =>
@@ -60,10 +59,10 @@ public class SpinLockResourceLockTests
    [Fact]
    public void WaitAsync_Sets_IsHeld_To_True_On_SpinLock()
    {
-      var       sl   = new SpinLock(false);
+      var       sl = new SpinLock(false);
       var       cde1 = new AutoResetEvent(false);
       var       cde2 = new AutoResetEvent(false);
-      using var rl   = sl.GetResourceLock();
+      using var rl = sl.GetResourceLock();
       Task.Run(() =>
                {
                   cde2.WaitOne();
@@ -82,11 +81,11 @@ public class SpinLockResourceLockTests
    [Fact]
    public void WaitAsync_With_CancellationToken_Sets_IsHeld_To_True_On_SpinLock()
    {
-      var       sl   = new SpinLock(false);
+      var       sl = new SpinLock(false);
       var       cde1 = new AutoResetEvent(false);
       var       cde2 = new AutoResetEvent(false);
-      var       cts  = new CancellationTokenSource();
-      using var rl   = sl.GetResourceLock();
+      var       cts = new CancellationTokenSource();
+      using var rl = sl.GetResourceLock();
       Task.Run(() =>
                {
                   cde2.WaitOne();

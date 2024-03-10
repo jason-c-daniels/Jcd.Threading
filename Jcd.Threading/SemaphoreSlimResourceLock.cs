@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 namespace Jcd.Threading;
 
 /// <summary>
-/// Provides a mechanism for establishing and releasing locks on a <see cref="SemaphoreSlim"/>.
+/// Provides a single-use mechanism for establishing and releasing locks on a <see cref="SemaphoreSlim"/>.
 /// </summary>
 /// <param name="internalLock">The <see cref="SemaphoreSlim"/> to lock and release. </param>
 /// <remarks>
 /// <para>
 /// Do not share instances of this type across threads or synchronization contexts.
-/// Behavior can be unpredictable. These are provided and meant to be used in conjunction
-/// with the extension classes to create a more consistent experience when using
-/// synchronization primitives.
+/// Behavior can be unpredictable. This exists to be used in conjunction
+/// with the .Lock extension method for <see cref="SemaphoreSlim"/> and
+/// advanced use cases.
 /// </para> 
 /// </remarks>
 public class SemaphoreSlimResourceLock(SemaphoreSlim internalLock) : ResourceLockBase

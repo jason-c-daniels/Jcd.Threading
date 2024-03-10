@@ -1,4 +1,5 @@
 #!/bin/bash
+pushd "$(git rev-parse --show-toplevel)/Examples/Jcd.Threading.Examples.Benchmark" || exit
 mkdir -p ./benchmarks
 rm -R ./benchmarks/
 dotnet run -c Release -f net8.0 -- -a ./benchmarks/out --warmupCount 1 --minIterationCount 9 --maxIterationCount 11 --runtimes net8.0 net462 --filter "*"

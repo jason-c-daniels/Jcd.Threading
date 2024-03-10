@@ -3,7 +3,7 @@
 
 ## ReaderWriterLockSlimResourceLock Class
 
-Provides a mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim').
+Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim').
 
 ```csharp
 public class ReaderWriterLockSlimResourceLock : Jcd.Threading.ResourceLockBase
@@ -12,15 +12,15 @@ public class ReaderWriterLockSlimResourceLock : Jcd.Threading.ResourceLockBase
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase') &#129106; ReaderWriterLockSlimResourceLock
 
 ### Remarks
-
-Do not share instances of this type across threads or synchronization contexts.
-Behavior can be unpredictable. These are provided and meant to be used in conjunction
-with the extension classes to create a more consistent experience when using
-synchronization primitives.
+  
+Do not share instances of this type across threads or synchronization contexts.  
+Behavior can be unpredictable. This exists to be used in conjunction  
+with the .Lock extension method for [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') and  
+advanced use cases.
 
 | Constructors | |
 | :--- | :--- |
-| [ReaderWriterLockSlimResourceLock(ReaderWriterLockSlim, ReaderWriterLockSlimIntent)](ReaderWriterLockSlimResourceLock..ctor.labO7flm4XklW9ggmUKjQA.md 'Jcd.Threading.ReaderWriterLockSlimResourceLock.ReaderWriterLockSlimResourceLock(System.Threading.ReaderWriterLockSlim, Jcd.Threading.ReaderWriterLockSlimIntent)') | Provides a mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim'). |
+| [ReaderWriterLockSlimResourceLock(ReaderWriterLockSlim, ReaderWriterLockSlimIntent)](ReaderWriterLockSlimResourceLock..ctor.labO7flm4XklW9ggmUKjQA.md 'Jcd.Threading.ReaderWriterLockSlimResourceLock.ReaderWriterLockSlimResourceLock(System.Threading.ReaderWriterLockSlim, Jcd.Threading.ReaderWriterLockSlimIntent)') | Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim'). |
 
 | Methods | |
 | :--- | :--- |

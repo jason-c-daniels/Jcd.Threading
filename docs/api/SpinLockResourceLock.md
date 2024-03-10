@@ -3,11 +3,16 @@
 
 ## SpinLockResourceLock Struct
 
-Acquires a lock on the [System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock') it was created with.
+Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock').
 
 ```csharp
 public ref struct SpinLockResourceLock
 ```
+
+### Remarks
+  
+This struct exists to be used in conjunction with the .Lock extension method for  
+[System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock') and advanced use cases.
 
 | Constructors | |
 | :--- | :--- |

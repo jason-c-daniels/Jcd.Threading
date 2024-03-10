@@ -3,21 +3,21 @@
 
 ## TicketLock Class
 
-Provides a naiive implementation of a [Ticket lock (wikipedia)](https://en.wikipedia.org/wiki/Ticket_lock 'https://en.wikipedia.org/wiki/Ticket_lock') with cancellation support.
+Provides a naïve implementation of a [Ticket lock (wikipedia)](https://en.wikipedia.org/wiki/Ticket_lock 'https://en.wikipedia.org/wiki/Ticket_lock') with cancellation support.
 
 ```csharp
 public class TicketLock :
-Jcd.Threading.IResourceLockFactory<Jcd.Threading.TicketLockResourceLock>
+Jcd.Threading.IResourceLockProvider<Jcd.Threading.TicketLockResourceLock>
 ```
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; TicketLock
 
-Implements [Jcd.Threading.IResourceLockFactory&lt;](IResourceLockFactory_T_.md 'Jcd.Threading.IResourceLockFactory<T>')[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')[&gt;](IResourceLockFactory_T_.md 'Jcd.Threading.IResourceLockFactory<T>')
+Implements [Jcd.Threading.IResourceLockProvider&lt;](IResourceLockProvider_T_.md 'Jcd.Threading.IResourceLockProvider<T>')[TicketLockResourceLock](TicketLockResourceLock.md 'Jcd.Threading.TicketLockResourceLock')[&gt;](IResourceLockProvider_T_.md 'Jcd.Threading.IResourceLockProvider<T>')
 
 ### Remarks
-
-For a technical reference on Ticket Locks see: [Ticket Locking Algorithm : Fair Lock Delivery Mechanism](https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b 'https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b')
-
+  
+For a technical reference on Ticket Locks see: [Ticket Locking Algorithm : Fair Lock Delivery Mechanism](https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b 'https://medium.com/@shivajiofficial5088/ticket-locking-algorithm-fair-lock-delivery-mechanism-fdfe04b0b94b')  
+  
 For further reading see the [Wikipedia Article on Ticket locks](https://en.wikipedia.org/wiki/Ticket_lock 'https://en.wikipedia.org/wiki/Ticket_lock').
 
 | Properties | |

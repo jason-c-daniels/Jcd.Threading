@@ -3,7 +3,7 @@
 
 ## ReaderWriterLockSlimIntent Enum
 
-Indicates the intent of a call to ReaderWriterLockSLimExtensions.Lock.
+Indicates the intent of a call to [ReaderWriterLockSlimExtensions](ReaderWriterLockSlimExtensions.md 'Jcd.Threading.ReaderWriterLockSlimExtensions')`Lock`.
 
 ```csharp
 public enum ReaderWriterLockSlimIntent

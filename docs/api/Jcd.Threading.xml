@@ -51,13 +51,13 @@
             Releases the lock on the resource.
             </summary>
         </member>
-        <member name="T:Jcd.Threading.IResourceLockFactory`1">
+        <member name="T:Jcd.Threading.IResourceLockProvider`1">
             <summary>
             Provides a mechanism for acquiring resource locks bound to a specific instance of a synchronization primitive.
             </summary>
             <typeparam name="T">The type of the resource lock.</typeparam>
         </member>
-        <member name="M:Jcd.Threading.IResourceLockFactory`1.GetResourceLock">
+        <member name="M:Jcd.Threading.IResourceLockProvider`1.GetResourceLock">
             <summary>
             Acquires a resource lock bound to a synchronization primitive instance.
             </summary>
@@ -140,41 +140,76 @@
         </member>
         <member name="T:Jcd.Threading.NamespaceDoc">
             <summary>
-            Provides types and extension methods to assist with the creation, execution, and
-            management of unstarted <see cref="T:System.Threading.Tasks.Task"/> instances.
+            Provides types and extension methods to assist with the management
+            of resource synchronization primitives.
             </summary>
         </member>
         <member name="T:Jcd.Threading.ReaderWriterLockSlimExtensions">
             <summary>
             Provides extension methods to simplify using a <see cref="T:System.Threading.ReaderWriterLockSlim"/>
-            to ensure the correct pair of EnterRead+ExitRead, EnterUpgradeableRead+ExitUpgradeableRead,
-            and EnterWrite+ExitWrite are called.
+            to ensure the correct pair of EnterRead plus ExitRead, EnterUpgradeableRead plus ExitUpgradeableRead,
+            and EnterWrite plus ExitWrite are called.
             </summary>
+            <remarks>
+            <para>
+            These methods are intended to be used with a using block as illustrated below. 
+            This will ensure the lock is held for no more time than necessary.
+            
+            Contrast this with a using declaration where an method may grow in length over time,
+            and and execution time. Usually most of the lines in those methods shouldn't hold
+            the lock. The reason is the longer a lock is held, the more contention there will be.
+            And large scale contention for resources adversely impacts performance application
+            performance.
+            </para>
+            <code>
+            // problem illustration:
+            void DoNotDoThis()
+            {
+               using _ = rwls.Lock(ReaderWriterLockSlimIntent.Write); // acquire the lock. But don't use the value. Just dispose it.
+               AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+               AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+               AShortActionRequiringNoSynchronization(); // reasonable but unwanted: done in 5 milliseconds.
+               ALongActionRequiringNoSynchronization();  // slow: done in 500 milliseconds.    
+            } // the lock is disposed (and released) here. 
+            </code>
+            <para>
+            The reason the above code is problematic is the lock is held until disposal. 
+            The result of Lock is an <see cref="T:System.IDisposable"/> bound to the <see cref="T:System.Threading.ReaderWriterLockSlim"/>
+            which exits the lock when `Dispose` is called. `Dispose` won't be called until
+            the method is exited, the very nature of a using declaration.
+            </para>
+            <para>
+            Instead, use a traditional using block. Below is the corrected code.
+            </para>
+            <para>
+            <code>
+            // problem resolution:
+            void DefinitelyDoThis()
+            {
+               using (rwls.Lock(ReaderWriterLockSlimIntent.Write)) // acquire the lock. But don't use the value.
+               { 
+                  AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+                  AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+               } 
+               AShortActionRequiringNoSynchronization();    // the lock is no longer held. This won't cause contention.
+               ALongActionRequiringNoSynchronization();     // the lock is no longer held. This won't cause contention.
+            } 
+            </code>
+            </para>
+            <para>
+            As you can see, a using block clearly describes the scope for which
+            the lock needs to be held.
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
-             <summary>
-             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
-             calls the appropriate exit method on the lock during disposal. 
-             </summary>
-             <param name="rwls">The lock to acquire and release.</param>
-             <param name="intent">The type of lock being acquired. By default this is a Read</param>
-             <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
-             <remarks>
-             <para>
-             This method is intended to be used with a using block.
-             There is little value in using it otherwise.
-             </para>
-             <code>
-             // example usage.
-             var rwls = new ReaderWriterLockSlim();
-            
-             using (rwls.Lock(ReaderWriterLockSlimIntent.Write))
-             {
-                // write to a critical set of values here.
-                // ..
-             }
-             </code>
-             </remarks>
+            <summary>
+            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
+            calls the appropriate exit method on the lock during disposal. 
+            </summary>
+            <param name="rwls">The lock to acquire and release.</param>
+            <param name="intent">The type of lock being acquired. By default this is a Read</param>
+            <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.Lock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent,System.Threading.CancellationToken)">
             <summary>
@@ -185,48 +220,15 @@
             <param name="intent">The type of lock being acquired. By default this is a Read</param>
             <param name="token">The <see cref="T:System.Threading.CancellationToken"/> to inspect for cancellation requests</param>
             <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
-            <remarks>
-            <para>
-            This method is intended to be used with a using block.
-            There is little value in using it otherwise.
-            </para>
-            <code>
-            // example usage.
-            var rwls = new ReaderWriterLockSlim();
-            var cts = new CancellationTokenSource();
-            
-            using (rwls.Lock(ReaderWriterLockSlimIntent.Write, cts.Token))
-            {
-               // write to a critical set of values here.
-               // ..
-            }
-            </code>
-            </remarks>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
-             <summary>
-             Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
-             calls the appropriate exit method on the lock during disposal. 
-             </summary>
-             <param name="rwls">The lock to acquire and release.</param>
-             <param name="intent">The type of lock being acquired. By default this is a Read</param>
-             <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
-             <remarks>
-             <para>
-             This method is intended to be used with a using block.
-             There is little value in using it otherwise.
-             </para>
-             <code>
-             // example usage.
-             var rwls = new ReaderWriterLockSlim();
-            
-             using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write))
-             {
-                // write to a critical set of values here.
-                // ..
-             }
-             </code>
-             </remarks>
+            <summary>
+            Waits on a <see cref="T:System.Threading.ReaderWriterLockSlim"/> and returns a <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> that
+            calls the appropriate exit method on the lock during disposal. 
+            </summary>
+            <param name="rwls">The lock to acquire and release.</param>
+            <param name="intent">The type of lock being acquired. By default this is a Read</param>
+            <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.LockAsync(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent,System.Threading.CancellationToken)">
             <summary>
@@ -237,35 +239,25 @@
             <param name="token">the <see cref="T:System.Threading.CancellationToken"/> to inspect for cancellation requests.</param>
             <param name="intent">The type of lock being acquired. By default this is a Read</param>
             <returns>the <see cref="T:Jcd.Threading.ReaderWriterLockSlimResourceLock"/> to release the resources.</returns>
-            <remarks>
-            <para>
-            This method is intended to be used with a using block.
-            There is little value in using it otherwise.
-            </para>
-            <code>
-            // example usage.
-            var rwls = new ReaderWriterLockSlim();
-            var cts = new CancellationTokenSource();
-            
-            using (await rwls.LockAsync(ReaderWriterLockSlimIntent.Write, cts.Token))
-            {
-               // write to a critical set of values here.
-               // ..
-            }
-            </code>
-            </remarks>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimExtensions.GetResourceLock(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
             <summary>
-            Gets a resource lock bound to the instance of a <see cref="T:System.Threading.SemaphoreSlim"/>
+            Gets a resource lock bound to the instance of a <see cref="T:System.Threading.ReaderWriterLockSlim"/>
             </summary>
-            <param name="rwls">The <see cref="T:System.Threading.SemaphoreSlim"/> to create the resource lock for.</param>
+            <param name="rwls">The <see cref="T:System.Threading.ReaderWriterLockSlim"/> to create the resource lock for.</param>
             <param name="intent">The intended purpose of the lock.</param>
-            <returns>A resource lock bound to the instance of a <see cref="T:System.Threading.SemaphoreSlim"/></returns>
+            <returns>A resource lock bound to the instance of a <see cref="T:System.Threading.ReaderWriterLockSlim"/></returns>
+            <remarks>
+            <para>
+            This method is intended for advanced use cases. While the return type is <see cref="T:System.IDisposable"/>
+            immediate disposal is effectively a very expensive no-op. This method merely creates the binding
+            which provides the uniform Wait/Release calls.
+            </para>
+            </remarks>
         </member>
         <member name="T:Jcd.Threading.ReaderWriterLockSlimIntent">
             <summary>
-            Indicates the intent of a call to ReaderWriterLockSLimExtensions.Lock.
+            Indicates the intent of a call to <see cref="T:Jcd.Threading.ReaderWriterLockSlimExtensions"/>`Lock`.
             </summary>
         </member>
         <member name="F:Jcd.Threading.ReaderWriterLockSlimIntent.Read">
@@ -285,31 +277,31 @@
         </member>
         <member name="T:Jcd.Threading.ReaderWriterLockSlimResourceLock">
             <summary>
-            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.ReaderWriterLockSlim"/>.
+            Provides a single-use mechanism for establishing and releasing locks on a <see cref="T:System.Threading.ReaderWriterLockSlim"/>.
             </summary>
             <param name="internalLock">The <see cref="T:System.Threading.ReaderWriterLockSlim"/> to lock and release. </param>
             <param name="intent">The intent of the lock (Read, UpgradeableRead, Write)</param>
             <remarks>
             <para>
             Do not share instances of this type across threads or synchronization contexts.
-            Behavior can be unpredictable. These are provided and meant to be used in conjunction
-            with the extension classes to create a more consistent experience when using
-            synchronization primitives.
+            Behavior can be unpredictable. This exists to be used in conjunction
+            with the .Lock extension method for <see cref="T:System.Threading.ReaderWriterLockSlim"/> and
+            advanced use cases.
             </para> 
             </remarks>
         </member>
         <member name="M:Jcd.Threading.ReaderWriterLockSlimResourceLock.#ctor(System.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent)">
             <summary>
-            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.ReaderWriterLockSlim"/>.
+            Provides a single-use mechanism for establishing and releasing locks on a <see cref="T:System.Threading.ReaderWriterLockSlim"/>.
             </summary>
             <param name="internalLock">The <see cref="T:System.Threading.ReaderWriterLockSlim"/> to lock and release. </param>
             <param name="intent">The intent of the lock (Read, UpgradeableRead, Write)</param>
             <remarks>
             <para>
             Do not share instances of this type across threads or synchronization contexts.
-            Behavior can be unpredictable. These are provided and meant to be used in conjunction
-            with the extension classes to create a more consistent experience when using
-            synchronization primitives.
+            Behavior can be unpredictable. This exists to be used in conjunction
+            with the .Lock extension method for <see cref="T:System.Threading.ReaderWriterLockSlim"/> and
+            advanced use cases.
             </para> 
             </remarks>
         </member>
@@ -391,9 +383,59 @@
         <member name="T:Jcd.Threading.SemaphoreSlimExtensions">
             <summary>
             Provides extension methods to simplify using a <see cref="T:System.Threading.SemaphoreSlim"/>
-            to ensure that Release is called for every Wait or WaitAsync. Useful for
-            ensuring synchronized access to data for short lived operations.
+            to ensure the correct pairing of calls to of Enter and Exit.
             </summary>
+            <remarks>
+            <para>
+            These methods are intended to be used with a using block as illustrated below. 
+            This will ensure the lock is held for no more time than necessary.
+            
+            Contrast this with a using declaration where an method may grow in length over time,
+            and and execution time. Usually most of the lines in those methods shouldn't hold
+            the lock. The reason is the longer a lock is held, the more contention there will be.
+            And large scale contention for resources adversely impacts performance application
+            performance.
+            </para>
+            <code>
+            // problem illustration:
+            void DoNotDoThis()
+            {
+               using _ = sem.Lock();                     // acquire the lock. But don't use the value. Just dispose it.
+               AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+               AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+               AShortActionRequiringNoSynchronization(); // reasonable but unwanted: done in 5 milliseconds.
+               ALongActionRequiringNoSynchronization();  // slow: done in 500 milliseconds.    
+            } // the lock is disposed (and released) here. 
+            </code>
+            <para>
+            The reason the above code is problematic is the lock is held until disposal. 
+            The result of Lock is an <see cref="T:System.IDisposable"/> bound to the <see cref="T:System.Threading.SemaphoreSlim"/>
+            which exits the lock when `Dispose` is called. `Dispose` won't be called until
+            the method is exited, which is the very nature of a using declaration.
+            </para>
+            <para>
+            Instead, use a traditional using block. Below is the corrected code.
+            </para>
+            <para>
+            <code>
+            // problem resolution:
+            void DefinitelyDoThis()
+            {
+               using (sem.Lock())                           // acquire the lock. But don't use the value.
+               { 
+                  AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+                  AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+               } 
+               AShortActionRequiringNoSynchronization();    // the lock is no longer held. This won't cause contention.
+               ALongActionRequiringNoSynchronization();     // the lock is no longer held. This won't cause contention.
+            } 
+            </code>
+            </para>
+            <para>
+            As you can see, a using block clearly describes the scope for which
+            the lock needs to be held.
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimExtensions.Lock(System.Threading.SemaphoreSlim)">
             <summary>
@@ -434,29 +476,29 @@
         </member>
         <member name="T:Jcd.Threading.SemaphoreSlimResourceLock">
             <summary>
-            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SemaphoreSlim"/>.
+            Provides a single-use mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SemaphoreSlim"/>.
             </summary>
             <param name="internalLock">The <see cref="T:System.Threading.SemaphoreSlim"/> to lock and release. </param>
             <remarks>
             <para>
             Do not share instances of this type across threads or synchronization contexts.
-            Behavior can be unpredictable. These are provided and meant to be used in conjunction
-            with the extension classes to create a more consistent experience when using
-            synchronization primitives.
+            Behavior can be unpredictable. This exists to be used in conjunction
+            with the .Lock extension method for <see cref="T:System.Threading.SemaphoreSlim"/> and
+            advanced use cases.
             </para> 
             </remarks>
         </member>
         <member name="M:Jcd.Threading.SemaphoreSlimResourceLock.#ctor(System.Threading.SemaphoreSlim)">
             <summary>
-            Provides a mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SemaphoreSlim"/>.
+            Provides a single-use mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SemaphoreSlim"/>.
             </summary>
             <param name="internalLock">The <see cref="T:System.Threading.SemaphoreSlim"/> to lock and release. </param>
             <remarks>
             <para>
             Do not share instances of this type across threads or synchronization contexts.
-            Behavior can be unpredictable. These are provided and meant to be used in conjunction
-            with the extension classes to create a more consistent experience when using
-            synchronization primitives.
+            Behavior can be unpredictable. This exists to be used in conjunction
+            with the .Lock extension method for <see cref="T:System.Threading.SemaphoreSlim"/> and
+            advanced use cases.
             </para> 
             </remarks>
         </member>
@@ -482,8 +524,65 @@
         </member>
         <member name="T:Jcd.Threading.SpinLockExtensions">
             <summary>
-            Provides extension methods to aid in working with SpinLocks
+            Provides extension methods to simplify using a <see cref="T:System.Threading.SpinLock"/>
+            to ensure the correct pairing of calls to of Wait and Release.
             </summary>
+            <remarks>
+            <para>
+            These methods are intended to be used with a using block as illustrated below. 
+            This will ensure the lock is held for no more time than necessary.
+            
+            Contrast this with a using declaration where an method may grow in length over time,
+            and and execution time. Usually most of the lines in those methods shouldn't hold
+            the lock. The reason is the longer a lock is held, the more contention there will be.
+            And large scale contention for resources adversely impacts performance application
+            performance.
+            </para>
+            <para>
+            NB: The following examples are for .net7.0 and up. This is because `ref struct`s
+            were released with .net7.0. Since <see cref="T:System.Threading.SpinLock"/> is a struct, the only
+            way to track a reference to it is to use a `ref struct`.
+            </para>
+            <code>
+            // problem illustration:
+            void DoNotDoThis()
+            {
+               using _ = sl.Lock();                     // acquire the lock. But don't use the value. Just dispose it.
+               AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+               AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+               AShortActionRequiringNoSynchronization(); // reasonable but unwanted: done in 5 milliseconds.
+               ALongActionRequiringNoSynchronization();  // slow: done in 500 milliseconds.    
+            } // the lock is disposed (and released) here. 
+            </code>
+            <para>
+            The reason the above code is problematic is the lock is held until disposal. 
+            The result of Lock is an <see cref="T:System.IDisposable"/> bound to the <see cref="T:System.Threading.SpinLock"/>
+            which exits the lock when `Dispose` is called. `Dispose` won't be called until
+            the method is exited, which is the very nature of a using declaration.
+            </para>
+            <para>
+            Instead, use a traditional using block. Below is the corrected code.
+            </para>
+            <para>
+            <code>
+            // problem resolution:
+            void DefinitelyDoThis()
+            {
+               using (sl.Lock()) // acquire the lock. But don't use the value.
+               { 
+                  AShortActionRequiringSynchronization();   // very fast: done in 10 microseconds.
+                  AShortActionRequiringSynchronization();   // fast: done in 75 microseconds.
+               } 
+               AShortActionRequiringNoSynchronization();    // the lock is no longer held. This won't cause contention.
+               ALongActionRequiringNoSynchronization();     // the lock is no longer held. This won't cause contention.
+            } 
+            </code>
+            </para>
+            <para>
+            As you can see, a using block clearly describes the scope for which
+            the lock needs to be held.
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.SpinLockExtensions.Lock(System.Threading.SpinLock@,System.Action,System.Boolean)">
             <summary>
@@ -525,8 +624,15 @@
         </member>
         <member name="T:Jcd.Threading.SpinLockResourceLock">
             <summary>
-            Acquires a lock on the <see cref="T:System.Threading.SpinLock"/> it was created with.
+            Provides a single-use mechanism for establishing and releasing locks on a <see cref="T:System.Threading.SpinLock"/>.
             </summary>
+            <param name="internalLock">The <see cref="T:System.Threading.SpinLock"/> to lock and release. </param>
+            <remarks>
+            <para>
+            This struct exists to be used in conjunction with the .Lock extension method for
+            <see cref="T:System.Threading.SpinLock"/> and advanced use cases.
+            </para> 
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.SpinLockResourceLock.#ctor(System.Threading.SpinLock@)">
             <summary>
@@ -602,10 +708,30 @@
             Releases the lock on the resource.
             </summary>
         </member>
+        <member name="T:Jcd.Threading.SynchronizedValues.NamespaceDoc">
+            <summary>
+            <para>
+            Provides generic types that encapsulate a value and a specific synchronization
+            primitive.
+            </para>
+            </summary>
+            <remarks>
+            <para>
+            The synchronization primitive is used to govern access to the underlying value.
+            These are useful for exchanging independent and atomic pieces of information
+            across threads.
+            </para>
+            <para>
+            NB: If using a reference type for the underlying value, ensure your reference
+            type is appropriately synchronized. In this case these types only restrict
+            access to the reference, not the data contained within the reference type.
+            </para>
+            </remarks>
+        </member>
         <member name="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1">
             <summary>
-            Provides a simple async-safe and thread-safe method of setting, getting, acting on,
-            and altering values shared among tasks and threads.
+            Provides a generic mechanism for setting, getting, acting on, and altering values
+            shared among tasks and threads, utilizing a <see cref="T:System.Threading.ReaderWriterLock"/> for synchronization.
             </summary>
             <param name="val">The value to initialize this to</param>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
@@ -623,17 +749,23 @@
             that in a <see cref="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1"/> instead of each individual field/property.
             </para>
             <para>
-            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
+            As well this implementation uses <see cref="T:System.Threading.ReaderWriterLockSlim"/> and requires `Dispose` to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
             time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
             for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+            </para>
+            <para>
+            NB: If using a reference type for the underlying value, ensure your reference
+            type appropriately synchronizes access to its own data. In this case these
+            types only restrict access to the reference, not the data contained within
+            the reference type.
             </para>
             </remarks>
         </member>
         <member name="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.#ctor(`0)">
             <summary>
-            Provides a simple async-safe and thread-safe method of setting, getting, acting on,
-            and altering values shared among tasks and threads.
+            Provides a generic mechanism for setting, getting, acting on, and altering values
+            shared among tasks and threads, utilizing a <see cref="T:System.Threading.ReaderWriterLock"/> for synchronization.
             </summary>
             <param name="val">The value to initialize this to</param>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
@@ -651,10 +783,16 @@
             that in a <see cref="T:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1"/> instead of each individual field/property.
             </para>
             <para>
-            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires Dispose to be
+            As well this implementation uses <see cref="T:System.Threading.ReaderWriterLockSlim"/> and requires `Dispose` to be
             called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
             time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.ReaderWriterLockSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
             for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+            </para>
+            <para>
+            NB: If using a reference type for the underlying value, ensure your reference
+            type appropriately synchronizes access to its own data. In this case these
+            types only restrict access to the reference, not the data contained within
+            the reference type.
             </para>
             </remarks>
         </member>
@@ -822,10 +960,36 @@
         </member>
         <member name="T:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1">
             <summary>
-            A value wrapper with a <see cref="T:System.Threading.SemaphoreSlim"/> to block access during reads and writes.
-            This results in single writer or single reader access to the data.  
+            Provides a generic mechanism for setting, getting, acting on, and altering values
+            shared among tasks and threads, utilizing a <see cref="T:System.Threading.SemaphoreSlim"/> for synchronization.
             </summary>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
+            <remarks>
+            <para>
+            While this provides a method of easily ensuring any one shared value is appropriately
+            locked during setting or getting, you still need to thoroughly understand your
+            use case. For example, having two <see cref="T:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1"/> instances accessed
+            by two different threads, in rapid succession, in different orders can cause
+            potentially unexpected results.
+            </para>
+            <para>
+            In cases where the pair/tuple must be consistent at all times across all accesses,
+            consider creating a struct containing the necessary fields/properties and wrapping
+            that in a <see cref="T:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1"/> instead of each individual field/property.
+            </para>
+            <para>
+            As well this implementation uses <see cref="T:System.Threading.SemaphoreSlim"/> and requires `Dispose` to be
+            called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
+            time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
+            for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+            </para>
+            <para>
+            NB: If using a reference type for the underlying value, ensure your reference
+            type appropriately synchronizes access to its own data. In this case these
+            types only restrict access to the reference, not the data contained within
+            the reference type.
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.SynchronizedValues.SemaphoreSlimValue`1.#ctor(`0)">
             <summary>
@@ -985,9 +1149,36 @@
         </member>
         <member name="T:Jcd.Threading.SynchronizedValues.SpinLockValue`1">
             <summary>
-            Provides synchronization to an underlying value through a <see cref="T:System.Threading.SpinLock"/>.
+            Provides a generic mechanism for setting, getting, acting on, and altering values
+            shared among tasks and threads, utilizing a <see cref="T:System.Threading.SpinLock"/> for synchronization.
             </summary>
-            <typeparam name="T">The type of the data being stored.</typeparam>
+            <typeparam name="T">The data type to synchronize access to.</typeparam>
+            <remarks>
+            <para>
+            While this provides a method of easily ensuring any one shared value is appropriately
+            locked during setting or getting, you still need to thoroughly understand your
+            use case. For example, having two <see cref="T:Jcd.Threading.SynchronizedValues.SpinLockValue`1"/> instances accessed
+            by two different threads, in rapid succession, in different orders can cause
+            potentially unexpected results.
+            </para>
+            <para>
+            In cases where the pair/tuple must be consistent at all times across all accesses,
+            consider creating a struct containing the necessary fields/properties and wrapping
+            that in a <see cref="T:Jcd.Threading.SynchronizedValues.SpinLockValue`1"/> instead of each individual field/property.
+            </para>
+            <para>
+            As well this implementation uses <see cref="T:System.Threading.SpinLock"/> and requires `Dispose` to be
+            called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
+            time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.SpinLockValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.SpinLockValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
+            for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+            </para>
+            <para>
+            NB: If using a reference type for the underlying value, ensure your reference
+            type appropriately synchronizes access to its own data. In this case these
+            types only restrict access to the reference, not the data contained within
+            the reference type.
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.SynchronizedValues.SpinLockValue`1.#ctor(`0,System.Boolean,System.Boolean)">
             <summary>
@@ -1146,10 +1337,36 @@
         </member>
         <member name="T:Jcd.Threading.SynchronizedValues.TicketLockValue`1">
             <summary>
-            A value wrapper for a <see cref="T:Jcd.Threading.TicketLock"/> to block access during reads
-            and writes. It guarantees in order execution of locks.
+            Provides a generic mechanism for setting, getting, acting on, and altering values
+            shared among tasks and threads, utilizing a <see cref="T:Jcd.Threading.TicketLock"/> for synchronization.
             </summary>
             <typeparam name="T">The data type to synchronize access to.</typeparam>
+            <remarks>
+            <para>
+            While this provides a method of easily ensuring any one shared value is appropriately
+            locked during setting or getting, you still need to thoroughly understand your
+            use case. For example, having two <see cref="T:Jcd.Threading.SynchronizedValues.TicketLockValue`1"/> instances accessed
+            by two different threads, in rapid succession, in different orders can cause
+            potentially unexpected results.
+            </para>
+            <para>
+            In cases where the pair/tuple must be consistent at all times across all accesses,
+            consider creating a struct containing the necessary fields/properties and wrapping
+            that in a <see cref="T:Jcd.Threading.SynchronizedValues.TicketLockValue`1"/> instead of each individual field/property.
+            </para>
+            <para>
+            As well this implementation uses <see cref="T:Jcd.Threading.TicketLock"/> and requires `Dispose` to be
+            called. Either implement <see cref="T:System.IDisposable"/> or call it directly at the appropriate
+            time. See the documentation for <see cref="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.ChangeValue(System.Func{`0,`0})"/>, <see cref="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.ChangeValueAsync(System.Func{`0,System.Threading.Tasks.Task{`0}})"/>,
+            for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>
+            </para>
+            <para>
+            NB: If using a reference type for the underlying value, ensure your reference
+            type appropriately synchronizes access to its own data. In this case these
+            types only restrict access to the reference, not the data contained within
+            the reference type.
+            </para>
+            </remarks>
         </member>
         <member name="M:Jcd.Threading.SynchronizedValues.TicketLockValue`1.#ctor(`0)">
             <summary>
@@ -1515,6 +1732,12 @@
             Finalizes stuff.
             </summary>
         </member>
+        <member name="T:Jcd.Threading.Tasks.NamespaceDoc">
+            <summary>
+            Provides types and extension methods to assist with the creation and scheduling
+            of work with custom <see cref="T:System.Threading.Tasks.TaskScheduler"/> instances.
+            </summary>
+        </member>
         <member name="T:Jcd.Threading.Tasks.TaskSchedulerExtensions">
             <summary>
             Adds various `Run` extension for any <see cref="T:System.Threading.Tasks.TaskScheduler"/> derived type.
@@ -1814,7 +2037,7 @@
         </member>
         <member name="T:Jcd.Threading.TicketLock">
             <summary>
-            Provides a naiive implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
+            Provides a naïve implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
             </summary>
             <remarks>
             <para>

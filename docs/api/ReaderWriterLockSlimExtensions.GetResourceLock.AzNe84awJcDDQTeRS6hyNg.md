@@ -3,7 +3,7 @@
 
 ## ReaderWriterLockSlimExtensions.GetResourceLock(this ReaderWriterLockSlim, ReaderWriterLockSlimIntent) Method
 
-Gets a resource lock bound to the instance of a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim')
+Gets a resource lock bound to the instance of a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim')
 
 ```csharp
 public static Jcd.Threading.ReaderWriterLockSlimResourceLock GetResourceLock(this System.Threading.ReaderWriterLockSlim rwls, Jcd.Threading.ReaderWriterLockSlimIntent intent);
@@ -14,7 +14,7 @@ public static Jcd.Threading.ReaderWriterLockSlimResourceLock GetResourceLock(thi
 
 `rwls` [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim')
 
-The [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') to create the resource lock for.
+The [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') to create the resource lock for.
 
 <a name='Jcd.Threading.ReaderWriterLockSlimExtensions.GetResourceLock(thisSystem.Threading.ReaderWriterLockSlim,Jcd.Threading.ReaderWriterLockSlimIntent).intent'></a>
 
@@ -23,5 +23,11 @@ The [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api
 The intended purpose of the lock.
 
 #### Returns
-[ReaderWriterLockSlimResourceLock](ReaderWriterLockSlimResourceLock.md 'Jcd.Threading.ReaderWriterLockSlimResourceLock')
-A resource lock bound to the instance of a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim')
+[ReaderWriterLockSlimResourceLock](ReaderWriterLockSlimResourceLock.md 'Jcd.Threading.ReaderWriterLockSlimResourceLock')  
+A resource lock bound to the instance of a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim')
+
+### Remarks
+  
+This method is intended for advanced use cases. While the return type is [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')  
+immediate disposal is effectively a very expensive no-op. This method merely creates the binding  
+which provides the uniform Wait/Release calls.

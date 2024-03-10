@@ -7,8 +7,8 @@ Read the [API documentation](./docs/api/index.md) carefully.
 
 ## Features Provided
 
-- [`TaskScheduler`](./docs/api/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks are
-  run with the desired scheduler.
+- [`TaskScheduler`](./docs/api/TaskSchedulerExtensions.md) extension `Run` to mimic the `Task.Run` API, ensuring tasks
+  are run with the desired scheduler.
 - [`IdleTaskScheduler`](./docs/api/IdleTaskScheduler.md), a custom task scheduler that schedules tasks in a round robin
   manner with idle threads.
 - [`ThreadWrapper`](./docs/api/ThreadWrapper.md) class to simplify the process of making a pauseable thread.
@@ -19,7 +19,7 @@ Read the [API documentation](./docs/api/index.md) carefully.
   or setting a value. (e.g. [ReaderWriterLockSlimValue](./docs/api/ReaderWriterLockSlimValue_T_.md))
 
 ## Examples
- 
+
 Execute `TaskSchedulerExtensions.Run` on a default instance of IdleTaskScheduler configured to provide 4 STA threads.
 
 ```csharp
@@ -112,6 +112,4 @@ And as always, read the [API documentation](./docs/api/index.md)
 [![MyGet](https://img.shields.io/myget/jason-c-daniels/v/Jcd.Threading?logo=nuget)](https://www.myget.org/feed/jason-c-daniels/package/nuget/Jcd.Threading)
 [![Nuget](https://img.shields.io/nuget/v/Jcd.Threading?logo=nuget)](https://www.nuget.org/packages/Jcd.Threading)
 
-[![API Docs](https://img.shields.io/badge/Read-The%20API%20Documentation-blue?style=for-the-badge)](https://github.com/jason-c-daniels/Jcd.Threading/blob/main
-/docs/
-api/index.md)
+[![API Docs](https://img.shields.io/badge/Read-The%20API%20Documentation-blue?style=for-the-badge)](https://github.com/jason-c-daniels/Jcd.Threading/blob/main/docs/api/index.md)

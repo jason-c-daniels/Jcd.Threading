@@ -3,7 +3,7 @@
 
 ## SemaphoreSlimResourceLock(SemaphoreSlim) Constructor
 
-Provides a mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim').
+Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim').
 
 ```csharp
 public SemaphoreSlimResourceLock(System.Threading.SemaphoreSlim internalLock);
@@ -17,8 +17,8 @@ public SemaphoreSlimResourceLock(System.Threading.SemaphoreSlim internalLock);
 The [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') to lock and release.
 
 ### Remarks
-
-Do not share instances of this type across threads or synchronization contexts.
-Behavior can be unpredictable. These are provided and meant to be used in conjunction
-with the extension classes to create a more consistent experience when using
-synchronization primitives.
+  
+Do not share instances of this type across threads or synchronization contexts.  
+Behavior can be unpredictable. This exists to be used in conjunction  
+with the .Lock extension method for [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and  
+advanced use cases.

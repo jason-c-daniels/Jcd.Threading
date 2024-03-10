@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Jcd.Threading;
 
 /// <summary>
-/// Provides a naiive implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
+/// Provides a naïve implementation of a <see href="https://en.wikipedia.org/wiki/Ticket_lock">Ticket lock (wikipedia)</see> with cancellation support.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -17,7 +17,7 @@ namespace Jcd.Threading;
 /// For further reading see the <see href="https://en.wikipedia.org/wiki/Ticket_lock">Wikipedia Article on Ticket locks</see>.
 /// </para> 
 /// </remarks>
-public class TicketLock : IResourceLockFactory<TicketLockResourceLock>
+public class TicketLock : IResourceLockProvider<TicketLockResourceLock>
 {
    private long ticketCounter;
    private long nowServing;

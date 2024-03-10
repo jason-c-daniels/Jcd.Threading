@@ -3,7 +3,7 @@
 
 ## ThreadWrapper Class
 
-Provides basic thread management facilities such as Pause, Resume, Stop, Start and
+Provides basic thread management facilities such as Pause, Resume, Stop, Start and  
 entering and exiting the idle state.
 
 ```csharp
@@ -13,14 +13,14 @@ System.IDisposable
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ThreadWrapper
 
-Derived
+Derived  
 &#8627; [ItemProcessor&lt;TItem&gt;](ItemProcessor_TItem_.md 'Jcd.Threading.ItemProcessor<TItem>')
 
 Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable')
 
 ### Remarks
-`Stop` will shutdown the underlying thread completely, and a subsequent call to Start will
-create a brand new thread (with associated cancellation token), while Pause and
+`Stop` will shutdown the underlying thread completely, and a subsequent call to Start will  
+create a brand new thread (with associated cancellation token), while Pause and  
 Resume will suspend the thread operations at the appropriate time in the main loop.
 
 | Constructors | |

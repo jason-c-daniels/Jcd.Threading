@@ -3,7 +3,8 @@
 
 ## SpinLockValue<T> Class
 
-Provides synchronization to an underlying value through a [System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock').
+Provides a generic mechanism for setting, getting, acting on, and altering values  
+shared among tasks and threads, utilizing a [System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock') for synchronization.
 
 ```csharp
 public class SpinLockValue<T>
@@ -14,9 +15,31 @@ public class SpinLockValue<T>
 
 `T`
 
-The type of the data being stored.
+The data type to synchronize access to.
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; SpinLockValue<T>
+
+### Remarks
+  
+While this provides a method of easily ensuring any one shared value is appropriately  
+locked during setting or getting, you still need to thoroughly understand your  
+use case. For example, having two [SpinLockValue&lt;T&gt;](SpinLockValue_T_.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>') instances accessed  
+by two different threads, in rapid succession, in different orders can cause  
+potentially unexpected results.  
+  
+In cases where the pair/tuple must be consistent at all times across all accesses,  
+consider creating a struct containing the necessary fields/properties and wrapping  
+that in a [SpinLockValue&lt;T&gt;](SpinLockValue_T_.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>') instead of each individual field/property.  
+  
+As well this implementation uses [System.Threading.SpinLock](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SpinLock 'System.Threading.SpinLock') and requires `Dispose` to be  
+called. Either implement [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/System.IDisposable 'System.IDisposable') or call it directly at the appropriate  
+time. See the documentation for [ChangeValue(Func&lt;T,T&gt;)](SpinLockValue_T_.ChangeValue.fzSMSgQRRnf+ac/joKOCjw.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.ChangeValue(System.Func<T,T>)'), [ChangeValueAsync(Func&lt;T,Task&lt;T&gt;&gt;)](SpinLockValue_T_.ChangeValueAsync.+dJENL57TL4Y0b8UwkPs+Q.md 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.ChangeValueAsync(System.Func<T,System.Threading.Tasks.Task<T>>)'),  
+for recursive reentrancy considerations. <i>(i.e. don't try it!)</i>  
+  
+NB: If using a reference type for the underlying value, ensure your reference  
+type appropriately synchronizes access to its own data. In this case these  
+types only restrict access to the reference, not the data contained within  
+the reference type.
 
 | Constructors | |
 | :--- | :--- |

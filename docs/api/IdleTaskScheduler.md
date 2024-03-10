@@ -3,7 +3,7 @@
 
 ## IdleTaskScheduler Class
 
-Provides a mechanism for task scheduling using a round robin mechanism for a pool
+Provides a mechanism for task scheduling using a round robin mechanism for a pool  
 of privately managed threads. Derive from this type to implement your own specialization.
 
 ```csharp

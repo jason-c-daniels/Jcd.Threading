@@ -3,7 +3,7 @@
 
 ## SemaphoreSlimResourceLock Class
 
-Provides a mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim').
+Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim').
 
 ```csharp
 public class SemaphoreSlimResourceLock : Jcd.Threading.ResourceLockBase
@@ -12,15 +12,15 @@ public class SemaphoreSlimResourceLock : Jcd.Threading.ResourceLockBase
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase') &#129106; SemaphoreSlimResourceLock
 
 ### Remarks
-
-Do not share instances of this type across threads or synchronization contexts.
-Behavior can be unpredictable. These are provided and meant to be used in conjunction
-with the extension classes to create a more consistent experience when using
-synchronization primitives.
+  
+Do not share instances of this type across threads or synchronization contexts.  
+Behavior can be unpredictable. This exists to be used in conjunction  
+with the .Lock extension method for [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and  
+advanced use cases.
 
 | Constructors | |
 | :--- | :--- |
-| [SemaphoreSlimResourceLock(SemaphoreSlim)](SemaphoreSlimResourceLock..ctor.IChqjw3fYT+2pNVk0peOGw.md 'Jcd.Threading.SemaphoreSlimResourceLock.SemaphoreSlimResourceLock(System.Threading.SemaphoreSlim)') | Provides a mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim'). |
+| [SemaphoreSlimResourceLock(SemaphoreSlim)](SemaphoreSlimResourceLock..ctor.IChqjw3fYT+2pNVk0peOGw.md 'Jcd.Threading.SemaphoreSlimResourceLock.SemaphoreSlimResourceLock(System.Threading.SemaphoreSlim)') | Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim'). |
 
 | Methods | |
 | :--- | :--- |

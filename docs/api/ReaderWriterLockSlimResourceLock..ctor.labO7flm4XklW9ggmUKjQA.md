@@ -3,7 +3,7 @@
 
 ## ReaderWriterLockSlimResourceLock(ReaderWriterLockSlim, ReaderWriterLockSlimIntent) Constructor
 
-Provides a mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim').
+Provides a single-use mechanism for establishing and releasing locks on a [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim').
 
 ```csharp
 public ReaderWriterLockSlimResourceLock(System.Threading.ReaderWriterLockSlim internalLock, Jcd.Threading.ReaderWriterLockSlimIntent intent);
@@ -23,8 +23,8 @@ The [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dot
 The intent of the lock (Read, UpgradeableRead, Write)
 
 ### Remarks
-
-Do not share instances of this type across threads or synchronization contexts.
-Behavior can be unpredictable. These are provided and meant to be used in conjunction
-with the extension classes to create a more consistent experience when using
-synchronization primitives.
+  
+Do not share instances of this type across threads or synchronization contexts.  
+Behavior can be unpredictable. This exists to be used in conjunction  
+with the .Lock extension method for [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') and  
+advanced use cases.

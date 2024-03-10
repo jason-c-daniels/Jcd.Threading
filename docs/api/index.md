@@ -4,6 +4,6 @@
 
 | Namespaces | |
 | :--- | :--- |
-| [Jcd.Threading](Jcd.Threading.md 'Jcd.Threading') | Provides types and extension methods to assist with the creation, execution, and<br/>management of unstarted [System.Threading.Tasks.Task](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.Task 'System.Threading.Tasks.Task') instances. |
-| [Jcd.Threading.SynchronizedValues](Jcd.Threading.SynchronizedValues.md 'Jcd.Threading.SynchronizedValues') | |
-| [Jcd.Threading.Tasks](Jcd.Threading.Tasks.md 'Jcd.Threading.Tasks') | |
+| [Jcd.Threading](Jcd.Threading.md 'Jcd.Threading') | Provides types and extension methods to assist with the management<br/>of resource synchronization primitives. |
+| [Jcd.Threading.SynchronizedValues](Jcd.Threading.SynchronizedValues.md 'Jcd.Threading.SynchronizedValues') | <br/><br/>Provides generic types that encapsulate a value and a specific synchronization<br/>primitive. |
+| [Jcd.Threading.Tasks](Jcd.Threading.Tasks.md 'Jcd.Threading.Tasks') | Provides types and extension methods to assist with the creation and scheduling<br/>of work with custom [System.Threading.Tasks.TaskScheduler](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskScheduler 'System.Threading.Tasks.TaskScheduler') instances. |
