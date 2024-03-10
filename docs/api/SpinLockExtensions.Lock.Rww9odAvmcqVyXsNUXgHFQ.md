@@ -17,5 +17,5 @@ public static Jcd.Threading.SpinLockResourceLock Lock(this ref System.Threading.
 the semaphore to use.
 
 #### Returns
-[SpinLockResourceLock](SpinLockResourceLock.md 'Jcd.Threading.SpinLockResourceLock')  
+[SpinLockResourceLock](SpinLockResourceLock.md 'Jcd.Threading.SpinLockResourceLock')
 an [SpinLockResourceLock](SpinLockResourceLock.md 'Jcd.Threading.SpinLockResourceLock') that calls Release in its Dispose method.

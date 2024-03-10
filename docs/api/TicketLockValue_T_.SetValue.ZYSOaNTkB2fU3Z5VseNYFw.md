@@ -17,17 +17,17 @@ public T SetValue(T value);
 The provided value.
 
 #### Returns
-[T](TicketLockValue_T_.md#Jcd.Threading.SynchronizedValues.TicketLockValue_T_.T 'Jcd.Threading.SynchronizedValues.TicketLockValue<T>.T')  
+[T](TicketLockValue_T_.md#Jcd.Threading.SynchronizedValues.TicketLockValue_T_.T 'Jcd.Threading.SynchronizedValues.TicketLockValue<T>.T')
 The provided value.
 
 ### Example
-  
-```csharp  
-var sv = new TicketLockValue<int>();  
-  
-// set the value to 10.  
-var result = sv.SetValue(10);  
-  
-// set the value to 20.  
-result = sv.SetValue(20);  
+
+```csharp
+var sv = new TicketLockValue<int>();
+
+// set the value to 10.
+var result = sv.SetValue(10);
+
+// set the value to 20.
+result = sv.SetValue(20);
 ```

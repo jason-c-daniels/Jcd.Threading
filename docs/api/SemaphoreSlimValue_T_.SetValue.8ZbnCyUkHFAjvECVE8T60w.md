@@ -17,17 +17,17 @@ public T SetValue(T value);
 The provided value.
 
 #### Returns
-[T](SemaphoreSlimValue_T_.md#Jcd.Threading.SynchronizedValues.SemaphoreSlimValue_T_.T 'Jcd.Threading.SynchronizedValues.SemaphoreSlimValue<T>.T')  
+[T](SemaphoreSlimValue_T_.md#Jcd.Threading.SynchronizedValues.SemaphoreSlimValue_T_.T 'Jcd.Threading.SynchronizedValues.SemaphoreSlimValue<T>.T')
 The provided value.
 
 ### Example
-  
-```csharp  
-var sv = new SemaphoreSlimValue<int>();  
-  
-// set the value to 10.  
-var result = sv.SetValue(10);  
-  
-// set the value to 20.  
-setValue = sv.SetValue(20);  
+
+```csharp
+var sv = new SemaphoreSlimValue<int>();
+
+// set the value to 10.
+var result = sv.SetValue(10);
+
+// set the value to 20.
+setValue = sv.SetValue(20);
 ```

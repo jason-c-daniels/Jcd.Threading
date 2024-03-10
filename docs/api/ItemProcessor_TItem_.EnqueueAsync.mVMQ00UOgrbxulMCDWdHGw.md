@@ -3,7 +3,7 @@
 
 ## ItemProcessor<TItem>.EnqueueAsync(TItem) Method
 
-Enqueues an item asynchronously. Control is immediately  
+Enqueues an item asynchronously. Control is immediately
 returned to the caller.
 
 ```csharp

@@ -17,6 +17,6 @@ protected virtual bool PerformWork(System.Threading.CancellationToken token);
 the token cancellation token to use
 
 #### Returns
-[System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')  
-True if meaningful work was done. False if the it should transition to idle  
+[System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
+True if meaningful work was done. False if the it should transition to idle
 after this call.

@@ -12,10 +12,10 @@ public class SemaphoreSlimResourceLock : Jcd.Threading.ResourceLockBase
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase') &#129106; SemaphoreSlimResourceLock
 
 ### Remarks
-  
-Do not share instances of this type across threads or synchronization contexts.  
-Behavior can be unpredictable. This exists to be used in conjunction  
-with the .Lock extension method for [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and  
+
+Do not share instances of this type across threads or synchronization contexts.
+Behavior can be unpredictable. This exists to be used in conjunction
+with the .Lock extension method for [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and
 advanced use cases.
 
 | Constructors | |

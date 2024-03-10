@@ -3,7 +3,7 @@
 
 ## ThreadWrapper.ExitPausedState() Method
 
-Causes the thread to exit the paused state. This must be called by  
+Causes the thread to exit the paused state. This must be called by
 an external thread.
 
 ```csharp

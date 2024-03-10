@@ -17,7 +17,7 @@ public interface IResourceLockProvider<out T>
 
 The type of the resource lock.
 
-Derived  
+Derived
 &#8627; [TicketLock](TicketLock.md 'Jcd.Threading.TicketLock')
 
 | Methods | |

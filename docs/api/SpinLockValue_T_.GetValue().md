@@ -3,7 +3,7 @@
 
 ## SpinLockValue<T>.GetValue() Method
 
-Retrieves the current value. If another thread edits the value, moment later a subsequent  
+Retrieves the current value. If another thread edits the value, moment later a subsequent
 call will yield a different result.
 
 ```csharp
@@ -11,14 +11,14 @@ public T GetValue();
 ```
 
 #### Returns
-[T](SpinLockValue_T_.md#Jcd.Threading.SynchronizedValues.SpinLockValue_T_.T 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.T')  
+[T](SpinLockValue_T_.md#Jcd.Threading.SynchronizedValues.SpinLockValue_T_.T 'Jcd.Threading.SynchronizedValues.SpinLockValue<T>.T')
 The current value as of establishing the lock.
 
 ### Example
-  
-```csharp  
-var sv = new SpinLockValue<int>(15);  
-  
-// get the value  
-setValue = sv.GetValue(20);  
+
+```csharp
+var sv = new SpinLockValue<int>(15);
+
+// get the value
+setValue = sv.GetValue(20);
 ```

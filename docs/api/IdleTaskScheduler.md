@@ -3,7 +3,7 @@
 
 ## IdleTaskScheduler Class
 
-Provides a mechanism for task scheduling using a round robin mechanism for a pool  
+Provides a mechanism for task scheduling using a round robin mechanism for a pool
 of privately managed threads. Derive from this type to implement your own specialization.
 
 ```csharp
@@ -21,7 +21,7 @@ Implements [System.IDisposable](https://docs.microsoft.com/en-us/dotnet/api/Syst
 
 | Fields | |
 | :--- | :--- |
-| [ProcessorList](IdleTaskScheduler.ProcessorList.md 'Jcd.Threading.Tasks.IdleTaskScheduler.ProcessorList') | The list of underlying queue+thread task processors.<br/>This is provided for advanced use cases. |
+| [ProcessorList](IdleTaskScheduler.ProcessorList.md 'Jcd.Threading.Tasks.IdleTaskScheduler.ProcessorList') | The list of underlying queue+thread task processors. This is provided for advanced use cases. |
 
 | Properties | |
 | :--- | :--- |

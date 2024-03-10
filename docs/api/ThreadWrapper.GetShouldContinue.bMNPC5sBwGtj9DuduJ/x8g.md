@@ -17,5 +17,5 @@ protected virtual bool GetShouldContinue(System.Threading.CancellationToken toke
 the token to check for cancellation
 
 #### Returns
-[System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')  
+[System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
 True if the main thread loop should continue.

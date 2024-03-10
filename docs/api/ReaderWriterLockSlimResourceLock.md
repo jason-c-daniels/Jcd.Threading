@@ -12,10 +12,10 @@ public class ReaderWriterLockSlimResourceLock : Jcd.Threading.ResourceLockBase
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [ResourceLockBase](ResourceLockBase.md 'Jcd.Threading.ResourceLockBase') &#129106; ReaderWriterLockSlimResourceLock
 
 ### Remarks
-  
-Do not share instances of this type across threads or synchronization contexts.  
-Behavior can be unpredictable. This exists to be used in conjunction  
-with the .Lock extension method for [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') and  
+
+Do not share instances of this type across threads or synchronization contexts.
+Behavior can be unpredictable. This exists to be used in conjunction
+with the .Lock extension method for [System.Threading.ReaderWriterLockSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.ReaderWriterLockSlim 'System.Threading.ReaderWriterLockSlim') and
 advanced use cases.
 
 | Constructors | |

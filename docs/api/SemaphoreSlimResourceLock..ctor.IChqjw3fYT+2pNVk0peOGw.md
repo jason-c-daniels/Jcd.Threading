@@ -17,8 +17,8 @@ public SemaphoreSlimResourceLock(System.Threading.SemaphoreSlim internalLock);
 The [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') to lock and release.
 
 ### Remarks
-  
-Do not share instances of this type across threads or synchronization contexts.  
-Behavior can be unpredictable. This exists to be used in conjunction  
-with the .Lock extension method for [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and  
+
+Do not share instances of this type across threads or synchronization contexts.
+Behavior can be unpredictable. This exists to be used in conjunction
+with the .Lock extension method for [System.Threading.SemaphoreSlim](https://docs.microsoft.com/en-us/dotnet/api/System.Threading.SemaphoreSlim 'System.Threading.SemaphoreSlim') and
 advanced use cases.

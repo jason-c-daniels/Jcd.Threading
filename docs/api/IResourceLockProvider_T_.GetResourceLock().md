@@ -10,5 +10,5 @@ T GetResourceLock();
 ```
 
 #### Returns
-[T](IResourceLockProvider_T_.md#Jcd.Threading.IResourceLockProvider_T_.T 'Jcd.Threading.IResourceLockProvider<T>.T')  
+[T](IResourceLockProvider_T_.md#Jcd.Threading.IResourceLockProvider_T_.T 'Jcd.Threading.IResourceLockProvider<T>.T')
 A resource lock bound to a synchronization primitive instance.
